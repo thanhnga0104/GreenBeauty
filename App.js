@@ -29,7 +29,7 @@ import HomeScreen from './src/pages/Home/HomeScreen';
 import HomeStack from './src/navigations/Stack/HomeStack';
 import DetailScreen from './src/pages/Detail/DetailScreen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import TempStack from './src/navigations/Stack/tempStack';
 
  
 //  const Drawer = createDrawerNavigator();
@@ -44,7 +44,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
          {/* <Drawer.Screen name="Profile" component={Profile}/> */}
        {/* </Drawer.Navigator> */} 
  
-       <HomeStack/>
+        <TempStack/>
      </NavigationContainer>
   //  <HomeScreen/>
     // <DetailScreen/>

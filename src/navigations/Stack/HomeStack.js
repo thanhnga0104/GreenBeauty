@@ -34,7 +34,7 @@ const HomeStack = (navigation) => (
 
     <stack.Screen name="SearchScreen" component={SearchScreen} options={{
         headerShown:false,}}/>
-    <stack.Screen name="SearchHeader" component={SearchHeader}/>
+    <stack.Screen name="SearchHeader" component={SearchHeader}/>   
     
   </stack.Navigator>
 );
