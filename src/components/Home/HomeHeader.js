@@ -7,18 +7,20 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 const HomeHeader = ({navigation}) => {
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity style={styles.menuContainer}>
-        <Feather name="menu" size={32} color="#fff" />
-      </TouchableOpacity>
+      <View style={styles.menuContainer}>
+        <Feather name="menu" size={28} color="#fff"
+         onPress={()=>{navigation.openDrawer()}}
+           />
+      </View>
       <TouchableOpacity
        style={styles.inputContainer}
        onPress={()=>{navigation.navigate('SearchScreen');}}
        >
         <FontAwesome name="search" size={14} color="#969696"    />
-        <Text> Tìm kiếm sản phẩm</Text>
+        <Text style={styles.inputText}> Tìm kiếm sản phẩm</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.cartContainer}>
-        <AntDesign name="shoppingcart" size={32} color="#fff" />
+      <TouchableOpacity style={styles.cartContainer} onPress={()=>{navigation.navigate('CartScreen');}}>
+        <AntDesign name="shoppingcart" size={28} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -36,7 +38,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     flex: 1,
-    marginLeft: 10,
     alignItems: 'center',
     marginBottom: 4,
     paddingVertical: 8,
@@ -48,17 +49,17 @@ const styles = StyleSheet.create({
     color: '#969696',
     fontSize: 14,
     marginLeft: 8,
-    fontWeight: '500',
+    fontWeight: '400',
   },
 
   menuContainer: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   cartContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
