@@ -197,4 +197,4 @@ const styles = StyleSheet.create({
         marginTop: scale(10),
     },
 })
-export default ProfileScreen
+export default ProfileScreen;

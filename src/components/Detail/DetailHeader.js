@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,10 +18,12 @@ const DetailHeader = ({navigation}) => {
           }}
         />
       </View>
-      <View style={styles.inputContainer}>
+      <TouchableOpacity style={styles.inputContainer}
+      onPress={()=> {navigation.navigate('SearchScreen');}}
+      >
         <FontAwesome name="search" size={24} color="black" />
         <Text> Tìm kiếm </Text>
-      </View>
+      </TouchableOpacity>
 
       <View style={styles.cartContainer}>
         <AntDesign name="shoppingcart" size={20} color="#fff" />

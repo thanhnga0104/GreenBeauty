@@ -30,24 +30,22 @@ import HomeStack from './src/navigations/Stack/HomeStack';
 import DetailScreen from './src/pages/Detail/DetailScreen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TempStack from './src/navigations/Stack/tempStack';
+import HomeDrawer from './src/navigations/Drawer/HomeDrawer';
 
  
 //  const Drawer = createDrawerNavigator();
  
  const App =() => {
    return (
-     <NavigationContainer>
-       {/* <Drawer.Navigator drawerContent={props => <DrawerNav {...props}/>}>
-         <Drawer.Screen name="HomeDrawer" component={MainTabScreen}
-         options={{headerShown: false}}
-         />
-         {/* <Drawer.Screen name="Profile" component={Profile}/> */}
-       {/* </Drawer.Navigator> */} 
+     <NavigationContainer>      
  
-        <TempStack/>
+        {/* <TempStack/> */}
+
+        <HomeDrawer/>
+
+        {/* <HomeStack/> */}
      </NavigationContainer>
-  //  <HomeScreen/>
-    // <DetailScreen/>
+  
     
     
  
