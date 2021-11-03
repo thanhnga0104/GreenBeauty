@@ -1,23 +1,19 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, ScrollView, Text, TextInput} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-export default class SearchHeader extends Component {
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
+
+export default class CategoryHeader extends Component {
   render() {
     const {navigation} = this.props;
     return (
       <View style={styles.headerContainer}>
-        <View style={styles.backContainer}>
-          <AntDesign
-            name="arrowleft"
-            size={24}
-            color="#7D7D7D"
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        </View>
+        <View style={styles.menuContainer}>
+        <Feather name="menu" size={28} color="#fff"
+         onPress={()=>{navigation.openDrawer()}}
+           />
+      </View>
 
         <View style={styles.inputContainer}>
           <View style={{marginHorizontal:10}}>
@@ -34,7 +30,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     paddingVertical: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#316C49',
   },
   inputContainer: {
     backgroundColor: '#E5E5E5',
@@ -48,8 +44,8 @@ const styles = StyleSheet.create({
     borderEndColor:"#7D7D7D",
   },
 
-  backContainer: {
-    marginHorizontal: 10,
+  menuContainer: {
+    paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
