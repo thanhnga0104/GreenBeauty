@@ -17,7 +17,12 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const DetailScreen = ({navigation}) => {
+const DetailScreen = ({navigation, route}) => {
+  // const {id} = route.params;
+  const {image} = route.params;
+  // const {name} = route.params;
+  // const {price} = route.params;
+  const {product} = route.params;
   return (
     <SafeAreaView
       style={{
@@ -31,12 +36,16 @@ const DetailScreen = ({navigation}) => {
       <ScrollView>
         <Image
           style={styles.image}
-          source={require('../../assets/image/img2.jpg')}></Image>
+          // source={{uri:image}}
+
+          //fake uri image
+          // source={{uri: product.description}}
+          source={{uri: image}}
+          
+          ></Image>
         <View style={styles.productNameSection}>
-          <Text style={styles.productNameText}>
-            Chỗ này là ghi cái tên sản phẩm dài dài vô nè
-          </Text>
-          <Text style={styles.productPrice}>200,000đ</Text>
+          <Text style={styles.productNameText}>{product.name}</Text>
+          <Text style={styles.productPrice}>{product.price}</Text>
         </View>
         <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
           <TouchableOpacity style={{marginRight: 10}}>
@@ -54,15 +63,16 @@ const DetailScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={styles.khoangcach}></View>
-        
+
         {/* Mô tả sản phẩm */}
-        <TouchableOpacity 
-        style={{flexDirection: 'row', alignItems:'center'}} 
-         activeOpacity={1}>
+        <TouchableOpacity
+          style={{flexDirection: 'row', alignItems: 'center'}}
+          activeOpacity={1}>
           <View style={styles.descriptionSection}>
             <Text style={styles.titleText}>Mô tả sản phẩm</Text>
-            <Text numberOfLines={5} >
-              Sữa Chống Nắng Anessa Dưỡng Da Bảo Vệ Hoàn Hảo là một trong những
+            <Text numberOfLines={5}>
+              {product.description}
+              {/* Sữa Chống Nắng Anessa Dưỡng Da Bảo Vệ Hoàn Hảo là một trong những
               sản phẩm chống nắng được yêu thích hàng đầu tại Nhật Bản đến từ
               thương hiệu Anessa. Với bộ ba công nghệ độc quyền từ Shiseido,
               Anessa Perfect UV Sunscreen Skincare Milk cung cấp khả năng chống
@@ -70,7 +80,7 @@ const DetailScreen = ({navigation}) => {
               tia UV. Đồng thời, công thức chứa 50% thành phần dưỡng da giúp đẩy
               lùi các dấu hiệu lão hóa hiệu quả. Đặc biệt, sản phẩm có kết cấu
               sữa mỏng nhẹ, thấm nhanh, không nhờn rít, rất thích hợp dùng cho
-              những hoạt động ngoài trời hay đi chơi, du lịch, công tác.
+              những hoạt động ngoài trời hay đi chơi, du lịch, công tác. */}
             </Text>
           </View>
           <View style={styles.rightContainer}>
@@ -96,7 +106,16 @@ const DetailScreen = ({navigation}) => {
         {/* Hướng dẫn sử dụng */}
         <View style={styles.khoangcach}></View>
 
-        <TouchableOpacity style={{padding:10, flexDirection:'row'}}>
+        <TouchableOpacity 
+        style={{padding: 10, flexDirection: 'row'}}
+        activeOpacity={1}
+        onPress={() => {
+          navigation.navigate('InstructionScreen', {
+            
+            product: {product},
+          });
+        }}
+        >
           <Text style={styles.titleText}>Hướng dẫn sử dụng</Text>
           <View style={styles.rightContainer}>
             <EvilIcons name="chevron-right" size={30} color="black" />
@@ -105,10 +124,9 @@ const DetailScreen = ({navigation}) => {
 
         {/* end Hướng dẫn sử dụng */}
         <View style={styles.khoangcach}></View>
-        <TouchableOpacity style={{padding:10, flexDirection:'row'}}>
-          
+        <TouchableOpacity style={{padding: 10, flexDirection: 'row'}}>
           <Text style={styles.titleText}>Thành phần sản phẩm</Text>
-         
+
           <View style={styles.rightContainer}>
             <EvilIcons name="chevron-right" size={30} color="black" />
           </View>
@@ -120,14 +138,11 @@ const DetailScreen = ({navigation}) => {
         </View>
       </ScrollView>
 
-     
-        <View style={styles.addCartContainer}>
-          
-        <TouchableOpacity style={styles.addCartButton} >  
+      <View style={styles.addCartContainer}>
+        <TouchableOpacity style={styles.addCartButton}>
           <Text style={styles.addCartText}>Thêm vào giỏ hàng</Text>
         </TouchableOpacity>
-        </View>
-      
+      </View>
     </SafeAreaView>
   );
 };
@@ -170,60 +185,57 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  descriptionSection: {    
-    justifyContent: 'center',    
+  descriptionSection: {
+    justifyContent: 'center',
     height: 120,
-    padding: 10,    
-    width:width/1.07,
-    
+    padding: 10,
+    width: width / 1.07,
   },
-  titleText: {  
-    width:width/1.1,
+  titleText: {
+    width: width / 1.1,
     fontSize: 14,
     fontWeight: '700',
     flexWrap: 'wrap',
-    
-  },  
+  },
 
-  rightContainer: {    
-    alignItems:'center',
-    justifyContent:'center',
+  rightContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   khoangcach: {
     padding: 4,
     backgroundColor: '#E5E5E5',
-  },
- 
-  infoText: {
-    marginLeft: 8,
-    fontSize: 14,    
-    fontWeight: '300',
-  },
-  
-  addCartContainer:
-  {
-    borderWidth:0.3, 
-    height:60,
-    alignItems:'center',
-    justifyContent:'center',
+    // margin:4,
   },
 
-  addCartButton:{
-    // marginHorizontal:20,
-    //  width:'100%',
-    paddingHorizontal:width/4,
-    backgroundColor:'green',
-    height:height/16, 
-    alignItems:'center', 
-    justifyContent:'center', 
-    borderRadius:5,
-    
+  infoText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: '300',
   },
-  addCartText:{
-    fontSize:22,
-    color:'#fff',
-  }
+
+  addCartContainer: {
+    // borderWidth: 0.3,
+    borderTopWidth: 0.6,
+    borderTopColor: '#E5E5E5',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  addCartButton: {
+    paddingHorizontal: width / 4,
+    backgroundColor: 'green',
+    height: height / 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  addCartText: {
+    fontSize: 22,
+    color: '#fff',
+  },
 });
 
 export default DetailScreen;

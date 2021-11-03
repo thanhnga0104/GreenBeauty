@@ -9,7 +9,7 @@ return(
         flex: 1,
         // paddingTop: StatusBar.currentHeight
       }}>
-      <StatusBar backgroundColor="#316C49" barStyle="light-content" />
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <SearchHeader navigation={navigation}/>
       
     </SafeAreaView>
