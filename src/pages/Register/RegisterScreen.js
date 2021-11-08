@@ -19,8 +19,96 @@ import {
   Button,
 } from 'react-native';
 import {scale} from 'react-native-size-matters'
-
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Feather from 'react-native-vector-icons/Feather'
 const RegisterScreen = ({navigation})=>{
+    const [data, setData] = React.useState({
+        email: '',
+        password: '',
+        retypepassword:'',
+        check_textinputchange:false,
+        securetextentry:true,
+        securetextentry2:true,
+    });
+
+    const textInputChange=(val)=>{
+        if(val.length != 0)
+        {
+            setData({
+                ...data,
+                email: val,
+                check_textinputchange:true,
+                
+            })
+        }
+        else
+        {
+            setData({
+                ...data,
+                email: val,
+                check_textinputchange:false,
+            })
+        }
+    }
+
+    const hadlepwchange=(val)=>{
+        setData({
+            ...data,
+            password:val
+        });
+    }
+    const hadlerepwchange= (val)=>{
+        setData({
+            ...data,
+            retypepassword:val
+        })
+    }
+    const updatesercuretext=()=>{
+        setData({
+            ...data,
+            securetextentry:!data.securetextentry
+        })
+    }
+    const updatesercuretext2=()=>{
+        setData({
+            ...data,
+            securetextentry2: !data.securetextentry2
+        })
+    }
+
+    const HadleRegister = async(email, pw, rpw)=>{
+        if(pw===rpw)
+        {
+            await fetch ('http://10.0.2.2:8000/register/',
+        {
+            method:'POST',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"email": email, "password":pw})
+        }).then(response=>{
+            if(response.status==201)
+            {
+                alert("register successfully, check your email to verify your account!")
+            }
+            else{
+                alert("This mail is already existed")
+            }
+        })
+        .then(res => {
+            console.log("reponse :", res); 
+           }).catch(error => {
+            console.error("eroor",error);
+            return { name: "network error", description: "" };
+          });
+
+        }
+        else
+        {
+            alert("password and retype password not the same!")
+        }
+    }
     return(
       <SafeAreaView style={{flex:1, backgroundColor:"#ECF3F9", justifyContent:"space-between" }}>
             <ImageBackground source={require('../../assets/image/bg.jpg')} style={styles.container}>
@@ -34,29 +122,59 @@ const RegisterScreen = ({navigation})=>{
                     <Text style={{color:'#006C25', fontSize: scale(25)}}>Welcome</Text>
                     <Text style={{fontSize: scale(15)}}>Let's join GreenBeauty's House</Text>
                 </View>
+                {/*change:  */}
                 <View style={{marginTop:scale(5)}}>
-                    <View style={{flexDirection:"column", margin: scale(10)}}>
-                        <Text style={{color:"#B6C7D1"}}>Email</Text>
-                        <TextInput style={styles.input}
-                            placeholder="youremail@gmail.com"
-                            keyboardType="email-address"></TextInput>
+                    <Text style={{color:"#B6C7D1", fontSize:scale(12)}}>Email</Text>
+                    <View style={styles.action}>
+                        <FontAwesome name="user-o" color="#05375a" size = {scale(12)}/>
+                        <TextInput style={styles.input} 
+                            placeholder="your email"
+                            keyboardType="email-address"
+                            onChangeText={(val)=> textInputChange(val)}>
+                        </TextInput>
+                            {data.check_textinputchange ?
+                        <Feather name='check-circle' color='green' size={scale(12)}/>
+                            : null}
                     </View>
-                    <View style={{flexDirection:"column", margin: scale(10), paddingBottom:1}}>
-                        <Text style={{color:"#B6C7D1"}}>Password</Text>
+
+                    <Text style={{color:"#B6C7D1", fontSize:scale(12)}}>Password</Text>
+                    <View style={styles.action}>
+                        <Feather name="lock" color="#05375a" size = {scale(12)}/>
                         <TextInput style={styles.input}
                             placeholder="************"
                             keyboardType={'default'} 
-                            secureTextEntry={true}></TextInput>
+                            secureTextEntry={data.securetextentry? true:false}
+                            onChangeText={(val)=>hadlepwchange(val)}></TextInput>
+                        <TouchableOpacity
+                            onPress={updatesercuretext}>
+                                {data.securetextentry ?
+                            <Feather name='eye-off' color='gray' size={scale(12)}/>
+                                :
+                            <Feather name='eye' color='gray' size={scale(12)}/>
+                            }
+                        </TouchableOpacity>
                     </View>
-                    <View style={{flexDirection:"column", margin: scale(10), paddingBottom:1}}>
-                        <Text style={{color:"#B6C7D1"}}>Retype your Password</Text>
-                        <TextInput style={styles.input}
+                
+                    <Text style={{color:"#B6C7D1", fontSize:scale(12)}}>Retype Password</Text>
+                        <View style={styles.action}>
+                            <Feather name="lock" color="#05375a" size = {scale(12)}/>
+                            <TextInput style={styles.input}
                             placeholder="************"
                             keyboardType={'default'} 
-                            secureTextEntry={true}></TextInput>
-                    </View>
+                            secureTextEntry={data.securetextentry2? true:false}
+                            onChangeText={(val)=>hadlerepwchange(val)}></TextInput>
+                            <TouchableOpacity
+                            onPress={updatesercuretext2}>
+                                {data.securetextentry2 ?
+                                <Feather name='eye-off' color='gray' size={scale(12)}/>
+                                :
+                                <Feather name='eye' color='gray' size={scale(12)}/>
+                                }
+                            </TouchableOpacity>
+                        </View>
                 </View>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button}
+                onPress={()=>{HadleRegister(data.email, data.password,data.retypepassword)}}>
                     <Text style={{color:"#FFF"}}>REGISTER</Text>
                 </TouchableOpacity>
             </View>
@@ -77,19 +195,25 @@ const RegisterScreen = ({navigation})=>{
 const heightofscreen = Dimensions.get('window').height
 const widthofscreen = Dimensions.get('window').width
 const styles = StyleSheet.create({
+    action:{
+        flexDirection: "row",
+        marginTop: scale(5),
+        borderBottomWidth:1,
+        borderBottomColor:"#f2f2f2",
+    },
     registercontainer:{
         alignItems:"center",
         justifyContent:"center",
         
     },
     input:{
-        height: scale(35),
-        borderBottomWidth: 0.5,
-        padding: scale(10),
-        color:"#B6C7D1"
+        flex:1,
+        paddingLeft: scale(15),
+        color:"#B6C7D1",
+        marginTop:scale(-15)
     },
     container: {
-        height: scale( heightofscreen/3.1),
+        height: scale( heightofscreen/4),
         resizeMode:"cover",
       },
     container1:{
@@ -119,6 +243,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
+        justifyContent:"space-between"
       },
     button:{
       marginTop: scale(10),
