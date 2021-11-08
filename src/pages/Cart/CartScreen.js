@@ -12,35 +12,42 @@ import {
 import CheckBox from '@react-native-community/checkbox';
 import {ProductData} from '../../data/ProductData';
 import {useState} from 'react';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const CartFlatListItem = props => {
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+function CartFlatListItem  ({navigation, item, handleSelect})  {
+ 
+  const [isSelected, setSelection] = useState();
   return (
     <View style={styles.cartItem}>
       <View style={styles.checkboxContainer}>
         <CheckBox
-          value={toggleCheckBox}
-          tintColors={{ true: 'green' }}
-          // onValueChange={newValue => setToggleCheckBox(newValue) }         
+          tintColors={{true: 'green'}}
+          value={isSelected}
+          onValueChange={
+            
+            event=>{
+             
+              console.log("có chạy vô event")
+              handleSelect(event),
+              setSelection(!isSelected)
+              
+            }
+            
+
           
-          // onChange={()=>this.countChecked(newValue)}
-          onValueChange={(newValue)=>{
-            setToggleCheckBox(newValue)
-            countChecked(newValue)
-
-          }}
-
-
+          }
+            
+        
         />
       </View>
 
-      <Image source={{uri: props.item.image}} style={styles.itemImage} />
+      <Image source={{uri: item.image}} style={styles.itemImage} />
       <View style={{padding: 10}}>
-        <Text style={styles.itemName}>{props.item.name}</Text>
-        <Text style={styles.itemPrice}>{props.item.price}</Text>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemPrice}>{item.price}</Text>
         <View style={{flexDirection: 'row'}}>
           <Text style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}>
             -
@@ -64,58 +71,80 @@ const CartFlatListItem = props => {
 };
 
 export default class CartScreen extends Component {
-
-  constructor(){
+  constructor() {
     super();
-    this.state={
-      count : 0,
-    }
+    this.state = {
+      selected: 0
+    };
   }
-
-  
-  countChecked(value){
-      if(value==true)
-      {
-        this.setState({
-          count: count++
-
-        })
+  handleSelect=(event)=> {
+    if (event == true) {
+      console.log("có chạy vô true")
+      this.setState({
+       
+        selected: ++this.state.selected,
         
-      }
-      else{ 
-        this.setState({
-          count: count--
-
-        })
-      }
-
+      });
+    } else {
+      console.log("có chạy vô false")
+      this.setState({
+        selected: --this.state.selected,
+        
+      });
+    }
   }
-  btnMuaHang(navigation)
-  {
-    if(this.state.count >0)
-    {
+
+  btnMuaHang(navigation) {
+    console.log('số lượng selected: ', this.state.selected)
+    if (this.state.selected > 0) {
       navigation.navigate('Thanh Toán');
-    }
-    else{
-      alert("Chưa chọn sản phẩm")
+    } else {
+      console.log('chưa chọn sp', this.state.selected);
+      alert('Chưa chọn sản phẩm');
     }
   }
-
 
   render() {
     const {navigation} = this.props;
-    
     return (
       <SafeAreaView
         style={{
           flex: 1,
         }}>
+        <View style={styles.headerContainer}>
+          <View style={styles.backContainer}>
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="#fff"
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          </View>
+
+          <View>
+            <Text
+              style={{
+                flex: 1,
+                color: '#fff',
+                marginLeft: 8,
+                fontSize: 16,
+                fontWeight: '600',
+                textAlignVertical: 'center',
+              }}>
+              Giỏ hàng
+            </Text>
+          </View>
+        </View>
+
         <FlatList
           showsHorizontalScrollIndicator={false}
           data={ProductData}
           renderItem={({item, index}) => {
             return (
               <CartFlatListItem
+                handleSelect={this.handleSelect}
                 navigation={navigation}
                 item={item}
                 index={index}></CartFlatListItem>
@@ -151,10 +180,8 @@ export default class CartScreen extends Component {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              
               // onPress={()=> {navigation.navigate('Thanh Toán');}}
-              onPress={()=> this.btnMuaHang(navigation)}
-              >
+              onPress={() => this.btnMuaHang(navigation)}>
               <Text
                 style={{
                   color: '#fff',
@@ -173,11 +200,22 @@ export default class CartScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  checkboxContainer: {
-    margin:5,
+  headerContainer: {
+    flexDirection: 'row',
+    paddingVertical: 10,
+    backgroundColor: '#316C49',
+  },
+
+  backContainer: {
+    marginHorizontal: 10,
     alignItems: 'center',
-    justifyContent:"center"
-    
+    justifyContent: 'center',
+  },
+
+  checkboxContainer: {
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cartItem: {
     flexDirection: 'row',
@@ -187,7 +225,7 @@ const styles = StyleSheet.create({
   itemImage: {
     margin: 10,
     width: 80,
-    height: 80,    
+    height: 80,
   },
   itemName: {
     fontSize: 14,
