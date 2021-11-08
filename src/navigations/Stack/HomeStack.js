@@ -61,8 +61,11 @@ const HomeStack = ({navigation}) => (
     />
     <stack.Screen name="CategoryHeader" component={CategoryHeader} />
     <stack.Screen
-      name="CartScreen"
+      name="CartScreen"     
       component={CartScreen}
+      options={{
+        headerShown: false,
+      }}
             
     />
      <stack.Screen name="Thanh Toán" component={PaymentScreen} />
