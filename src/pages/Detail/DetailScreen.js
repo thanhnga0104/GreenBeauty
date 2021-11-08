@@ -1,4 +1,5 @@
 import React from 'react';
+import {useState} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -6,23 +7,48 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
-  Platform,
-  Button,
+  Dimensions, 
+  Alert,
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
 import DetailHeader from '../../components/Detail/DetailHeader';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const DetailScreen = ({navigation, route}) => {
+const images = [
+  'https://media.hasaki.vn/rating/162357419239630.jpg',
+  'https://media.hasaki.vn/rating/162451327872150.jpg',
+  'https://media.hasaki.vn/rating/162348013178160.jpg',
+];
+
+const DetailScreen = ({navigation, route}) => { 
+
+  // render() {
+  // const {navigation, route} = this.props;
   // const {id} = route.params;
   const {image} = route.params;
   // const {name} = route.params;
   // const {price} = route.params;
   const {product} = route.params;
+
+  const [imgActive, setimgActive] = useState(0);
+
+  const handleChange = nativeEvent => {
+    if (nativeEvent) {
+      const slide = Math.ceil(
+        nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
+      );
+      if (slide != imgActive) {
+        setimgActive(slide);
+      }
+    }
+  };
+
+  const addCart = () => {
+    Alert.alert('vừa bấm thêm');
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -33,24 +59,37 @@ const DetailScreen = ({navigation, route}) => {
       <DetailHeader navigation={navigation} />
 
       {/* Bắt đầu phần detail */}
-      <ScrollView>
-        <Image
-          style={styles.image}
-          // source={{uri:image}}
+      <ScrollView style={{backgroundColor:'#fff'}}>
+        <View style={styles.wrap}>
+          <ScrollView
+            onScroll={({nativeEvent}) => handleChange(nativeEvent)}
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled
+            horizontal
+            style={styles.wrap}>
+            {images.map((e, index) => (
+              <Image
+                key={e}
+                resizeMode="stretch"
+                style={styles.wrap}
+                source={{uri: e}}
+              />
+            ))}
+          </ScrollView>
+        </View>
 
-          //fake uri image
-          // source={{uri: product.description}}
-          source={{uri: image}}
-          
-          ></Image>
-        <View style={styles.productNameSection}>
+        <Image style={styles.image} source={{uri: image}}></Image>
+
+        <View style={{padding:10}}>
           <Text style={styles.productNameText}>{product.name}</Text>
           <Text style={styles.productPrice}>{product.price}</Text>
         </View>
+
         <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
           <TouchableOpacity style={{marginRight: 10}}>
             <Text>Đánh giá</Text>
           </TouchableOpacity>
+
           <TouchableOpacity>
             <Text>Hỏi đáp</Text>
           </TouchableOpacity>
@@ -106,16 +145,14 @@ const DetailScreen = ({navigation, route}) => {
         {/* Hướng dẫn sử dụng */}
         <View style={styles.khoangcach}></View>
 
-        <TouchableOpacity 
-        style={{padding: 10, flexDirection: 'row'}}
-        activeOpacity={1}
-        onPress={() => {
-          navigation.navigate('InstructionScreen', {
-            
-            product: {product},
-          });
-        }}
-        >
+        <TouchableOpacity
+          style={{padding: 10, flexDirection: 'row'}}
+          activeOpacity={1}
+          onPress={() => {
+            navigation.navigate('InstructionScreen', {
+              product: {product},
+            });
+          }}>
           <Text style={styles.titleText}>Hướng dẫn sử dụng</Text>
           <View style={styles.rightContainer}>
             <EvilIcons name="chevron-right" size={30} color="black" />
@@ -139,7 +176,7 @@ const DetailScreen = ({navigation, route}) => {
       </ScrollView>
 
       <View style={styles.addCartContainer}>
-        <TouchableOpacity style={styles.addCartButton}>
+        <TouchableOpacity style={styles.addCartButton} onPress={addCart}>
           <Text style={styles.addCartText}>Thêm vào giỏ hàng</Text>
         </TouchableOpacity>
       </View>
@@ -148,25 +185,25 @@ const DetailScreen = ({navigation, route}) => {
 };
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
+  wrap: {
+    height: 350,
+    width: Dimensions.get('window').width,
+  },
+
   image: {
     height: 350,
     width: Dimensions.get('window').width,
     alignSelf: 'stretch',
     resizeMode: 'cover',
   },
-
-  productNameSection: {
-    padding: 10,
-    fontSize: 16,
-    fontWeight: '700',
-  },
-
+  
   productNameText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '500',
   },
 
   productPrice: {
+    marginTop:8,
     color: 'red',
     fontSize: 18,
   },
@@ -187,7 +224,7 @@ const styles = StyleSheet.create({
 
   descriptionSection: {
     justifyContent: 'center',
-    height: 120,
+    // height: 120,
     padding: 10,
     width: width / 1.07,
   },
@@ -204,7 +241,7 @@ const styles = StyleSheet.create({
   },
 
   khoangcach: {
-    padding: 4,
+    padding: 1,
     backgroundColor: '#E5E5E5',
     // margin:4,
   },

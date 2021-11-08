@@ -9,7 +9,6 @@ import {
   Alert,
 } from 'react-native';
 import {Component} from 'react';
-import {ProductData} from '../../data/ProductData';
 
 import {getProductsFromServer} from '../../networking/Server';
 import {getImageFromServer} from '../../networking/Server';
@@ -28,18 +27,27 @@ class HorizontalFlatListItem extends Component {
   }
 
   refreshImageFromServer = () => {
-    // console.log("test nè" + this.props.item.images);
-    getImageFromServer(this.props.item.images)
-      .then(image => {
-        this.setState({imageFromServer: image});
-        // console.log('có chạy vô api get ảnh');
+    let data = this.props.item.images;
+    data.forEach(data => {
+      getImageFromServer(data)
+        .then(image => {
+          if (this.state.imageFromServer == '') {
+            this.setState({imageFromServer: image});
+          }
+        })
+        .catch(error => {
+          this.setState({imageFromServer: []});
+        });
+    });
 
-        // console.log('ảnh' + imageFromServer.img);
-      })
-      .catch(error => {
-        console.log('Lỗi rồi');
-        this.setState({imageFromServer: []});
-      });
+    // getImageFromServer(this.props.item.images)
+    //   .then(image => {
+    //     this.setState({imageFromServer: image});
+    //     console.log("ảnh: ", image)
+    //   })
+    //   .catch(error => {
+    //     this.setState({imageFromServer: []});
+    //   });
   };
 
   render() {
@@ -49,18 +57,17 @@ class HorizontalFlatListItem extends Component {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('DetailScreen', {
-              //image là fake link
               product_id: this.props.item.id,
+
               image: this.state.imageFromServer.img,
               price: this.props.item.price,
               name: this.props.item.name,
+
               product: this.props.item,
             });
           }}>
+            
           <Image
-            //image là fake link
-            // source={{uri: this.props.item.description}}
-            // source={{uri:"http://127.0.0.1:8000/media/media/A_book.drawio.png"}}
             source={{uri: this.state.imageFromServer.img}}
             style={styles.itemImage}
           />
@@ -89,7 +96,6 @@ export default class HomeDealSection extends Component {
 
   refreshDataFromServer = () => {
     this.setState({refreshing: true});
-
     getProductsFromServer()
       .then(products => {
         this.setState({productsFromServer: products});
@@ -111,7 +117,6 @@ export default class HomeDealSection extends Component {
     return (
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTile}>DEALS ĐANG DIỄN RA</Text>
-
         <View>
           <FlatList
             showsHorizontalScrollIndicator={false}
@@ -148,18 +153,17 @@ const styles = StyleSheet.create({
   listItemContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    // backgroundColor:'green',
   },
 
   itemContainer: {
     width: 100,
     backgroundColor: '#fff',
     marginRight: 2,
-    // marginTop: 10,
+    borderRadius: 4,
   },
 
   itemImage: {
-    borderRadius: 8,
+    borderRadius: 4,
     width: 100,
     height: 100,
   },
