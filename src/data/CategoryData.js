@@ -1,39 +1,28 @@
 var CategoryData=[
     {
+        id:"1",
         name: "Trang điểm"
     },
     {
+        id:"2",
         name: "Chăm sóc da mặt"
     },
     {
+        id:"3",
         name: "Chăm sóc cơ thể"
     },
     {
+        id:"4",
         name: "Chăm sóc tóc"
     },
     {
-        name: "Trang điểm"
+        id:"5",
+        name: "Nước hoa"
     },
     {
-        name: "Chăm sóc da mặt"
+        id:"6",
+        name: "Thực phẩm chức năng"
     },
-    {
-        name: "Chăm sóc cơ thể"
-    },
-    {
-        name: "Chăm sóc tóc"
-    },
-    {
-        name: "Trang điểm"
-    },
-    {
-        name: "Chăm sóc da mặt"
-    },
-    {
-        name: "Chăm sóc cơ thể"
-    },
-    {
-        name: "Chăm sóc tóc"
-    },
+    
 ];
 export {CategoryData};
