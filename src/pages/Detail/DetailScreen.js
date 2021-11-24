@@ -1,5 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
+import {Component} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -7,7 +8,7 @@ import {
   Text,
   View,
   Image,
-  Dimensions, 
+  Dimensions,
   Alert,
   SafeAreaView,
   TouchableOpacity,
@@ -15,174 +16,224 @@ import {
 import DetailHeader from '../../components/Detail/DetailHeader';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {getProductById} from '../../networking/Server';
+import {getImageFromServer} from '../../networking/Server';
+import {BottomPopup} from '../../components/Detail/BottomPopup';
+import {ProductData} from '../../data/ProductData';
 
-const images = [
-  'https://media.hasaki.vn/rating/162357419239630.jpg',
-  'https://media.hasaki.vn/rating/162451327872150.jpg',
-  'https://media.hasaki.vn/rating/162348013178160.jpg',
-];
+class DetailScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imageData: [],
+    };
+  }
 
-const DetailScreen = ({navigation, route}) => { 
+  componentDidMount() {
+    this.refreshImageData();
+  }
 
-  // render() {
-  // const {navigation, route} = this.props;
-  // const {id} = route.params;
-  const {image} = route.params;
-  // const {name} = route.params;
-  // const {price} = route.params;
-  const {product} = route.params;
+  refreshImageData = () => {
+    let data = this.props.route.params.product.images;
+    let images = [];
+    data.forEach(data => {
+      getImageFromServer(data)
+        .then(image => {
+          images.push(image.img);
+          console.log('chạy vô hàm refresh:', images);
+          this.setState({imageData: images});
+        })
+        .catch(error => {
+          this.setState({imageData: []});
+        });
+    });
+  };
 
-  const [imgActive, setimgActive] = useState(0);
+  render() {
+    const {navigation, route} = this.props;
+    const {product} = route.params;
+    const {image} = route.params;
+    let img = [];
+    img = this.state.imageData;
 
-  const handleChange = nativeEvent => {
-    if (nativeEvent) {
-      const slide = Math.ceil(
-        nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
-      );
-      if (slide != imgActive) {
-        setimgActive(slide);
+    const handleChange = nativeEvent => {
+      if (nativeEvent) {
+        const slide = Math.ceil(
+          nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
+        );
+        //     if (slide != imgActive) {
+        //       setimgActive(slide);
+        //     }
       }
-    }
-  };
+    };
 
-  const addCart = () => {
-    Alert.alert('vừa bấm thêm');
-  };
+    //phần này là code của bottom pupup: như show dialog á
+    //Phần này là code khi bấm thêm vào giỏ hàng
+    let popupRef = React.createRef();
+    const addCart = () => {
+      let productItem = {
+        id: product.id,
+        quantity: 1,
+        name: product.name,
+        price: product.price,
+        images: product.images,
+      };
 
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        //  paddingTop: StatusBar.currentHeight
-      }}>
-      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-      <DetailHeader navigation={navigation} />
+      if (product_list.length == 0) {
+        product_list.push(productItem);
+        //console.log('add lần đầu trong if nè');
+      } else {
+        product_list.forEach(index => {
+          if (index.id != productItem.id) {
+            product_list.push(productItem);
+            //console.log('add lần đầu nè');
+          } else {
+            index.quantity++;
+            //console.log('tăng số lượng nè');
+          }
+        });
+      }
 
-      {/* Bắt đầu phần detail */}
-      <ScrollView style={{backgroundColor:'#fff'}}>
-        <View style={styles.wrap}>
-          <ScrollView
-            onScroll={({nativeEvent}) => handleChange(nativeEvent)}
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
-            horizontal
-            style={styles.wrap}>
-            {images.map((e, index) => (
-              <Image
-                key={e}
-                resizeMode="stretch"
-                style={styles.wrap}
-                source={{uri: e}}
-              />
-            ))}
-          </ScrollView>
-        </View>
+      // product_list.push(product)
 
-        <Image style={styles.image} source={{uri: image}}></Image>
+      console.log('add Cart nè:', product_list);
+      popupRef.show();
+    };
 
-        <View style={{padding:10}}>
-          <Text style={styles.productNameText}>{product.name}</Text>
-          <Text style={styles.productPrice}>{product.price}</Text>
-        </View>
+    let product_list = ProductData;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+        }}>
+        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+        <DetailHeader navigation={navigation} />
 
-        <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
-          <TouchableOpacity style={{marginRight: 10}}>
-            <Text>Đánh giá</Text>
+        {/* Bắt đầu phần detail */}
+        <ScrollView style={{backgroundColor: '#fff'}}>
+          <View style={styles.wrap}>
+            <ScrollView
+              onScroll={({nativeEvent}) => handleChange(nativeEvent)}
+              showsHorizontalScrollIndicator={false}
+              pagingEnabled
+              horizontal
+              style={styles.wrap}>
+              {img.map((e, index) => (
+                <Image
+                  key={e}
+                  resizeMode="stretch"
+                  style={styles.wrap}
+                  source={{uri: e}}
+                />
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={{padding: 10}}>
+            <Text style={styles.productNameText}>{product.name}</Text>
+            <Text style={styles.productPrice}>{product.price}</Text>
+          </View>
+
+          <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
+            <TouchableOpacity style={{marginRight: 10}}>
+              <Text>Đánh giá</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <Text>Hỏi đáp</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.heartContainer}>
+              <EvilIcons name="heart" size={32} color="black" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.shareContainer}>
+              <Icon name="share-outline" size={32} color="black" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.spaceContainer}></View>
+
+          {/* Mô tả sản phẩm */}
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}
+            activeOpacity={1}
+            onPress={() => {
+              navigation.navigate('DescriptionScreen', {
+                product_description: product.description,
+              });
+            }}>
+            <View style={styles.descriptionSection}>
+              <Text style={styles.titleText}>Mô tả sản phẩm</Text>
+              <Text numberOfLines={5}>{product.description}</Text>
+            </View>
+            <View style={styles.rightContainer}>
+              <EvilIcons name="chevron-right" size={30} color="black" />
+            </View>
           </TouchableOpacity>
 
-          <TouchableOpacity>
-            <Text>Hỏi đáp</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.heartContainer}>
-            <EvilIcons name="heart" size={32} color="black" />
-          </TouchableOpacity>
+          {/* End Mô tả sản phẩm */}
 
-          <TouchableOpacity style={styles.shareContainer}>
-            <Icon name="share-outline" size={32} color="black" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.khoangcach}></View>
+          {/* Thông tin chi tiết */}
 
-        {/* Mô tả sản phẩm */}
-        <TouchableOpacity
-          style={{flexDirection: 'row', alignItems: 'center'}}
-          activeOpacity={1}>
+          <View style={styles.spaceContainer}></View>
           <View style={styles.descriptionSection}>
-            <Text style={styles.titleText}>Mô tả sản phẩm</Text>
-            <Text numberOfLines={5}>
-              {product.description}
-              {/* Sữa Chống Nắng Anessa Dưỡng Da Bảo Vệ Hoàn Hảo là một trong những
-              sản phẩm chống nắng được yêu thích hàng đầu tại Nhật Bản đến từ
-              thương hiệu Anessa. Với bộ ba công nghệ độc quyền từ Shiseido,
-              Anessa Perfect UV Sunscreen Skincare Milk cung cấp khả năng chống
-              nắng vượt trội nhiều giờ liền, bảo vệ da tối ưu khỏi tác hại từ
-              tia UV. Đồng thời, công thức chứa 50% thành phần dưỡng da giúp đẩy
-              lùi các dấu hiệu lão hóa hiệu quả. Đặc biệt, sản phẩm có kết cấu
-              sữa mỏng nhẹ, thấm nhanh, không nhờn rít, rất thích hợp dùng cho
-              những hoạt động ngoài trời hay đi chơi, du lịch, công tác. */}
-            </Text>
+            <Text style={styles.titleText}>Thông tin chi tiết</Text>
+            <Text style={styles.infoText}>Thương hiệu</Text>
+            <Text style={styles.infoText}>Xuất xứ thương hiệu</Text>
+            <Text style={styles.infoText}>Nơi sản xuất</Text>
+            <Text style={styles.infoText}>Loại da</Text>
           </View>
-          <View style={styles.rightContainer}>
-            <EvilIcons name="chevron-right" size={30} color="black" />
+
+          {/* End Thông tin chi tiết */}
+
+          {/* Hướng dẫn sử dụng */}
+          <View style={styles.spaceContainer}></View>
+
+          <TouchableOpacity
+            style={{padding: 10, flexDirection: 'row'}}
+            activeOpacity={1}
+            onPress={() => {
+              navigation.navigate('InstructionScreen', {
+                product: {product},
+              });
+            }}>
+            <Text style={styles.titleText}>Hướng dẫn sử dụng</Text>
+            <View style={styles.rightContainer}>
+              <EvilIcons name="chevron-right" size={30} color="black" />
+            </View>
+          </TouchableOpacity>
+
+          {/* end Hướng dẫn sử dụng */}
+          <View style={styles.spaceContainer}></View>
+          <TouchableOpacity style={{padding: 10, flexDirection: 'row'}}>
+            <Text style={styles.titleText}>Thành phần sản phẩm</Text>
+
+            <View style={styles.rightContainer}>
+              <EvilIcons name="chevron-right" size={30} color="black" />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.spaceContainer}></View>
+
+          <View>
+            <Text>Đánh giá</Text>
           </View>
-        </TouchableOpacity>
+        </ScrollView>
 
-        {/* End Mô tả sản phẩm */}
-
-        {/* Thông tin chi tiết */}
-
-        <View style={styles.khoangcach}></View>
-        <View style={styles.descriptionSection}>
-          <Text style={styles.titleText}>Thông tin chi tiết</Text>
-          <Text style={styles.infoText}>Thương hiệu</Text>
-          <Text style={styles.infoText}>Xuất xứ thương hiệu</Text>
-          <Text style={styles.infoText}>Nơi sản xuất</Text>
-          <Text style={styles.infoText}>Loại da</Text>
+        <View style={styles.addCartContainer}>
+          <TouchableOpacity style={styles.addCartButton} onPress={addCart}>
+            <Text style={styles.addCartText}>Thêm vào giỏ hàng</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* End Thông tin chi tiết */}
+        <BottomPopup
+          ref={target => (popupRef = target)}
+          product={product}
+          image={image}
+        />
+      </SafeAreaView>
+    );
+  }
+}
 
-        {/* Hướng dẫn sử dụng */}
-        <View style={styles.khoangcach}></View>
-
-        <TouchableOpacity
-          style={{padding: 10, flexDirection: 'row'}}
-          activeOpacity={1}
-          onPress={() => {
-            navigation.navigate('InstructionScreen', {
-              product: {product},
-            });
-          }}>
-          <Text style={styles.titleText}>Hướng dẫn sử dụng</Text>
-          <View style={styles.rightContainer}>
-            <EvilIcons name="chevron-right" size={30} color="black" />
-          </View>
-        </TouchableOpacity>
-
-        {/* end Hướng dẫn sử dụng */}
-        <View style={styles.khoangcach}></View>
-        <TouchableOpacity style={{padding: 10, flexDirection: 'row'}}>
-          <Text style={styles.titleText}>Thành phần sản phẩm</Text>
-
-          <View style={styles.rightContainer}>
-            <EvilIcons name="chevron-right" size={30} color="black" />
-          </View>
-        </TouchableOpacity>
-        <View style={styles.khoangcach}></View>
-
-        <View>
-          <Text>Đánh giá</Text>
-        </View>
-      </ScrollView>
-
-      <View style={styles.addCartContainer}>
-        <TouchableOpacity style={styles.addCartButton} onPress={addCart}>
-          <Text style={styles.addCartText}>Thêm vào giỏ hàng</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
-};
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   wrap: {
@@ -196,14 +247,14 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     resizeMode: 'cover',
   },
-  
+
   productNameText: {
     fontSize: 16,
     fontWeight: '500',
   },
 
   productPrice: {
-    marginTop:8,
+    marginTop: 8,
     color: 'red',
     fontSize: 18,
   },
@@ -240,7 +291,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  khoangcach: {
+  spaceContainer: {
     padding: 1,
     backgroundColor: '#E5E5E5',
     // margin:4,
