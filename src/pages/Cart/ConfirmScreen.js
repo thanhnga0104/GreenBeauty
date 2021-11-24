@@ -6,19 +6,21 @@ import {
   View,
   Image,
   Text,
+  Keyboard,
   Dimensions,
   TouchableOpacity,
   TextInput,
   StatusBar,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
-export default class PaymentScreen extends Component {
+export default class ConfirmScreen extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1, height: '100%'}}>
         <StatusBar backgroundColor="#316C49" barStyle="light-content" />
         <View style={styles.headerContainer}>
           <View style={styles.backContainer}>
@@ -33,21 +35,14 @@ export default class PaymentScreen extends Component {
           </View>
 
           <View>
-            <Text
-              style={{
-                flex: 1,
-                color: '#fff',
-                marginLeft: 8,
-                fontSize: 16,
-                fontWeight: '600',
-                textAlignVertical: 'center',
-              }}>
-              Xác nhận
-            </Text>
+            <Text style={styles.titleHeader}>Xác nhận</Text>
           </View>
         </View>
+
+        {/* bắt đầu body */}
         <View style={{backgroundColor: '#fff'}}>
-          <View style={styles.childContainer}>
+          <TouchableOpacity style={styles.childContainer} 
+          onPress={()=>{navigation.navigate("AddressScreen")}}>
             <Text style={styles.titleComponent}>Địa chỉ nhận hàng</Text>
 
             <View style={{flexDirection: 'row'}}>
@@ -62,7 +57,7 @@ export default class PaymentScreen extends Component {
                 <EvilIcons name="chevron-right" size={30} color="black" />
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.spaceContainer}></View>
           <View style={styles.childContainer}>
@@ -99,6 +94,7 @@ export default class PaymentScreen extends Component {
 }
 
 const {height, width} = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
@@ -110,6 +106,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  titleHeader: {
+    flex: 1,
+    color: '#fff',
+    marginLeft: 8,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlignVertical: 'center',
   },
   childContainer: {
     margin: 10,

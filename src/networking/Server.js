@@ -93,6 +93,7 @@ async function getProvince() {
   }
 }
 
+//fetch api Quận/Huyện
 async function getDistrict(city_id) {
   const apiDistrict =
     'https://api.tiki.vn/directory/v1/countries/VN/regions/' +
@@ -100,14 +101,14 @@ async function getDistrict(city_id) {
     '/districts/';
   try {
     let response = await fetch(apiDistrict, {method: 'GET'});
-    let responseJson = await response.json();
-    console.log('log:', responseJson.data);
+    let responseJson = await response.json();    
     return responseJson.data;
   } catch (error) {
     console.error(`Error is: ${error}`);
   }
 }
 
+//fetch api Phường/Xã
 async function getWard(city_id, district_id) {
   const apiWard =
     'https://api.tiki.vn/directory/v1/countries/VN/regions/' +
@@ -117,8 +118,7 @@ async function getWard(city_id, district_id) {
     '/wards';
   try {
     let response = await fetch(apiWard, {method: 'GET'});
-    let responseJson = await response.json();
-    console.log('log:', responseJson.data);
+    let responseJson = await response.json();    
     return responseJson.data;
   } catch (error) {
     console.error(`Error is: ${error}`);

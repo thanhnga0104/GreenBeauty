@@ -19,7 +19,7 @@ export default class DistrictComponent extends Component {
   }
 
   fetchDataDistrict = () => {
-    getDistrict(this.props.city_id)
+    getDistrict(this.props.city.id)
       .then(districts => {
         this.setState({districtData: districts});
       })
@@ -55,7 +55,7 @@ export default class DistrictComponent extends Component {
   };
 
   render() {
-    const {navigation, name, district_id} = this.props;
+    const {navigation, name, district} = this.props;
     return (
       <View>
         <TouchableOpacity
@@ -94,7 +94,7 @@ export default class DistrictComponent extends Component {
                 index={index}
                 selectedDistrict={this.setSelectedDistrict}
                 hide={this.hideData}
-                district_id={district_id}
+                district={district}
               />
             );
           }}
@@ -106,14 +106,14 @@ export default class DistrictComponent extends Component {
 
 class FlatListItem extends Component {
   render() {
-    const {navigation, selectedDistrict, hide, district_id} = this.props;
+    const {navigation, selectedDistrict, hide, district} = this.props;
     return (
       <TouchableOpacity
         style={{marginLeft: 10, marginTop: 10}}
         onPress={() => {
           selectedDistrict(this.props.item),
             hide(''),
-            district_id(this.props.item.id);
+            district(this.props.item);
         }}>
         <Text style={{fontSize: 16, margin: 5}}>{this.props.item.name}</Text>
       </TouchableOpacity>

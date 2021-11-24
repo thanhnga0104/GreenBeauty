@@ -129,12 +129,12 @@ export default class CartScreen extends Component {
   btnMuaHang(navigation) {
     
     if (this.state.selected > 0) {
-      // navigation.navigate('PaymentScreen');
-      // navigation.navigate('AddressReceiveScreen');
-      navigation.navigate('LocationScreen');
+      //Chỗ này đặt điều kiện địa chỉ
+      // check xem nếu chưa có địa chỉ thì mới chuyển sang add nêw
+      //có địa chỉ rồi thì sang confirm
+      navigation.navigate('AddLocationScreen');
      
-    } else {
-    
+    } else {    
       alert('Chưa chọn sản phẩm');
     }
   }
