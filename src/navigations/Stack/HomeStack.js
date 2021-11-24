@@ -12,6 +12,11 @@ import HomeCircleSection from '../../components/Home/HomeCircleSection';
 import CartScreen from '../../pages/Cart/CartScreen';
 import PaymentScreen from '../../pages/Cart/PaymentScreen';
 import InstructionScreen from '../../pages/Instruction/InstructionScreen';
+import DescriptionScreen from '../../pages/Description/DescriptionScreen';
+import AddressReceiveScreen from '../../pages/Cart/AddressReceiveScreen';
+import GetProvince from '../../components/AddressReceive/GetProvince';
+import LocationScreen from '../../pages/Address/LocationScreen';
+
 
 const stack = createStackNavigator();
 const HomeStack = ({navigation}) => (
@@ -30,15 +35,6 @@ const HomeStack = ({navigation}) => (
       component={DetailScreen}
       options={{
         headerShown: false,
-        //     title:'',
-
-        //   headerBackTitleVisible: false,
-        //   headerTitle: false,
-
-        //   //dòng này bị lỗi
-        //   // headerTransparent:false,
-        //  // quá chán, thôi tự custom header
-        //   headerTintColor: '#fff123',
       }}
     />
 
@@ -61,16 +57,49 @@ const HomeStack = ({navigation}) => (
     />
     <stack.Screen name="CategoryHeader" component={CategoryHeader} />
     <stack.Screen
-      name="CartScreen"     
+      name="CartScreen"
       component={CartScreen}
       options={{
         headerShown: false,
       }}
-            
     />
-     <stack.Screen name="Thanh Toán" component={PaymentScreen} />
 
-     <stack.Screen name="InstructionScreen" component={InstructionScreen} />
+<stack.Screen
+      name="LocationScreen"
+      component={LocationScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
+    
+
+    <stack.Screen
+      name="AddressReceiveScreen"
+      component={AddressReceiveScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <stack.Screen
+      name="GetProvince"
+      component={GetProvince}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <stack.Screen name="PaymentScreen" component={PaymentScreen} options={{
+        headerShown: false,
+      }} />
+
+    <stack.Screen name="InstructionScreen" component={InstructionScreen} />
+
+    <stack.Screen
+      name="DescriptionScreen"
+      component={DescriptionScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
   </stack.Navigator>
 );
 

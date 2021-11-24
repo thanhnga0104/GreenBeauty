@@ -6,16 +6,16 @@
  * @flow strict-local
  */
 
- import React, { useEffect } from 'react';
- import {
-   ScrollView,
-   StatusBar,
-   StyleSheet,
-   Text,
-   View,
-   Image,
- } from 'react-native';
- 
+import React, {useEffect} from 'react';
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+} from 'react-native';
+
 //  import {NavigationContainer} from '@react-navigation/native';
 //  import {createDrawerNavigator, DrawerContent} from '@react-navigation/drawer';
 //  import HomeScreen from './src/pages/Home/HomeScreen';
@@ -24,7 +24,7 @@
 //  import Profile from './src/components/Profile';
 //  import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import HomeScreen from './src/pages/Home/HomeScreen';
 import HomeStack from './src/navigations/Stack/HomeStack';
 import DetailScreen from './src/pages/Detail/DetailScreen';
@@ -32,131 +32,123 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TempStack from './src/navigations/Stack/tempStack';
 import HomeDrawer from './src/navigations/Drawer/HomeDrawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AuthContext} from './src/context/context'
-import { createStackNavigator } from '@react-navigation/stack';
-import { ActivityIndicator } from 'react-native-paper';
-import {createNativeStackNavigator} from '@react-navigation/native-stack'
+import {AuthContext} from './src/context/context';
+import {createStackNavigator} from '@react-navigation/stack';
+import {ActivityIndicator} from 'react-native-paper';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './src/pages/Login/LoginScreen';
 import RegisterScreen from './src/pages/Register/RegisterScreen';
 //  const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
- const App =() => {
+const App = () => {
   initialLoginSate = {
-    isLoading:true,
+    isLoading: true,
     email: null,
     userToken: null,
   };
 
-  const loginReducer = (prevState, action)=>{
-    switch(action.type){
-      case "RETRIVE_TOKEN":
-        return{
+  const loginReducer = (prevState, action) => {
+    switch (action.type) {
+      case 'RETRIVE_TOKEN':
+        return {
           ...prevState,
           userToken: action.token,
-          isLoading: false
+          isLoading: false,
         };
-        case "LOGIN":
-          return{
-            ...prevState,
-            email: action.id,
-            userToken:action.token,
-            isLoading: false,
-          }
-        case "LOGOUT":
-        return{
+      case 'LOGIN':
+        return {
+          ...prevState,
+          email: action.id,
+          userToken: action.token,
+          isLoading: false,
+        };
+      case 'LOGOUT':
+        return {
           ...prevState,
           email: null,
           userToken: null,
-          isLoading: false
+          isLoading: false,
         };
-        case "REGISTER":
-        return{
+      case 'REGISTER':
+        return {
           ...prevState,
           email: action.id,
           isLoading: false,
         };
     }
-  }
-  const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginSate)
+  };
+  const [loginState, dispatch] = React.useReducer(
+    loginReducer,
+    initialLoginSate,
+  );
 
-  const authContext = React.useMemo(()=>({
-    signIn: async (email, password) => {
-        try{
-          await AsyncStorage.setItem('userToken', userToken)
-        }
-        catch(e){
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (email, password) => {
+        try {
+          await AsyncStorage.setItem('userToken', userToken);
+        } catch (e) {
           console.log(e);
         }
-      console.log('user token: ', password)
-      dispatch({type:"LOGIN", id: email, token: password})
-    },
-    signOut:async() =>{
-      try{
-        await AsyncStorage.removeItem('userToken')
-      }
-      catch(e){
-        console.log(e);
-      }
-      dispatch({type:"LOGOUT"})
-    },
-    signUp:() =>{
+        console.log('user token: ', password);
+        dispatch({type: 'LOGIN', id: email, token: password});
+      },
+      signOut: async () => {
+        try {
+          await AsyncStorage.removeItem('userToken');
+        } catch (e) {
+          console.log(e);
+        }
+        dispatch({type: 'LOGOUT'});
+      },
+      signUp: () => {},
+    }),
+    [],
+  );
 
-      }
-    }),[]);
-
-  useEffect(()=>{
-    setTimeout(async()=>{
+  useEffect(() => {
+    setTimeout(async () => {
       let userToken;
-      userToken=null
-      try{
-        userToken = await AsyncStorage.getItem('userToken')
-      }
-      catch(e){
+      userToken = null;
+      try {
+        userToken = await AsyncStorage.getItem('userToken');
+      } catch (e) {
         console.log(e);
       }
-      dispatch({type:"REGISTER",  token: userToken})
-    },1000)
-  },[]);
+      dispatch({type: 'REGISTER', token: userToken});
+    }, 1000);
+  }, []);
 
-  if(loginState.isLoading)
-  {
-    return(
-      <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
-        <ActivityIndicator size="large"/>
+  if (loginState.isLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" />
       </View>
     );
   }
-   return (
-     /*<NavigationContainer>      
- 
-       /* {/* <TempStack/> */ 
+  return (
+    <NavigationContainer>
+      {/* <TempStack/>  */}
+      <HomeDrawer />
+      {/* <HomeStack/>  */}
+    </NavigationContainer>
 
-        /*<HomeDrawer/>
+    // <AuthContext.Provider value={authContext}>
+    //   <NavigationContainer>
+    //   {loginState.userToken==null ? (
+    //     <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown:false}}>
+    //       <Stack.Screen name="Login" component={LoginScreen}/>
+    //       <Stack.Screen name= "Register" component={RegisterScreen}/>
+    //     </Stack.Navigator>
+    //   )
+    // :
+    //   (
+    //     <TempStack/>
+    //   )
+    // }
+    //   </NavigationContainer>
+    // </AuthContext.Provider>
+  );
+};
 
-        /* <HomeStack/> */
-     /*</NavigationContainer>*/
-  
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-      {loginState.userToken==null ? (
-        <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown:false}}>
-          <Stack.Screen name="Login" component={LoginScreen}/>
-          <Stack.Screen name= "Register" component={RegisterScreen}/>
-        </Stack.Navigator>
-      )
-    :
-      (
-        <TempStack/>
-      )
-    }
-      </NavigationContainer>
-    </AuthContext.Provider>
-    
- 
-   );
- }
- 
- 
- 
- export default App;
- 
+export default App;
