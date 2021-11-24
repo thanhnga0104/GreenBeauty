@@ -10,13 +10,11 @@ import CategoryScreen from '../../pages/Category/CategoryScreen';
 import CategoryHeader from '../../components/Category/CategoryHeader';
 import HomeCircleSection from '../../components/Home/HomeCircleSection';
 import CartScreen from '../../pages/Cart/CartScreen';
-import PaymentScreen from '../../pages/Cart/PaymentScreen';
 import InstructionScreen from '../../pages/Instruction/InstructionScreen';
 import DescriptionScreen from '../../pages/Description/DescriptionScreen';
-import AddressReceiveScreen from '../../pages/Cart/AddressReceiveScreen';
-import GetProvince from '../../components/AddressReceive/GetProvince';
-import LocationScreen from '../../pages/Address/LocationScreen';
-
+import AddLocationScreen from '../../pages/Address/AddLocationScreen';
+import ConfirmScreen from '../../pages/Cart/ConfirmScreen';
+import AddressScreen from '../../pages/Address/AddressScreen';
 
 const stack = createStackNavigator();
 const HomeStack = ({navigation}) => (
@@ -64,32 +62,28 @@ const HomeStack = ({navigation}) => (
       }}
     />
 
-<stack.Screen
-      name="LocationScreen"
-      component={LocationScreen}
+    <stack.Screen
+      name="AddLocationScreen"
+      component={AddLocationScreen}
       options={{
         headerShown: false,
       }}
     />
-    
 
     <stack.Screen
-      name="AddressReceiveScreen"
-      component={AddressReceiveScreen}
+      name="ConfirmScreen"
+      component={ConfirmScreen}
       options={{
         headerShown: false,
       }}
     />
     <stack.Screen
-      name="GetProvince"
-      component={GetProvince}
+      name="AddressScreen"
+      component={AddressScreen}
       options={{
         headerShown: false,
       }}
     />
-    <stack.Screen name="PaymentScreen" component={PaymentScreen} options={{
-        headerShown: false,
-      }} />
 
     <stack.Screen name="InstructionScreen" component={InstructionScreen} />
 
