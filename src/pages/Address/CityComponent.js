@@ -19,6 +19,8 @@ export default class CityComponent extends Component {
       cityData: [],
       filterCity: [],
       selectedCity: [],
+
+      isSelect: '',
       focus: false,
     };
   }
@@ -58,18 +60,37 @@ export default class CityComponent extends Component {
   setFocus = event => {
     this.setState({focus: !event});
   };
+  onBlur = value => {
+    this.setState({filterCity: []});
+    value = this.state.selectedCity.name;
+  };
   render() {
-    const {navigation, name, city_id} = this.props;
+    const {navigation, name, city, district, ward} = this.props;
+    console.log('test:', this.state.selectedCity.name);
+    console.log('is select:', this.state.isSelect);
     return (
       <View>
         <TouchableOpacity
           style={{flexDirection: 'row', justifyContent: 'space-between'}}
-          onPress={() =>
-            this.setState({filterCity: this.state.cityData, selectedCity: []})
-          }>
+          // onPress={() =>
+          //   this.setState({filterCity: this.state.cityData, selectedCity: []})
+          // }
+        >
           <TextInput
             value={this.state.selectedCity.name}
             placeholder={name}
+            onFocus={() =>
+              this.setState({filterCity: this.state.cityData, selectedCity: []})
+            }
+            // onEndEditing={(e)=>{this.hideData('')}}
+
+            //   onBlur={(value)=>{this.hideData('')
+            //  }}
+
+            // onBlur={}
+
+            // value=this.state.selectedCity.name}
+
             onChangeText={text => {
               this.handleSelect(text);
             }}></TextInput>
@@ -88,7 +109,7 @@ export default class CityComponent extends Component {
         />
 
         <FlatList
-          data={this.state.filterCity}          
+          data={this.state.filterCity}
           renderItem={({item, index}) => {
             return (
               <FlatListItem
@@ -97,7 +118,9 @@ export default class CityComponent extends Component {
                 index={index}
                 selectedCity={this.setSelectedCity}
                 hide={this.hideData}
-                city_id={city_id}
+                city={city}
+                district={district}
+                ward={ward}
               />
             );
           }}
@@ -109,12 +132,12 @@ export default class CityComponent extends Component {
 
 class FlatListItem extends Component {
   render() {
-    const {navigation, selectedCity, hide, city_id} = this.props;
+    const {navigation, selectedCity, hide, city, district, ward} = this.props;
     return (
       <TouchableOpacity
         style={{marginLeft: 10, marginTop: 10}}
         onPress={() => {
-          selectedCity(this.props.item), hide(''), city_id(this.props.item.id);
+          selectedCity(this.props.item), hide(''), city(this.props.item), district([]), ward([]);
         }}>
         <Text style={{fontSize: 16, margin: 5}}>{this.props.item.name}</Text>
       </TouchableOpacity>

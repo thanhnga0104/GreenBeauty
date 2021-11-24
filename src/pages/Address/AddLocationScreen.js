@@ -12,22 +12,19 @@ import {
   TouchableOpacity,
   TextInput,
   StatusBar,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getProvince} from '../../networking/Server';
 import WardComponent from './WardComponent';
 import DistrictComponent from './DistrictComponent';
 import CityComponent from './CityComponent';
 
-export default class LocationScreen extends Component {
+export default class AddLocationScreen extends Component {
   constructor() {
     super();
     this.state = {
-      // provinceData: [],
-      // filterProvince: [],
-      city_id: null,
-      district_id: null,
+      city: [],
+      district: [],
+      ward: [],
     };
   }
   // componentDidMount() {
@@ -57,18 +54,26 @@ export default class LocationScreen extends Component {
   //   }
   // }
 
-  setProvinceID = id => {
-    this.setState({city_id: id});
+  setProvince = city => {
+    this.setState({city: city});
   };
-  setDistrictID = id => {
-    this.setState({district_id: id});
+  setDistrict = district => {
+    this.setState({district: district});
   };
+  setWard = ward => {
+    this.setState({ward: ward});
+  };
+
+  pressButton(navigation){
+
+    //Kiểm tra dữ liệu trước khi thêm mới
+    navigation.navigate("ConfirmScreen");    
+  }
 
   render() {
     const {navigation} = this.props;
-    // console.log("id:", this.state.city_id)
     return (
-      <SafeAreaView style={{flex: 1, height:'100%'}}>
+      <SafeAreaView style={{flex: 1, height: '100%'}}>
         <StatusBar backgroundColor="#316C49" barStyle="light-content" />
         <View style={styles.headerContainer}>
           <View style={styles.backContainer}>
@@ -83,44 +88,77 @@ export default class LocationScreen extends Component {
           </View>
 
           <View>
-            <Text style={styles.titleHeader}>Địa chỉ nhận hàng</Text>
+            <Text style={styles.titleHeader}>Thêm địa chỉ mới</Text>
           </View>
         </View>
 
-        <View style={{backgroundColor: '#fff', padding: 10, height:'100%'}}>
+        <View style={{backgroundColor: '#fff', padding: 10}}>
           <View>
             <TextInput
               placeholder="Tên người nhận"
-              underlineColorAndroid="#E5E5E5"></TextInput>
+              // underlineColorAndroid="#E5E5E5"
+            ></TextInput>
+            <View
+              style={{
+                borderBottomWidth: 0.3,
+                borderColor: 'black',
+              }}
+            />
 
             <TextInput
               placeholder="Số điện thoại"
-              underlineColorAndroid="#E5E5E5"
+              // underlineColorAndroid="#E5E5E5"
               keyboardType="numeric"></TextInput>
+            <View
+              style={{
+                borderBottomWidth: 0.3,
+                borderColor: 'black',
+              }}
+            />
             <View>
               <CityComponent
                 navigation={navigation}
                 name={'Tỉnh/Thành phố*'}
-                city_id={this.setProvinceID}
+                city={this.setProvince}
+                district={this.setDistrict}
+                ward={this.setWard}
               />
             </View>
             <View>
               <DistrictComponent
                 navigation={navigation}
                 name={'Quận/Huyện'}
-                city_id={this.state.city_id}
-                district_id={this.setDistrictID}
+                city={this.state.city}
+                district={this.setDistrict}
+                ward={this.setWard}
               />
             </View>
             <View>
               <WardComponent
-              navigation={navigation}
-              name={'Phường/Xã'}
-              city_id={this.state.city_id}
-              district_id={this.state.district_id}
-               />
+                navigation={navigation}
+                name={'Phường/Xã'}
+                city={this.state.city}
+                district={this.state.district}
+                ward={this.setWard}
+              />
+            </View>
+            <View>
+              <TextInput placeholder="Số nhà + Tên đường"></TextInput>
+              <View
+                style={{
+                  borderBottomWidth: 0.3,
+                  borderColor: 'black',
+                }}
+              />
             </View>
           </View>
+        </View>
+
+        <View style={styles.addAddressContainer}>
+          <TouchableOpacity style={styles.addAddressButton}
+          onPress={()=>this.pressButton(navigation)}>
+            <Text style={styles.addAddressText}>Thêm mới</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -148,5 +186,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     textAlignVertical: 'center',
+  },
+  addAddressContainer: {
+    borderTopWidth: 0.6,
+    borderTopColor: '#E5E5E5',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  addAddressButton: {
+    paddingHorizontal: width / 4,
+    backgroundColor: '#316C49',
+    height: height / 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  addAddressText: {
+    fontSize: 22,
+    color: '#fff',
   },
 });

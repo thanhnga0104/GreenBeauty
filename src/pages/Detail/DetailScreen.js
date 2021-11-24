@@ -80,23 +80,17 @@ class DetailScreen extends Component {
       };
 
       if (product_list.length == 0) {
-        product_list.push(productItem);
-        //console.log('add lần đầu trong if nè');
+        product_list.push(productItem);        
       } else {
         product_list.forEach(index => {
           if (index.id != productItem.id) {
-            product_list.push(productItem);
-            //console.log('add lần đầu nè');
+            product_list.push(productItem);            
           } else {
-            index.quantity++;
-            //console.log('tăng số lượng nè');
+            index.quantity++;            
           }
         });
-      }
-
-      // product_list.push(product)
-
-      console.log('add Cart nè:', product_list);
+      }    
+      
       popupRef.show();
     };
 

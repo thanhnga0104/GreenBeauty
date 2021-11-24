@@ -32,7 +32,7 @@ export default class WardComponent extends Component {
     this.fetchDataWard();
   }
   fetchDataWard = () => {
-    getWard(this.props.city_id, this.props.district_id)
+    getWard(this.props.city.id, this.props.district.id)
       .then(wards => {
         this.setState({wardData: wards});
       })
@@ -55,19 +55,19 @@ export default class WardComponent extends Component {
     }
   }
 
-  setSelectedWard = text => {
-    this.setState({selectedWard: text});
+  setSelectedWard = ward => {
+    this.setState({selectedWard: ward});
   };
 
   hideData = text => {
-    this.setState({filterWard: []});
+    this.setState({filterWard: text});
   };
 
   setFocus = event => {
     this.setState({focus: !event});
   };
   render() {
-    const {navigation, name, district_id} = this.props;
+    const {navigation, name, ward} = this.props;
     return (
       <View>
         <TouchableOpacity
@@ -106,7 +106,7 @@ export default class WardComponent extends Component {
                 index={index}
                 selectedWard={this.setSelectedWard}
                 hide={this.hideData}
-                district_id={district_id}
+                ward={ward}
               />
             );
           }}
@@ -118,14 +118,14 @@ export default class WardComponent extends Component {
 
 class FlatListItem extends Component {
   render() {
-    const {navigation, selectedWard, hide, district_id} = this.props;
+    const {navigation, selectedWard, hide, ward} = this.props;
     return (
       <TouchableOpacity
         style={{marginLeft: 10, marginTop: 10}}
         onPress={() => {
           selectedWard(this.props.item),
             hide('');
-            // district_id(this.props.item.id);
+            ward(this.props.item);
         }}>
         <Text style={{fontSize: 16, margin: 5}}>{this.props.item.name}</Text>
       </TouchableOpacity>
