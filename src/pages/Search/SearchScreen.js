@@ -35,29 +35,20 @@ export default class SearchScreen extends Component {
 
   handleSearch = text => {
     this.setState({query: text}, this.searchProductFromServer);
-  };
-
-  // function  handleSearch (text) {
-  //   this.setState({query: text}, this.searchProductFromServer);
-  // };
+  };  
 
   render() {
     const {navigation} = this.props;
-    // const [value, setValue]=useState();
-
-    
     return (
       <SafeAreaView
         style={{
-          flex: 1,
-          // paddingTop: StatusBar.currentHeight
+          flex: 1,         
         }}>
         <StatusBar backgroundColor="#fff" barStyle="dark-content" />
         <SearchHeader
           navigation={navigation}
            search={this.handleSearch}
-          // value={this.query}
-          // handleSearch={this.handleSearch}
+          
         />
         <SearchComponent
           navigation={navigation}

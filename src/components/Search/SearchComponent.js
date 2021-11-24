@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+
 export default class SearchComponent extends Component {
   ItemSepatator = () => (
     <View
@@ -24,7 +25,7 @@ export default class SearchComponent extends Component {
     const {navigation} = this.props;
     return (
       <View>
-        <FlatList          
+        <FlatList
           data={this.props.data}
           ItemSeparatorComponent={this.ItemSepatator}
           renderItem={({item, index}) => {
@@ -36,8 +37,6 @@ export default class SearchComponent extends Component {
               />
             );
           }}
-          //   refreshing={this.state.refreshing}
-          //   onRefresh={this.handleRefresh}
         />
       </View>
     );
@@ -48,10 +47,6 @@ class SearchFlatListItem extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      // <View style={{flexDirection: 'row',
-      // backgroundColor:'#fff'
-      // }}>
-
       <TouchableOpacity
         style={styles.itemContainer}
         onPress={() => {
@@ -71,7 +66,7 @@ class SearchFlatListItem extends Component {
           style={styles.itemImage}
         />
 
-        <View style={{padding: 10, alignSelf:'center'}}>
+        <View style={{padding: 10, alignSelf: 'center'}}>
           <Text style={styles.itemPrice}>{this.props.item.price}</Text>
           <Text style={styles.itemName}>{this.props.item.name}</Text>
         </View>

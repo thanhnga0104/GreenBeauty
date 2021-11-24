@@ -39,16 +39,16 @@ class HorizontalFlatListItem extends Component {
           this.setState({imageFromServer: []});
         });
     });
-
-    // getImageFromServer(this.props.item.images)
-    //   .then(image => {
-    //     this.setState({imageFromServer: image});
-    //     console.log("ảnh: ", image)
-    //   })
-    //   .catch(error => {
-    //     this.setState({imageFromServer: []});
-    //   });
   };
+
+  // getImageFromServer(this.props.item.images)
+  //   .then(image => {
+  //     this.setState({imageFromServer: image});
+  //     console.log("ảnh: ", image)
+  //   })
+  //   .catch(error => {
+  //     this.setState({imageFromServer: []});
+  //   });
 
   render() {
     const {navigation} = this.props;
@@ -57,16 +57,15 @@ class HorizontalFlatListItem extends Component {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('DetailScreen', {
-              product_id: this.props.item.id,
+              // product_id: this.props.item.id,
 
               image: this.state.imageFromServer.img,
-              price: this.props.item.price,
-              name: this.props.item.name,
+              // price: this.props.item.price,
+              // name: this.props.item.name,
 
               product: this.props.item,
             });
           }}>
-            
           <Image
             source={{uri: this.state.imageFromServer.img}}
             style={styles.itemImage}
@@ -121,7 +120,7 @@ export default class HomeDealSection extends Component {
           <FlatList
             showsHorizontalScrollIndicator={false}
             horizontal={true}
-            data={this.state.productsFromServer.results}
+            data={this.state.productsFromServer}
             renderItem={({item, index}) => {
               return (
                 <HorizontalFlatListItem

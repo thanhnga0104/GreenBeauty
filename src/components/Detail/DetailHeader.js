@@ -4,6 +4,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
+
+
 const colorIcon = '#827A7A';
 const DetailHeader = ({navigation}) => {
   return (
@@ -26,7 +28,9 @@ const DetailHeader = ({navigation}) => {
       </TouchableOpacity>
 
       <View style={styles.cartContainer}>
-        <AntDesign name="shoppingcart" size={20} color="#fff" />
+        <AntDesign name="shoppingcart" size={20} color="#fff" 
+        onPress={()=>{navigation.navigate('CartScreen');}}
+        />
       </View>
 
       <View style={styles.ellipsisContainer}>

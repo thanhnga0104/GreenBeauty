@@ -106,7 +106,7 @@ export default class HomeRecommendSection extends Component {
             scrollEnabled={false}
             nestedScrollEnabled={true}
             numColumns={2}           
-            data={this.state.productsFromServer.results}
+            data={this.state.productsFromServer}
             renderItem={({item, index}) => {
               return (
                 <RecommendFlatListItem

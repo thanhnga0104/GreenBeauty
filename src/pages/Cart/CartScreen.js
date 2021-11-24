@@ -8,64 +8,101 @@ import {
   Text,
   Dimensions,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {ProductData} from '../../data/ProductData';
-import {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {getImageFromServer} from '../../networking/Server';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-function CartFlatListItem  ({navigation, item, handleSelect})  {
- 
-  const [isSelected, setSelection] = useState();
-  return (
-    <View style={styles.cartItem}>
-      <View style={styles.checkboxContainer}>
-        <CheckBox
-          tintColors={{true: 'green'}}
-          value={isSelected}
-          onValueChange={
-            
-            event=>{
-             
-              console.log("có chạy vô event")
-              handleSelect(event),
-              setSelection(!isSelected)
-              
-            }
-            
+class CartFlatListItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isSelected: false,
+      imageFromServer: [],
+    };
+  }
 
-          
+  isSelect = event => {
+    this.setState({isSelected: event});
+  };
+
+  componentDidMount() {
+    this.refreshImageFromServer();
+  }
+
+  refreshImageFromServer = () => {
+    let data = this.props.item.images;
+    data.forEach(data => {
+      getImageFromServer(data)
+        .then(image => {
+          if (this.state.imageFromServer == '') {
+            this.setState({imageFromServer: image});
           }
-            
-        
-        />
-      </View>
+        })
+        .catch(error => {
+          this.setState({imageFromServer: []});
+        });
+    });
+  };
 
-      <Image source={{uri: item.image}} style={styles.itemImage} />
-      <View style={{padding: 10}}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.price}</Text>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}>
-            -
-          </Text>
-          <Text
-            style={{
-              width: 40,
-              borderTopWidth: 0.3,
-              borderBottomWidth: 0.3,
-              textAlign: 'center',
-            }}>
-            1
-          </Text>
-          <Text style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}>
-            +
-          </Text>
+  render() {
+    const {navigation, item, handleSelect} = this.props;
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+        }}>
+        <View style={styles.cartItem}>
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              tintColors={{true: 'green'}}
+              value={this.state.isSelected}
+              onValueChange={event => {
+                handleSelect(event), this.isSelect(event);
+              }}
+            />
+          </View>
+
+          <Image
+            source={{uri: this.state.imageFromServer.img}}
+            style={styles.itemImage}
+          />
+          <View style={{margin: 10}}>
+            <Text style={styles.itemName}>{item.name}</Text>
+            <Text style={styles.itemPrice}>{item.price}</Text>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}>
+                -
+              </Text>
+              <Text
+                style={{
+                  width: 40,
+                  borderTopWidth: 0.3,
+                  borderBottomWidth: 0.3,
+                  textAlign: 'center',
+                }}>
+                {item.quantity}
+              </Text>
+              <Text style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}>
+                +
+              </Text>
+            </View>
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
+    );
+  }
+}
+
+const EmptyComponent = () => {
+  return (
+    <View>
+      <Text>Chưa có dữ liệu đâu </Text>
     </View>
   );
 };
@@ -74,32 +111,30 @@ export default class CartScreen extends Component {
   constructor() {
     super();
     this.state = {
-      selected: 0
+      selected: 0,
     };
   }
-  handleSelect=(event)=> {
+  handleSelect = event => {
     if (event == true) {
-      console.log("có chạy vô true")
       this.setState({
-       
         selected: ++this.state.selected,
-        
       });
     } else {
-      console.log("có chạy vô false")
       this.setState({
         selected: --this.state.selected,
-        
       });
     }
-  }
+  };
 
   btnMuaHang(navigation) {
-    console.log('số lượng selected: ', this.state.selected)
+    
     if (this.state.selected > 0) {
-      navigation.navigate('Thanh Toán');
+      // navigation.navigate('PaymentScreen');
+      // navigation.navigate('AddressReceiveScreen');
+      navigation.navigate('LocationScreen');
+     
     } else {
-      console.log('chưa chọn sp', this.state.selected);
+    
       alert('Chưa chọn sản phẩm');
     }
   }
@@ -111,6 +146,7 @@ export default class CartScreen extends Component {
         style={{
           flex: 1,
         }}>
+        <StatusBar backgroundColor="#316C49" barStyle="light-content" />
         <View style={styles.headerContainer}>
           <View style={styles.backContainer}>
             <AntDesign
@@ -141,6 +177,8 @@ export default class CartScreen extends Component {
         <FlatList
           showsHorizontalScrollIndicator={false}
           data={ProductData}
+          keyExtractor={item => item.id}
+          ListEmptyComponent={EmptyComponent}
           renderItem={({item, index}) => {
             return (
               <CartFlatListItem
@@ -167,12 +205,11 @@ export default class CartScreen extends Component {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                // width: windowWidth / 2,
               }}>
               <Text style={{color: '#484848', marginHorizontal: 5}}>
                 Tổng tiền
               </Text>
-              <Text style={{color: 'green', marginRight: 5}}>200.000</Text>
+              <Text style={{color: 'green', marginRight: 5}}>0</Text>
             </View>
             <TouchableOpacity
               style={{
@@ -180,7 +217,6 @@ export default class CartScreen extends Component {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              // onPress={()=> {navigation.navigate('Thanh Toán');}}
               onPress={() => this.btnMuaHang(navigation)}>
               <Text
                 style={{
@@ -189,7 +225,7 @@ export default class CartScreen extends Component {
                   textAlign: 'center',
                   paddingHorizontal: 10,
                 }}>
-                Mua hàng(1)
+                Mua hàng({this.state.selected})
               </Text>
             </TouchableOpacity>
           </View>
@@ -213,21 +249,21 @@ const styles = StyleSheet.create({
   },
 
   checkboxContainer: {
-    margin: 5,
+    marginHorizontal: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cartItem: {
     flexDirection: 'row',
-    marginVertical: 5,
     backgroundColor: '#fff',
   },
   itemImage: {
-    margin: 10,
+    marginVertical: 10,
     width: 80,
     height: 80,
   },
   itemName: {
+    width: windowWidth * 0.7,
     fontSize: 14,
     color: '#484848',
     marginVertical: 4,
