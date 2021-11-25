@@ -15,7 +15,7 @@ import DescriptionScreen from '../../pages/Description/DescriptionScreen';
 import AddLocationScreen from '../../pages/Address/AddLocationScreen';
 import ConfirmScreen from '../../pages/Cart/ConfirmScreen';
 import AddressScreen from '../../pages/Address/AddressScreen';
-
+import SettingAccount from '../../pages/Profile/SettingAccount/SettingAccount';
 const stack = createStackNavigator();
 const HomeStack = ({navigation}) => (
   <stack.Navigator>
@@ -94,6 +94,9 @@ const HomeStack = ({navigation}) => (
         headerShown: false,
       }}
     />
+    <stack.Screen name = "SettingAccount"component={SettingAccount} options={{
+        headerShown: false,
+      }}/>
   </stack.Navigator>
 );
 

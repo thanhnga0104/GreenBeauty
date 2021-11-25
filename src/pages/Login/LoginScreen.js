@@ -77,7 +77,7 @@ const LoginScreen =({navigation})=>{
             {
                 response.json().then(data=>{
                     //alert("login successfully!")
-                    signIn(data.email, data.tokens);
+                    signIn(data.id, data.tokens);
                 })
             }
             else if(response.status==403)
