@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {
   DrawerContentScrollView,
@@ -15,8 +15,61 @@ import {
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export function DrawerContent(props) {
+  
+  const [data, setData] = useState({
+    name: "Loading...",
+    phonenum: "Loading...",
+    avt: "http://127.0.0.1:8000/media/logo-uit.png"
+  })
+  useEffect(() => {
+    const getData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('userToken')
+          const valueid = await AsyncStorage.getItem('id')
+          console.log("value: ", value)
+
+          getInfo(valueid, value);
+          if(value !== null) {
+          }
+        } catch(e) {
+            alert("no data")
+        }
+      }
+    const getInfo = async (id, token) => {
+        console.log("token: ", 'Bearer '+ token)
+        await fetch ('http://10.0.2.2:8000/user/'+ id + '/',
+    {
+        method:'GET',
+        headers:{
+            'Authorization': 'Bearer '+ token,
+            'Content-Type': 'application/json'
+        },
+    }).then(response=>{
+        if(response.status==200)
+        {
+            response.json().then(d=>{
+                console.log("name: ", d.name)
+                setData({
+                    ...data,
+                    name: d.name,
+                    phonenum: d.phone,
+                    avt: d.avt
+                })
+            })
+        }  
+    })
+    .then(res => {
+       }).catch(error => {
+        console.error("eroor",error);
+        return { name: "network error", description: "" };
+      });
+    }
+    getData();
+}, [])
+
+
   return (
     <View style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
@@ -25,14 +78,14 @@ export function DrawerContent(props) {
             <View style={{flexDirection: 'row', marginTop: 15}}>
               <Avatar.Image
                 source={{
-                  uri: 'https://scontent.fdad1-2.fna.fbcdn.net/v/t1.6435-1/p240x240/242615970_882833949332144_3252973852925152393_n.jpg?_nc_cat=102&ccb=1-5&_nc_sid=7206a8&_nc_ohc=YTsocedvWjoAX_sfpKC&_nc_ht=scontent.fdad1-2.fna&oh=26dbf3fe8a13b87a9c0e822a26ba1f72&oe=617CD70F',
+                  uri: data.avt.replace("127.0.0.1","10.0.2.2"),
                 }}
                 size={50}
               />
 
               <View style={{marginLeft: 15, flexDirection: 'column'}}>
-                <Title style={style.title}> Thanh Nga</Title>
-                <Caption style={style.caption}> 19521880</Caption>
+                <Title style={style.title}> {data.name}</Title>
+                <Caption style={style.caption}> {data.phonenum}</Caption>
               </View>
             </View>
           </View>

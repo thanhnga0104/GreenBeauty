@@ -82,72 +82,80 @@ const App = () => {
     initialLoginSate,
   );
 
-  const authContext = React.useMemo(
-    () => ({
-      signIn: async (email, password) => {
-        try {
-          await AsyncStorage.setItem('userToken', userToken);
-        } catch (e) {
+  const authContext = React.useMemo(()=>({
+    signIn: async (email, password) => {
+        try{
+          await AsyncStorage.setItem('userToken', password)
+          await AsyncStorage.setItem('id',email)
+        }
+        catch(e){
           console.log(e);
         }
-        console.log('user token: ', password);
-        dispatch({type: 'LOGIN', id: email, token: password});
-      },
-      signOut: async () => {
-        try {
-          await AsyncStorage.removeItem('userToken');
-        } catch (e) {
-          console.log(e);
-        }
-        dispatch({type: 'LOGOUT'});
-      },
-      signUp: () => {},
-    }),
-    [],
-  );
-
-  useEffect(() => {
-    setTimeout(async () => {
-      let userToken;
-      userToken = null;
-      try {
-        userToken = await AsyncStorage.getItem('userToken');
-      } catch (e) {
+      dispatch({type:"LOGIN", id: email, token: password})
+    },
+    signOut:async() =>{
+      //setuserToken(null);
+      //setisLoading(false);
+      try{
+        await AsyncStorage.removeItem('userToken')
+        await AsyncStorage.removeItem('id')
+      }
+      catch(e){
         console.log(e);
       }
-      dispatch({type: 'REGISTER', token: userToken});
-    }, 1000);
-  }, []);
+      dispatch({type:"LOGOUT"})
+    },
+    signUp:() =>{
+      //setuserToken("asdasd");
+      //setisLoading(false);
+    }
+  }),[]);
 
-  if (loginState.isLoading) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" />
+  useEffect(()=>{
+    setTimeout(async()=>{
+      //setisLoading(false);
+      let userToken;
+      userToken=null
+      try{
+        userToken = await AsyncStorage.getItem('userToken')
+      }
+      catch(e){
+        console.log(e);
+      }
+      dispatch({type:"REGISTER",  token: userToken})
+    },1000)
+  },[]);
+
+  if(loginState.isLoading)
+  {
+    return(
+      <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
+        <ActivityIndicator size="large"/>
       </View>
     );
   }
   return (
-    <NavigationContainer>
-      {/* <TempStack/>  */}
-      <HomeDrawer />
-      {/* <HomeStack/>  */}
-    </NavigationContainer>
+    // <NavigationContainer>
+    //   {/* <TempStack/>  */}
+    //   <HomeDrawer />
+    //   {/* <HomeStack/>  */}
+    // </NavigationContainer>
 
-    // <AuthContext.Provider value={authContext}>
-    //   <NavigationContainer>
-    //   {loginState.userToken==null ? (
-    //     <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown:false}}>
-    //       <Stack.Screen name="Login" component={LoginScreen}/>
-    //       <Stack.Screen name= "Register" component={RegisterScreen}/>
-    //     </Stack.Navigator>
-    //   )
-    // :
-    //   (
-    //     <TempStack/>
-    //   )
-    // }
-    //   </NavigationContainer>
-    // </AuthContext.Provider>
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+      {loginState.userToken==null ? (
+        <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown:false}}>
+          <Stack.Screen name="Login" component={LoginScreen}/>
+          <Stack.Screen name= "Register" component={RegisterScreen}/>
+        </Stack.Navigator>
+      )
+    :
+      (
+        <HomeDrawer/>
+      )
+    }
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 };
 
