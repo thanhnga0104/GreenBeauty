@@ -22,6 +22,7 @@
     "react": "17.0.2",
     "react-native": "0.65.1",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-image-crop-picker": "^0.37.2",
     "react-native-multi-selectbox": "^1.5.0",
     "react-native-paper": "^4.9.2",
     "react-native-pie-chart": "^2.0.2",
@@ -32,6 +33,7 @@
     "react-native-size-matters": "^0.4.0",
     "react-native-svg": "^12.1.1",
     "react-native-vector-icons": "^8.1.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "typescript": "^4.4.3"
   },
   "devDependencies": {
