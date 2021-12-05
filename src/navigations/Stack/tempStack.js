@@ -7,7 +7,7 @@ import SettingAccount from '../../pages/Profile/SettingAccount/SettingAccount';
 import IngredientsScreen from '../../pages/Ingredients/IngredientScreen';
 const stack  = createStackNavigator();
 const TempStack = (navigation) => (
-    <stack.Navigator initialRouteName="Profile" screenOptions={{headerShown:false}}>
+    <stack.Navigator initialRouteName="Ingredients" screenOptions={{headerShown:false}}>
         <stack.Screen name="Login" component={LoginScreen}/>
         <stack.Screen name = "Register" component={RegisterScreen}/>
         <stack.Screen name = "Profile" component={ProfileScreen}/>
