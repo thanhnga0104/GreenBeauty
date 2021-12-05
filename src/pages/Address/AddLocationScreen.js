@@ -17,43 +17,42 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import WardComponent from './WardComponent';
 import DistrictComponent from './DistrictComponent';
 import CityComponent from './CityComponent';
+import {getDataUser} from '../../networking/Server';
+import {postAddress} from '../../networking/Server';
 
 export default class AddLocationScreen extends Component {
   constructor() {
     super();
     this.state = {
+      userData: null,
+      name: null,
+      phone: null,
       city: [],
       district: [],
       ward: [],
+      address: null,
     };
   }
-  // componentDidMount() {
-  //   this.refreshProvinceFromServer();
-  // }
-  // refreshProvinceFromServer = () => {
-  //   getProvince()
-  //     .then(provinces => {
-  //       this.setState({provinceData: provinces});
-  //     })
-  //     .catch(error => {
-  //       this.setState({provinceData: []});
-  //     });
-  // };
+  componentDidMount() {
+    this.fetchDataUser();
+  }
 
-  // handleSelect(text) {
-  //   if (text) {
-  //     const newData = this.state.provinceData.filter(item => {
-  //       const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
-  //       const textData = text.toUpperCase();
-  //       return itemData.indexOf(textData) > -1;
-  //     });
+  fetchDataUser = () => {
+    getDataUser()
+      .then(user => {
+        this.setState({userData: user});
+      })
+      .catch(error => {
+        console.error(`Error is: ${error}`);
+      });
+  };
 
-  //     this.setState({filterProvince: newData});
-  //   } else if (text == '') {
-  //     this.setState({filterProvince: this.state.provinceData});
-  //   }
-  // }
-
+  setName = text => {
+    this.setState({name: text});
+  };
+  setPhone = num => {
+    this.setState({phone: num});
+  };
   setProvince = city => {
     this.setState({city: city});
   };
@@ -63,11 +62,51 @@ export default class AddLocationScreen extends Component {
   setWard = ward => {
     this.setState({ward: ward});
   };
+  setAddress = text => {
+    this.setState({address: text});
+  };
 
-  pressButton(navigation){
-
-    //Kiểm tra dữ liệu trước khi thêm mới
-    navigation.navigate("ConfirmScreen");    
+  pressButton(navigation) {
+    //if(this.state.city!=[] && this.state.district!=[]&&this.state.ward!=[]&&this.state.name!=null&&this.state.phone!=null&&this.state.address!=null){
+    if (
+      Object.keys(this.state.city.name) != 0 &&
+      Object.keys(this.state.district.name) != 0 &&
+      Object.keys(this.state.ward.name) != 0 &&
+      this.state.name != null &&
+      this.state.phone != null &&
+      this.state.address != null
+    ) {
+      let fullAddress =
+        this.state.address +
+        ', ' +
+        this.state.ward.name +
+        ', ' +
+        this.state.district.name +
+        ', ' +
+        this.state.city.name;
+      let defaultAddress = '';
+      console.log('defaultAddress:', this.props.route.params.defaultAddress);
+      if (this.props.route.params.defaultAddress == 'true') {
+        defaultAddress = 'true';
+      }
+      postAddress(
+        this.state.userData,
+        this.state.name,
+        this.state.phone,
+        this.state.address,
+        fullAddress,
+        defaultAddress,
+      )
+        .then(item => {
+          console.log('Thêm địa chỉ thành công');
+        })
+        .catch(error => {
+          console.error(`Error is: ${error}`);
+        });
+      navigation.navigate('ConfirmScreen');
+    } else {
+      alert('Hãy nhập đủ thông tin địa chỉ nhận hàng.');
+    }
   }
 
   render() {
@@ -96,6 +135,9 @@ export default class AddLocationScreen extends Component {
           <View>
             <TextInput
               placeholder="Tên người nhận"
+              onChangeText={text => {
+                this.setName(text);
+              }}
               // underlineColorAndroid="#E5E5E5"
             ></TextInput>
             <View
@@ -107,6 +149,9 @@ export default class AddLocationScreen extends Component {
 
             <TextInput
               placeholder="Số điện thoại"
+              onChangeText={text => {
+                this.setPhone(text);
+              }}
               // underlineColorAndroid="#E5E5E5"
               keyboardType="numeric"></TextInput>
             <View
@@ -143,7 +188,11 @@ export default class AddLocationScreen extends Component {
               />
             </View>
             <View>
-              <TextInput placeholder="Số nhà + Tên đường"></TextInput>
+              <TextInput
+                placeholder="Số nhà + Tên đường"
+                onChangeText={text => {
+                  this.setAddress(text);
+                }}></TextInput>
               <View
                 style={{
                   borderBottomWidth: 0.3,
@@ -155,8 +204,9 @@ export default class AddLocationScreen extends Component {
         </View>
 
         <View style={styles.addAddressContainer}>
-          <TouchableOpacity style={styles.addAddressButton}
-          onPress={()=>this.pressButton(navigation)}>
+          <TouchableOpacity
+            style={styles.addAddressButton}
+            onPress={() => this.pressButton(navigation)}>
             <Text style={styles.addAddressText}>Thêm mới</Text>
           </TouchableOpacity>
         </View>

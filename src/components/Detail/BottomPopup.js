@@ -30,7 +30,7 @@ export class BottomPopup extends Component {
   };
 
   render() {
-    const {product, image} = this.props;
+    const {navigation, product, image} = this.props;
     let {show} = this.state;
     return (
       <Modal
@@ -87,7 +87,12 @@ export class BottomPopup extends Component {
                 </View>
               </View>
               <View style={styles.addCartContainer}>
-                <TouchableOpacity style={styles.addCartButton}>
+                <TouchableOpacity style={styles.addCartButton}
+                // onPress={()=>{
+                //   navigation.navigate('CartScreen')
+
+                // }}
+                >
                   <Text style={styles.addCartText}>Xem giỏ hàng</Text>
                 </TouchableOpacity>
               </View>
@@ -115,16 +120,14 @@ const styles = StyleSheet.create({
   },
   productNameText: {
     width: '70%',
-    fontSize: 16,
-    // fontWeight: '500',
+    fontSize: 16,   
   },
   productPrice: {
     color: 'red',
     fontSize: 16,
     flexWrap: 'wrap',
   },
-  addCartContainer: {
-    // borderWidth: 0.3,
+  addCartContainer: {    
     borderTopWidth: 0.6,
     borderTopColor: '#E5E5E5',
     height: 60,

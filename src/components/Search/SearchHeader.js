@@ -6,7 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default function SearchHeader({navigation, search}) {
-  const [query, setQuery] = useState();
+  const [query, setQuery] = useState(null);
   return (
     <View style={styles.headerContainer}>
       <View style={styles.backContainer}>

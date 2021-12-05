@@ -8,12 +8,8 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-
 import {getProductsFromServer} from '../../networking/Server';
 import {getImageFromServer} from '../../networking/Server';
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 class RecommendFlatListItem extends Component {
   constructor(props) {
@@ -28,20 +24,33 @@ class RecommendFlatListItem extends Component {
   }
 
   refreshImageFromServer = () => {
-    getImageFromServer(this.props.item.images)
-      .then(image => {
-        this.setState({imageFromServer: image});
-      })
-      .catch(error => {
-        console.log('Lỗi rồi');
-        this.setState({imageFromServer: []});
-      });
+    let data = this.props.item.images;
+    data.forEach(data => {
+      getImageFromServer(data)
+        .then(image => {
+          if (this.state.imageFromServer == '') {
+           // console.log('log ở recommend:', image);
+            this.setState({imageFromServer: image});
+          }
+        })
+        .catch(error => {
+          this.setState({imageFromServer: []});
+        });
+    });
   };
+
   render() {
     const {navigation} = this.props;
     return (
       <View style={styles.itemContainer}>
         <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('DetailScreen', {
+              image: this.state.imageFromServer.img,
+              product: this.props.item,
+            });
+          }}>
+          {/* <TouchableOpacity
           onPress={() => {
             navigation.navigate('DetailScreen', {
               product_id: this.props.item.id,
@@ -50,9 +59,8 @@ class RecommendFlatListItem extends Component {
               name: this.props.item.name,
               product: this.props.item,
             });
-          }}>
+          }}> */}
           <Image
-           
             source={{uri: this.state.imageFromServer.img}}
             style={styles.imageContainer}
           />
@@ -78,9 +86,26 @@ export default class HomeRecommendSection extends Component {
     this.refreshDataFromServer();
   }
 
+  // refreshDataFromServer = () => {
+  //   this.setState({refreshing: true});
+  //   getProductsFromServer()
+  //     .then(products => {
+  //       this.setState({productsFromServer: products});
+  //       this.setState({refreshing: false});
+  //     })
+  //     .catch(error => {
+  //       this.setState({productsFromServer: []});
+  //     });
+  // };
+
+  // handleRefresh = () => {
+  //   this.setState({refreshing: false}, () => {
+  //     this.refreshDataFromServer();
+  //   });
+  // };
+
   refreshDataFromServer = () => {
     this.setState({refreshing: true});
-
     getProductsFromServer()
       .then(products => {
         this.setState({productsFromServer: products});
@@ -96,6 +121,7 @@ export default class HomeRecommendSection extends Component {
       this.refreshDataFromServer();
     });
   };
+
   render() {
     const {navigation} = this.props;
     return (
@@ -105,7 +131,7 @@ export default class HomeRecommendSection extends Component {
           <FlatList
             scrollEnabled={false}
             nestedScrollEnabled={true}
-            numColumns={2}           
+            numColumns={2}
             data={this.state.productsFromServer}
             renderItem={({item, index}) => {
               return (
@@ -122,6 +148,9 @@ export default class HomeRecommendSection extends Component {
     );
   }
 }
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -145,9 +174,7 @@ const styles = StyleSheet.create({
 
   imageContainer: {
     width: windowWidth / 2 - 20,
-    // width: 100,
     height: windowWidth / 2 - 20,
-    // height:100,
   },
 
   nameContainer: {

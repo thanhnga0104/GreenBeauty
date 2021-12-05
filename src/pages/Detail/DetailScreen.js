@@ -20,32 +20,91 @@ import {getProductById} from '../../networking/Server';
 import {getImageFromServer} from '../../networking/Server';
 import {BottomPopup} from '../../components/Detail/BottomPopup';
 import {ProductData} from '../../data/ProductData';
+import {getDataUser} from '../../networking/Server';
+import {getProductFromCart} from '../../networking/Server';
+import {postItemToCart} from '../../networking/Server';
+import {putItemInCart} from '../../networking/Server';
 
 class DetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       imageData: [],
+      listData: [],
+      userData: null,
+      tontai: false, //chưa tồn tại sp
+      product_Exist: '',
     };
   }
 
   componentDidMount() {
     this.refreshImageData();
+    this.fetchProductFromCart();
   }
 
   refreshImageData = () => {
     let data = this.props.route.params.product.images;
+    console.log('data image: ', data);
     let images = [];
     data.forEach(data => {
       getImageFromServer(data)
         .then(image => {
           images.push(image.img);
-          console.log('chạy vô hàm refresh:', images);
           this.setState({imageData: images});
         })
         .catch(error => {
           this.setState({imageData: []});
         });
+    });
+  };
+  //fetch dữ liệu giỏ hàng
+  fetchProductFromCart = () => {
+    getDataUser()
+      .then(user => {
+        getProductFromCart(user.userID, '')
+          .then(items => {
+            items.forEach(item => {
+              if (item.product === this.props.route.params.product.id) {
+                console.log('coi item:', item);
+                this.setState({tontai: true, product_Exist: item}); //sản phẩm đã tồn tại
+              }
+            });
+            this.setState({listData: items, userData: user});
+          })
+          .catch(error => {
+            this.setState({listData: []});
+          });
+      })
+      .catch(error => {
+        console.error(`Error is: ${error}`);
+      });
+  };
+  //refresh khi thêm sản phẩm mới
+  refreshProductFromCart = () => {
+    getProductFromCart(this.state.userData.userID, '')
+      .then(items => {
+        items.forEach(item => {
+          if (item.product === this.props.route.params.product.id) {
+            this.setState({tontai: true});
+          }
+        });
+        this.setState({listData: items});
+      })
+      .catch(error => {
+        this.setState({listData: []});
+      });
+  };
+
+  checkSoLuong = () => {
+    this.state.listData.forEach(index => {
+      if (index.product === this.props.route.params.product.id) {
+        console.log(
+          'index:',
+          index.product + ' id:',
+          this.props.route.params.product.id,
+        );
+        this.setState({tontai: true}); // đã có trong giỏ hàng, put
+      }
     });
   };
 
@@ -61,15 +120,12 @@ class DetailScreen extends Component {
         const slide = Math.ceil(
           nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
         );
-        //     if (slide != imgActive) {
-        //       setimgActive(slide);
-        //     }
       }
     };
 
     //phần này là code của bottom pupup: như show dialog á
     //Phần này là code khi bấm thêm vào giỏ hàng
-    let popupRef = React.createRef();
+
     const addCart = () => {
       let productItem = {
         id: product.id,
@@ -80,21 +136,49 @@ class DetailScreen extends Component {
       };
 
       if (product_list.length == 0) {
-        product_list.push(productItem);        
+        product_list.push(productItem);
       } else {
         product_list.forEach(index => {
           if (index.id != productItem.id) {
-            product_list.push(productItem);            
+            product_list.push(productItem);
           } else {
-            index.quantity++;            
+            index.quantity++;
           }
         });
-      }    
-      
+      }
+
       popupRef.show();
     };
 
-    let product_list = ProductData;
+    let popupRef = React.createRef();
+    const addCartToServer = () => {
+      {
+        console.log('ton tai:', this.state.tontai);
+        if (this.state.tontai == false) {
+          postItemToCart(this.state.userData, product)
+            .then(item => {
+              console.log('Thêm vào giỏ hàng thành công');
+
+              this.refreshProductFromCart();
+            })
+            .catch(error => {
+              console.error(`Error is: ${error}`);
+            });
+        } else if (this.state.tontai == true) {
+          putItemInCart('+',this.state.userData, this.state.product_Exist)
+            .then(item => {
+              console.log('Đã update số lượng sản phẩm');
+              //Chỗ này phải so sánh số lượng đang ở trong giỏ hàng của 1 user, nhiều user với tổng số lượng sp
+              this.refreshProductFromCart();
+            })
+            .catch(error => {
+              console.error(`Error is: ${error}`);
+            });
+        }
+      }
+      popupRef.show();
+    };
+
     return (
       <SafeAreaView
         style={{
@@ -213,7 +297,9 @@ class DetailScreen extends Component {
         </ScrollView>
 
         <View style={styles.addCartContainer}>
-          <TouchableOpacity style={styles.addCartButton} onPress={addCart}>
+          <TouchableOpacity
+            style={styles.addCartButton}
+            onPress={addCartToServer}>
             <Text style={styles.addCartText}>Thêm vào giỏ hàng</Text>
           </TouchableOpacity>
         </View>
@@ -222,6 +308,7 @@ class DetailScreen extends Component {
           ref={target => (popupRef = target)}
           product={product}
           image={image}
+          navigation={navigation}
         />
       </SafeAreaView>
     );
