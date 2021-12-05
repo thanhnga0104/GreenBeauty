@@ -6,10 +6,8 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  Alert,
 } from 'react-native';
 import {Component} from 'react';
-
 import {getProductsFromServer} from '../../networking/Server';
 import {getImageFromServer} from '../../networking/Server';
 
@@ -18,7 +16,6 @@ class HorizontalFlatListItem extends Component {
     super(props);
     this.state = {
       imageFromServer: [],
-      // refreshing: true,
     };
   }
 
@@ -27,11 +24,13 @@ class HorizontalFlatListItem extends Component {
   }
 
   refreshImageFromServer = () => {
-    let data = this.props.item.images;
+    let data = [];
+    data = this.props.item.images;
     data.forEach(data => {
       getImageFromServer(data)
         .then(image => {
           if (this.state.imageFromServer == '') {
+           // console.log('log ở deal:', image);
             this.setState({imageFromServer: image});
           }
         })
@@ -41,15 +40,6 @@ class HorizontalFlatListItem extends Component {
     });
   };
 
-  // getImageFromServer(this.props.item.images)
-  //   .then(image => {
-  //     this.setState({imageFromServer: image});
-  //     console.log("ảnh: ", image)
-  //   })
-  //   .catch(error => {
-  //     this.setState({imageFromServer: []});
-  //   });
-
   render() {
     const {navigation} = this.props;
     return (
@@ -57,12 +47,7 @@ class HorizontalFlatListItem extends Component {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('DetailScreen', {
-              // product_id: this.props.item.id,
-
               image: this.state.imageFromServer.img,
-              // price: this.props.item.price,
-              // name: this.props.item.name,
-
               product: this.props.item,
             });
           }}>
@@ -70,7 +55,6 @@ class HorizontalFlatListItem extends Component {
             source={{uri: this.state.imageFromServer.img}}
             style={styles.itemImage}
           />
-
           <Text style={styles.itemPrice}>{this.props.item.price}</Text>
           <Text style={styles.itemName}>{this.props.item.name}</Text>
         </TouchableOpacity>

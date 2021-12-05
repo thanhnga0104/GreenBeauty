@@ -14,34 +14,94 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {getDataUser} from '../../networking/Server';
+import {getAddress} from '../../networking/Server';
 
-export default class AddressScreen extends Component{
-    render(){
-        const {navigation} = this.props;
-        return(
-            <SafeAreaView style={{flex: 1, height: '100%'}}>
-            <StatusBar backgroundColor="#316C49" barStyle="light-content" />
-            <View style={styles.headerContainer}>
-              <View style={styles.backContainer}>
-                <AntDesign
-                  name="arrowleft"
-                  size={24}
-                  color="#fff"
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                />
-              </View>
-    
-              <View>
-                <Text style={styles.titleHeader}>Địa chỉ nhận hàng</Text>
-              </View>
-            </View>
+export default class AddressScreen extends Component {
+  constructor() {
+    super();
+    this.state = {
+      userData: null,
+      delivery: [],
+    };
+  }
+  componentDidMount() {
+    this.fetchDataUser();
+  }
 
-            {/* Bắt đầu body */}
-            </SafeAreaView>
-        );
-    }
+  fetchDataUser = () => {
+    getDataUser()
+      .then(user => {
+        getAddress(user, '').then(address => {
+          this.setState({userData: user, delivery: address});
+        });
+      })
+      .catch(error => {
+        console.error(`Error is: ${error}`);
+      });
+  };
+
+  ItemSepatator = () => (
+    <View
+      style={{
+        borderBottomWidth: 0.3,
+        borderColor: '#E5E5E5',
+      }}
+    />
+  );
+  render() {
+    const {navigation} = this.props;
+    return (
+      <SafeAreaView style={{flex: 1, height: '100%'}}>
+        <StatusBar backgroundColor="#316C49" barStyle="light-content" />
+        <View style={styles.headerContainer}>
+          <View style={styles.backContainer}>
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="#fff"
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          </View>
+
+          <View>
+            <Text style={styles.titleHeader}>Địa chỉ nhận hàng</Text>
+          </View>          
+        </View>
+
+        {/* Bắt đầu body */}
+        <View>
+            <FlatList              
+              data={this.state.delivery}
+              ItemSeparatorComponent={this.ItemSepatator}
+              renderItem={({item, index}) => {
+                return (
+                  <AddressFlatListItem
+                    navigation={navigation}
+                    item={item}
+                    index={index}></AddressFlatListItem>
+                );
+              }}
+            />
+          </View>
+      </SafeAreaView>
+    );
+  }
+}
+
+class AddressFlatListItem extends Component {
+  render() {
+    const {navigation} = this.props;
+    return (
+      <View style={styles.addressItem}>
+        <Text>{this.props.item.receiveName}</Text>
+        <Text>{this.props.item.phone}</Text>
+        <Text>{this.props.item.fullAddress}</Text>
+      </View>
+    );
+  }
 }
 
 const {height, width} = Dimensions.get('window');
@@ -67,4 +127,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlignVertical: 'center',
   },
+
+  addressItem:{
+    backgroundColor:'#fff',
+    padding:10
+
+  }
 });

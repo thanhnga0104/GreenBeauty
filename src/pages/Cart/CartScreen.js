@@ -11,9 +11,15 @@ import {
   StatusBar,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import {ProductData} from '../../data/ProductData';
+import Swipeout from 'react-native-swipeout';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {getImageFromServer} from '../../networking/Server';
+import {getProductFromCart} from '../../networking/Server';
+import {getProductById} from '../../networking/Server';
+import {getDataUser} from '../../networking/Server';
+import {getAddress} from '../../networking/Server';
+import {putItemInCart} from '../../networking/Server';
+import { deleteProductFromCart } from '../../networking/Server';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -24,6 +30,10 @@ class CartFlatListItem extends Component {
     this.state = {
       isSelected: false,
       imageFromServer: [],
+      productItem: [],
+      quantity: null,
+
+      activeRowKey: null,
     };
   }
 
@@ -32,16 +42,29 @@ class CartFlatListItem extends Component {
   };
 
   componentDidMount() {
-    this.refreshImageFromServer();
+    this.fetchProductById();
+    this.setQuantity();
   }
 
-  refreshImageFromServer = () => {
-    let data = this.props.item.images;
+  fetchProductById = () => {
+    let product_id = this.props.item.product;
+    getProductById(product_id)
+      .then(product => {
+        this.refreshImageFromServer(product);
+        this.setState({productItem: product});
+      })
+      .catch(error => {
+        console.log('Lỗi tải ảnh trong giỏ hàng');
+      });
+  };
+
+  refreshImageFromServer = product => {
+    let data = product.images;
     data.forEach(data => {
       getImageFromServer(data)
-        .then(image => {
+        .then(imageData => {
           if (this.state.imageFromServer == '') {
-            this.setState({imageFromServer: image});
+            this.setState({imageFromServer: imageData});
           }
         })
         .catch(error => {
@@ -50,20 +73,92 @@ class CartFlatListItem extends Component {
     });
   };
 
+  setQuantity = () => {
+    this.setState({quantity: this.props.item.quantities});
+  };
+  //Khi bấm dấu + hoặc - thì filter trong Cart với user_id và product_id
+  btnPlus() {
+    getProductFromCart(this.props.userData.userID, this.state.productItem.id)
+      .then(product => {
+        product.forEach(_product => {
+          putItemInCart('+', this.props.userData, _product)
+            .then(item => {
+              console.log('Đã cộng số lượng sản phẩm');
+              this.setState({quantity: item.quantities});
+            })
+            .catch(error => {
+              console.error(`Error is: ${error}`);
+            });
+        });
+      })
+      .catch(error => {
+        console.error(`Error is: ${error}`);
+      });
+  }
+
+  btnSub = () => {
+    getProductFromCart(this.props.userData.userID, this.state.productItem.id)
+      .then(product => {
+        product.forEach(_product => {
+          putItemInCart('-', this.props.userData, _product)
+            .then(item => {
+              console.log('Đã trừ số lượng sản phẩm');
+              this.setState({quantity: item.quantities});
+            })
+            .catch(error => {
+              console.error(`Error is: ${error}`);
+            });
+        });
+      })
+      .catch(error => {
+        console.error(`Error is: ${error}`);
+      });
+  };
+
   render() {
     const {navigation, item, handleSelect} = this.props;
+
+    const swipeSettings = {
+      autoClose: true,
+      onClose: (secId, rowId, direction) =>{
+        if(this.state.activeRowKey != null){
+          this.setState({activeRowKey: null})
+        }
+
+      },
+      onOpen: (secId, rowId, direction) =>{
+        this.setState({activeRowKey: this.props.item.id})
+
+      },
+      right:[
+        {
+          onPress: ()=> {
+            deleteProductFromCart(this.state.activeRowKey)
+            .then(()=>{              
+              //console.log("xóa ok rồi")
+              this.props.cartScreen.fetchProductFromCart();
+            })
+            .catch(error => {
+              console.log("xóa ko dc")
+            });
+          },
+          text:'Xóa', type:'delete'
+        }
+      ],
+      rowId: this.props.index,
+      sectionId: 1
+
+    }
     return (
-      <SafeAreaView
-        style={{
-          flex: 1,
-        }}>
+      <Swipeout {...swipeSettings}>
         <View style={styles.cartItem}>
           <View style={styles.checkboxContainer}>
             <CheckBox
               tintColors={{true: 'green'}}
               value={this.state.isSelected}
               onValueChange={event => {
-                handleSelect(event), this.isSelect(event);
+                handleSelect(event, this.state.productItem),
+                  this.isSelect(event);
               }}
             />
           </View>
@@ -73,10 +168,12 @@ class CartFlatListItem extends Component {
             style={styles.itemImage}
           />
           <View style={{margin: 10}}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemPrice}>{item.price}</Text>
+            <Text style={styles.itemName}>{this.state.productItem.name}</Text>
+            <Text style={styles.itemPrice}>{this.state.productItem.price}</Text>
             <View style={{flexDirection: 'row'}}>
-              <Text style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}>
+              <Text
+                style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}
+                onPress={() => this.btnSub()}>
                 -
               </Text>
               <Text
@@ -86,15 +183,18 @@ class CartFlatListItem extends Component {
                   borderBottomWidth: 0.3,
                   textAlign: 'center',
                 }}>
-                {item.quantity}
+                {this.state.quantity}
               </Text>
-              <Text style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}>
-                +
-              </Text>
+              <TouchableOpacity onPress={() => this.btnPlus()}>
+                <Text
+                  style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}>
+                  +
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
-      </SafeAreaView>
+      </Swipeout>
     );
   }
 }
@@ -111,36 +211,87 @@ export default class CartScreen extends Component {
   constructor() {
     super();
     this.state = {
+      listData: [],
+      userData: null,
       selected: 0,
+      selectData: [],
+      deleteRowKey: null,
     };
   }
-  handleSelect = event => {
+
+  componentDidMount() {
+    this.fetchProductFromCart();
+  }
+
+  fetchProductFromCart = () => {
+    getDataUser()
+      .then(user => {
+        getProductFromCart(user.userID, '')
+          .then(items => {
+            this.setState({listData: items, userData: user});
+          })
+          .catch(error => {
+            this.setState({listData: []});
+          });
+      })
+      .catch(error => {
+        console.error(`Error is: ${error}`);
+      });
+  };
+
+  handleSelect = (event, product) => {
+    let listItem = this.state.selectData;
     if (event == true) {
+      listItem.push(product.id);
+      console.log('list item:', listItem);
       this.setState({
         selected: ++this.state.selected,
+        selectData: listItem,
       });
     } else {
+      let newList = listItem.filter(item => item !== product.id);
+      console.log('list item:', newList);
       this.setState({
         selected: --this.state.selected,
+        selectData: newList,
       });
     }
   };
 
-  btnMuaHang(navigation) {
-    
+  //Btn Mua Hàng
+  btnBuyProduct(navigation) {
     if (this.state.selected > 0) {
-      //Chỗ này đặt điều kiện địa chỉ
-      // check xem nếu chưa có địa chỉ thì mới chuyển sang add nêw
-      //có địa chỉ rồi thì sang confirm
-      navigation.navigate('AddLocationScreen');
-     
-    } else {    
+      getAddress(this.state.userData, '')
+        .then(data => {
+          if (Object.keys(data).length === 0) {
+            navigation.navigate('AddLocationScreen', {defaultAddress: 'true'});
+            console.log('Chưa có địa chỉ');
+          } else {
+            navigation.navigate('ConfirmScreen', {
+              selectData: this.state.selectData,
+              userData: this.state.userData,
+            });
+            console.log('Đã có địa chỉ');
+          }
+        })
+        .catch(error => {
+          console.error(`Error is: ${error}`);
+        });
+    } else {
       alert('Chưa chọn sản phẩm');
     }
   }
 
+  ItemSepatator = () => (
+    <View
+      style={{
+        borderBottomWidth: 0.6,
+        borderColor: '#E5E5E5',
+      }}
+    />
+  );
   render() {
-    const {navigation} = this.props;
+    const {navigation} = this.props;   
     return (
       <SafeAreaView
         style={{
@@ -176,13 +327,17 @@ export default class CartScreen extends Component {
 
         <FlatList
           showsHorizontalScrollIndicator={false}
-          data={ProductData}
-          keyExtractor={item => item.id}
+          data={this.state.listData}
+          keyExtractor={item => item.product}
           ListEmptyComponent={EmptyComponent}
+          ItemSeparatorComponent={this.ItemSepatator}
           renderItem={({item, index}) => {
             return (
               <CartFlatListItem
+              
                 handleSelect={this.handleSelect}
+                userData={this.state.userData}
+                cartScreen={this}
                 navigation={navigation}
                 item={item}
                 index={index}></CartFlatListItem>
@@ -217,7 +372,7 @@ export default class CartScreen extends Component {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onPress={() => this.btnMuaHang(navigation)}>
+              onPress={() => this.btnBuyProduct(navigation)}>
               <Text
                 style={{
                   color: '#fff',

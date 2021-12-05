@@ -8,9 +8,8 @@ export default class CategoryScreen extends Component {
   const {navigation}=this.props;
   return (
     <SafeAreaView >
-      <CategoryHeader navigation={navigation}/>     
-
-      <CategoryComponent/>
+      <CategoryHeader navigation={navigation}/> 
+      <CategoryComponent navigation={navigation}/>
     </SafeAreaView>
   );
 }
