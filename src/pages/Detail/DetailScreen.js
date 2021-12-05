@@ -291,9 +291,20 @@ class DetailScreen extends Component {
           </TouchableOpacity>
           <View style={styles.spaceContainer}></View>
 
-          <View>
-            <Text>Đánh giá</Text>
-          </View>
+          <View style={styles.spaceContainer}></View>
+          <TouchableOpacity style={{padding: 10, flexDirection: 'row'}}
+           onPress={() => {
+            navigation.navigate('RatingScreen', {
+              id: product.id,
+            });
+          }}>
+            <Text style={styles.titleText}>Đánh giá</Text>
+
+            <View style={styles.rightContainer}>
+              <EvilIcons name="chevron-right" size={30} color="black" />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.spaceContainer}></View>
         </ScrollView>
 
         <View style={styles.addCartContainer}>

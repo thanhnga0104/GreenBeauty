@@ -17,9 +17,19 @@ import ConfirmScreen from '../../pages/Cart/ConfirmScreen';
 import AddressScreen from '../../pages/Address/AddressScreen';
 import SettingAccount from '../../pages/Profile/SettingAccount/SettingAccount';
 import OrderSuccessfullScreen from '../../pages/Cart/OrderSuccessfulScreen';
+import DetailRating from '../../pages/Detail/Rating/DetailRating';
+import DetailIngredients from '../../components/Ingredients/DetailIngredient/DetailIngredients';
+import IngredientsScreen from '../../pages/Ingredients/IngredientScreen';
 const stack = createStackNavigator();
 const HomeStack = ({navigation}) => (
   <stack.Navigator>
+    <stack.Screen
+      name="Ingriedient"
+      component={IngredientsScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
     <stack.Screen
       name="HomeScreen"
       component={HomeScreen}
@@ -106,6 +116,20 @@ const HomeStack = ({navigation}) => (
     <stack.Screen
       name="OrderSuccessfullScreen"
       component={OrderSuccessfullScreen}
+      // options={{
+      //   headerShown: false,
+      // }}
+    />
+    <stack.Screen
+      name="RatingScreen"
+      component={DetailRating}
+      // options={{
+      //   headerShown: false,
+      // }}
+    />
+    <stack.Screen
+      name="DetailIngredient"
+      component={DetailIngredients}
       // options={{
       //   headerShown: false,
       // }}

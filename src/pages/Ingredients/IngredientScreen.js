@@ -116,7 +116,10 @@ class IngredientsScreen extends React.Component{
     
     render()
     
-      {return(
+      
+    {
+      const {navigation, route} = this.props;
+      return(
         <SafeAreaView style={styles.container}>
           <View style={styles.container1}>
             <View style={styles.inputarea}>
@@ -171,7 +174,12 @@ class IngredientsScreen extends React.Component{
           <FlatList
           data={this.state.ResponseData}
           renderItem={({item})=>{
-            return(<IngredientComponent level={item.levelOfSave} name={item.name} content={item.Description}/>)
+            return(
+              <TouchableOpacity 
+              onPress ={()=> {navigation.navigate("DetailIngredient",{dataItem: item})}}>
+                <IngredientComponent level={item.levelOfSave} name={item.name} content={item.Description}/>
+              </TouchableOpacity>
+            )
           }}
           keyExtractor={(item) => item.id}
           ></FlatList> 
