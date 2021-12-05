@@ -3,13 +3,13 @@ import {Component} from 'react';
 import {
   View,
   StyleSheet,
-  TextInput,
   FlatList,
   Image,
   Text,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
-
+import {getImageFromServer} from '../../networking/Server';
 
 export default class SearchComponent extends Component {
   ItemSepatator = () => (
@@ -44,6 +44,32 @@ export default class SearchComponent extends Component {
 }
 
 class SearchFlatListItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imageFromServer: [],
+    };
+  }
+
+  componentDidMount() {
+    this.refreshImageFromServer();
+  }
+
+  refreshImageFromServer = () => {
+    let data = [];
+    data = this.props.item.images;
+    data.forEach(data => {
+      getImageFromServer(data)
+        .then(image => {
+          if (this.state.imageFromServer == '') {
+            this.setState({imageFromServer: image});
+          }
+        })
+        .catch(error => {
+          this.setState({imageFromServer: []});
+        });
+    });
+  };
   render() {
     const {navigation} = this.props;
     return (
@@ -51,48 +77,43 @@ class SearchFlatListItem extends Component {
         style={styles.itemContainer}
         onPress={() => {
           navigation.navigate('DetailScreen', {
-            product_id: this.props.item.id,
-
-            // image: this.state.imageFromServer.img,
-            price: this.props.item.price,
-            name: this.props.item.name,
-
             product: this.props.item,
           });
         }}>
         <Image
-          /* source={{uri: this.state.imageFromServer.img}} */
-          source={{uri: 'https://media.hasaki.vn/rating/158981046758840.jpg'}}
+          source={{uri: this.state.imageFromServer.img}}
           style={styles.itemImage}
         />
 
         <View style={{padding: 10, alignSelf: 'center'}}>
-          <Text style={styles.itemPrice}>{this.props.item.price}</Text>
           <Text style={styles.itemName}>{this.props.item.name}</Text>
+          <Text style={styles.itemPrice}>{this.props.item.price}</Text>
         </View>
       </TouchableOpacity>
     );
   }
 }
 
+const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    // padding:5,
+    
   },
 
   itemImage: {
-    // borderRadius: 8,
     width: 50,
     height: 50,
     margin: 10,
     alignSelf: 'center',
   },
+
   itemName: {
     fontSize: 14,
     color: '#484848',
-    // marginVertical: 4,
+    width: width * 0.8,
+    paddingRight: 10,
   },
 
   itemPrice: {
