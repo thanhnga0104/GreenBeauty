@@ -18,8 +18,7 @@ export default class HomeScreen extends Component {
     return (
       <SafeAreaView
         style={{
-          flex: 1,
-          // paddingTop: StatusBar.currentHeight
+          flex: 1,         
         }}>
         <StatusBar backgroundColor="#316C49" barStyle="light-content" />
         <HomeHeader navigation={navigation} />

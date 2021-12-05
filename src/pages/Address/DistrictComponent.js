@@ -30,6 +30,7 @@ export default class DistrictComponent extends Component {
 
   handleSelect(text) {
     if (text) {
+      
       const newData = this.state.districtData.filter(item => {
         const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
