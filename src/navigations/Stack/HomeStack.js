@@ -20,19 +20,26 @@ import OrderSuccessfullScreen from '../../pages/Cart/OrderSuccessfulScreen';
 import DetailRating from '../../pages/Detail/Rating/DetailRating';
 import DetailIngredients from '../../components/Ingredients/DetailIngredient/DetailIngredients';
 import IngredientsScreen from '../../pages/Ingredients/IngredientScreen';
+import DetailOrder from '../../pages/DetailOrder/DetailOrder';
+import RatingScreen from '../../pages/Rating/RatingScreen';
+import Pending from '../../pages/OrderStatus/Pending'
+import Waiting from '../../pages/OrderStatus/Waiting';
+import Delivery from '../../pages/OrderStatus/Delivery'
+import Success from '../../pages/OrderStatus/Success'
 const stack = createStackNavigator();
 const HomeStack = ({navigation}) => (
   <stack.Navigator>
+    
     <stack.Screen
-      name="Ingriedient"
-      component={IngredientsScreen}
+      name="HomeScreen"
+      component={HomeScreen}
       options={{
         headerShown: false,
       }}
     />
     <stack.Screen
-      name="HomeScreen"
-      component={HomeScreen}
+      name="Ingriedient"
+      component={IngredientsScreen}
       options={{
         headerShown: false,
       }}
@@ -134,6 +141,12 @@ const HomeStack = ({navigation}) => (
       //   headerShown: false,
       // }}
     />
+    <stack.Screen name= "Pending" component={Pending}/>
+    <stack.Screen name="Delivery" component={Delivery}/>
+    <stack.Screen name="Success" component={Success}/>
+    <stack.Screen name= "Rating" component={RatingScreen}/>
+    <stack.Screen name="DetailOrder" component={DetailOrder}/>
+    <stack.Screen name="Waiting" component={Waiting}/>
   </stack.Navigator>
 );
 

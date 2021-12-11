@@ -37,14 +37,31 @@ const ProfileScreen = ({navigation})=>{
         phonenum: "loading...",
         token: "" 
     })
+    const [status, setStatus] = useState({
+        // Pending: 0,
+        // Wait : 0,
+        // Delivery: 0,
+        // success: 0,
+    })
+    const [Pending, setPending] = useState(0)
+    const [Wait, setWait] = useState(0)
+    const [Delivery, setDelivery] = useState(0)
+    const [Success, setSuccess] = useState(0)
     useEffect(() => {
         const getData = async () => {
             try {
               const value = await AsyncStorage.getItem('userToken')
               const valueid = await AsyncStorage.getItem('id')
-              console.log("value: ", value)
+              //console.log("value: ", value)
 
               getInfo(valueid, value);
+              getStatus(valueid, 1);
+
+              getStatus(valueid, 2);
+
+              getStatus(valueid, 3);
+              
+              getStatus(valueid, 4);
               if(value !== null) {
               }
             } catch(e) {
@@ -64,15 +81,17 @@ const ProfileScreen = ({navigation})=>{
             if(response.status==200)
             {
                 response.json().then(d=>{
-                    console.log("name: ", d.name)
+                    console.log("name: ", Object.keys(d.name).length)
                     setData({
                         ...data,
                         name: d.name,
                         phonenum: d.phone,
                         avt: d.avt
                     })
+
                 })
             }
+            
         })
         .then(res => {
             //console.log("reponse :", res); 
@@ -81,8 +100,46 @@ const ProfileScreen = ({navigation})=>{
             return { name: "network error", description: "" };
           });
         }
+        const getStatus = async(id, sta)=>
+        {
+            await fetch ('http://10.0.2.2:8000/order/?user='+ id + '&status='+sta,
+        {
+            method:'GET',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+        }).then(response=>{
+            if(response.status==200)
+            {
+                response.json().then(d=>{
+                    //console.log("status:"+sta+" ", Object.keys(d).length)
+                    if(sta==1)
+                        setPending(Object.keys(d).length)
+                    else if(sta==2)
+                        setWait(Object.keys(d).length)
+                    else if(sta==3)
+                        setDelivery(Object.keys(d).length)
+                    else {
+                        setSuccess(Object.keys(d).length)
+                    }
+
+                })
+            }
+            
+        })
+        .then(res => {
+            //console.log("reponse :", res); 
+           }).catch(error => {
+            console.error("eroor",error);
+            return { name: "network error", description: "" };
+          });
+        }
+
         getData();
+
+
     }, [])
+
 
 
     return(
@@ -91,7 +148,7 @@ const ProfileScreen = ({navigation})=>{
             <View style={styles.container}>
                 <View style={{ marginLeft:scale(widthofscreen/15),flexDirection:"row"}}>
                     
-                    <View style={{justifyContent:"center",}}>
+                    <View style={{justifyContent:"center", }}>
                         <Avatar.Image style={{backgroundColor:"#FFF"}} size={scale(widthofscreen/6.5)}  source={{uri : data.avt.replace("127.0.0.1","10.0.2.2")}}/>
                     </View>
                       
@@ -109,27 +166,63 @@ const ProfileScreen = ({navigation})=>{
             </View>
 
             <View style={styles.purchased}>
-                <TouchableOpacity style={{alignItems: 'center', justifyContent:"center",}}>
-                    <MaterialIcons name="receipt-long" size={scale(35)} color="#B2A7AA"/>
-                    <Text style={{marginTop: scale(2), fontSize: scale(7), fontWeight: 'bold'}}>Chờ xác nhận</Text>
-                    <Text style={{fontSize: scale(7), fontWeight: 'bold'}}>(1)</Text>
+                <TouchableOpacity style={{alignItems: 'flex-end', justifyContent:"center",}}
+                onPress={()=>{navigation.navigate('Pending')}}>
+                    <View style={{alignItems: 'center', justifyContent:"center"}}>
+                        <MaterialIcons name="receipt-long" size={scale(35)} color="#B2A7AA"/>
+                        <Text style={{marginTop: scale(2), fontSize: scale(7), fontWeight: 'bold'}}>Chờ xác nhận</Text>
+                    </View>
+                    {Pending>0?
+                    <View style={styles.circle}>
+                        <Text style={{fontSize: scale(7), fontWeight: 'bold', color:"#FFF"}}>{Pending}</Text>
+                    </View>
+                    :
+                    <View><Text> </Text></View>
+                    }
                 </TouchableOpacity>
 
-                <TouchableOpacity style={{alignItems: 'center', justifyContent:"center"}}>
-                    <MaterialIcons name="storefront" size={scale(35)} color="#B2A7AA"/>
-                    <Text style={{marginTop: scale(2), fontSize: scale(7), fontWeight: 'bold'}}>Chờ lấy hàng</Text>
-                    <Text style={{fontSize: scale(7), fontWeight: 'bold'}}>(1)</Text>
+                <TouchableOpacity style={{alignItems: 'flex-end', justifyContent:"center"}}
+                onPress={()=>{navigation.navigate('Waiting')}}>
+                    <View style={{alignItems: 'center', justifyContent:"center"}}>
+                        <MaterialIcons name="storefront" size={scale(35)} color="#B2A7AA"/>
+                        <Text style={{marginTop: scale(2), fontSize: scale(7), fontWeight: 'bold'}}>Chờ lấy hàng</Text>
+                    </View>
+                    {Wait>0?
+                    <View style={styles.circle}>
+                        <Text style={{fontSize: scale(7), fontWeight: 'bold', color:"#FFF"}}>{Wait}</Text>
+                    </View>
+                    :
+                    <View><Text> </Text></View>
+                    }
                 </TouchableOpacity>
 
-                <TouchableOpacity style={{alignItems: 'center', justifyContent:"center", }}>
-                    <MaterialCommunityIcons name="truck-outline" size={scale(35)} color="#B2A7AA"/>
-                    <Text style={{marginTop: scale(2), fontSize: scale(7), fontWeight: 'bold'}}>Đang giao</Text>
-                    <Text style={{fontSize: scale(7), fontWeight: 'bold'}}>(1)</Text>
+                <TouchableOpacity style={{alignItems: 'flex-end', justifyContent:"center", }}
+                onPress={()=>{navigation.navigate('Delivery')}}>
+                    <View style={{alignItems: 'center', justifyContent:"center"}}>
+                        <MaterialCommunityIcons name="truck-outline" size={scale(35)} color="#B2A7AA"/>
+                        <Text style={{marginTop: scale(2), fontSize: scale(7), fontWeight: 'bold'}}>Đang giao</Text>
+                    </View>
+                    {Delivery>0?
+                    <View style={styles.circle}>
+                        <Text style={{fontSize: scale(7), fontWeight: 'bold', color:"#FFF"}}>{Delivery}</Text>
+                    </View>
+                    :
+                    <View><Text> </Text></View>
+                    }
                 </TouchableOpacity>
-                <TouchableOpacity style={{alignItems: 'center', justifyContent:"center", }}>
-                    <MaterialIcons name="star-outline" size={scale(35)} color="#B2A7AA"/>
-                    <Text style={{marginTop: scale(2), fontSize: scale(7), fontWeight: 'bold'}}>Đánh giá</Text>
-                    <Text style={{fontSize: scale(7), fontWeight: 'bold'}}>(1)</Text>
+                <TouchableOpacity style={{alignItems: 'flex-end', justifyContent:"center", }}
+                onPress={()=>{navigation.navigate('Success')}}>
+                    <View style={{alignItems: 'center', justifyContent:"center"}}>
+                        <MaterialIcons name="star-outline" size={scale(35)} color="#B2A7AA"/>
+                        <Text style={{marginTop: scale(2), fontSize: scale(7), fontWeight: 'bold'}}>Đánh giá</Text>
+                    </View>
+                    {Success>0?
+                    <View style={styles.circle}>
+                        <Text style={{fontSize: scale(7), fontWeight: 'bold', color:"#FFF"}}>{Success}</Text>
+                    </View>
+                    :
+                    <View><Text> </Text></View>
+                    }
                 </TouchableOpacity>
             </View>
         
@@ -256,5 +349,16 @@ const styles = StyleSheet.create({
         marginVertical: scale(10),
         marginTop: scale(10),
     },
+    circle:{
+        height: scale(15),
+        width: scale(15),
+        borderRadius: scale(10),
+        justifyContent:"center",
+        alignContent:"flex-end",
+        backgroundColor:"#F28244",
+        alignItems:"center",
+        bottom: scale(40)
+    },
+    
 })
 export default ProfileScreen;
