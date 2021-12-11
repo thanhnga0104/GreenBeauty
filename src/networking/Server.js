@@ -370,7 +370,37 @@ async function postOrderDetail(order_id, product_id, quantity) {
     console.error(`Error is: ${error}`);
   }
 }
+async function getDetailById(id) {
+  const apiGetDetailById =
+    'http://10.0.2.2:8000/detailorder/?order=' + id ;
+  try {
+    let response = await fetch(apiGetDetailById, {
+      method: 'GET',
+    });
+    let responseJson = await response.json();
+    console.log("responseJson detail", responseJson)
+    return responseJson;
+  } catch (error) {
+    console.error(`Error is: ${error}`);
+  }
+}
+async function getDeliveryInformation(id) {
+  const apigetDeliveryInformation =
+    'http://10.0.2.2:8000/delivery/' + id + '/';
+  try {
+    let response = await fetch(apigetDeliveryInformation, {
+      method: 'GET',
+    });
+    let responseJson = await response.json();
+    return responseJson;
+  } catch (error) {
+    console.error(`Error is: ${error}`);
+  }
+}
+
 export {
+  getDeliveryInformation,
+  getDetailById,
   getTypeOfCategory,
   getCategory,
   getProductsFromServer,
