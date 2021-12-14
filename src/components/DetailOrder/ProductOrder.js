@@ -45,10 +45,10 @@ const ProductOrder = (props) =>{
         <View>
             <View style={{flexDirection:"row"}}>
             <Image style = {styles.Image} source={{uri : product.imagepresent.replace("127.0.0.1","10.0.2.2")}}/>
-            <View style={{flexDirection:"column", justifyContent:"space-evenly"}}>
+            <View style={{flexDirection:"column", }}>
                 <Text style={{margin:10}} ellipsizeMode="tail"
                 numberOfLines= {2}>{product.name}</Text>
-                <View style={{margin:10, flexDirection:"column",}}>
+                <View style={{marginLeft:10,flexDirection:"column",}}>
                   <Text style={{marginLeft: 5}}>x{props.quanlity}</Text>
                   <Text style={{color:"red", marginLeft:5}}>{product.price}</Text>
                 </View>
