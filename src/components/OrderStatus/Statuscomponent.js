@@ -48,7 +48,30 @@ const StatusComponent = (props) =>{
       }
     GetInfor();
     },[])
-    
+    async function ConfirmDelivery(id) 
+    {
+        const apiAddAddress = 'http://10.0.2.2:8000/order/'+id+'/';
+        try {
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+          let response = await fetch(apiAddAddress, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+            body: JSON.stringify({
+              id: id,
+              status: 4,
+              dateReceive: date
+            }),
+          });      
+          let responseJson = await response.json();
+          return responseJson;
+        } catch (error) {
+          console.error(`Error is: ${error}`);
+        }
+    }
 
   return(
     <View style={{flexDirection:"column", backgroundColor:"white", marginTop:10}}>
@@ -81,23 +104,28 @@ const StatusComponent = (props) =>{
 
         <View style={{width:"100%", alignItems:"flex-end"}}>
           {props.status==1?
-          <TouchableOpacity style={styles.Button}>
+          <View style={styles.Button}>
             <Text style={{color: "#000"}}>Đang xử lý</Text>
-          </TouchableOpacity>
+          </View>
           :
           null
           }
           {
             props.status==2?
-            <TouchableOpacity style={styles.Button}>
+            <View style={styles.Button}>
               <Text style={{color: "#000"}}>Đã xác nhận</Text>
-            </TouchableOpacity>
+            </View>
             :
             null
           }
           {
             props.status==3?
-            <TouchableOpacity style={styles.Button}>
+            <TouchableOpacity style={styles.Button}
+            onPress={()=>{
+              ConfirmDelivery(props.id).then(re=>{
+                  alert("Confirm Successfully")
+              })
+          }}>
               <Text style={{color: "#000"}}>Đã nhận được hàng</Text>
             </TouchableOpacity>
             :

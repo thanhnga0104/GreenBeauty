@@ -334,7 +334,7 @@ async function postOrder(user, totalValue, delivery_id) {
       body: JSON.stringify({
         totalValue: totalValue,
         user: user.userID,
-        status: 'Chờ xử lý',
+        status: '1',
         delivery: delivery_id,
       }),
     });
