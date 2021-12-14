@@ -89,7 +89,7 @@ const LoginScreen =({navigation})=>{
                     signIn(data.id, data.tokens);
                 })
             }
-            else if(response.status==403)
+            else if(response.status==500)
             {
                 
                 alert("Error: Wrong email or password, please enter again" )
