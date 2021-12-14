@@ -17,6 +17,7 @@ import {
   TouchableOpacityBase,
   TouchableOpacity,
   Button,
+  RefreshControl
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {scale} from 'react-native-size-matters'
@@ -37,114 +38,114 @@ const ProfileScreen = ({navigation})=>{
         phonenum: "loading...",
         token: "" 
     })
-    const [status, setStatus] = useState({
-        // Pending: 0,
-        // Wait : 0,
-        // Delivery: 0,
-        // success: 0,
-    })
     const [Pending, setPending] = useState(0)
     const [Wait, setWait] = useState(0)
     const [Delivery, setDelivery] = useState(0)
     const [Success, setSuccess] = useState(0)
+    const [refreshing, setRefreshing] = React.useState(false);
     useEffect(() => {
-        const getData = async () => {
-            try {
-              const value = await AsyncStorage.getItem('userToken')
-              const valueid = await AsyncStorage.getItem('id')
-              //console.log("value: ", value)
-
-              getInfo(valueid, value);
-              getStatus(valueid, 1);
-
-              getStatus(valueid, 2);
-
-              getStatus(valueid, 3);
-              
-              getStatus(valueid, 4);
-              if(value !== null) {
-              }
-            } catch(e) {
-                alert("no data")
-            }
-          }
-        const getInfo = async (id, token) => {
-            console.log("token: ", 'Bearer '+ token)
-            await fetch ('http://10.0.2.2:8000/user/'+ id + '/',
-        {
-            method:'GET',
-            headers:{
-                'Authorization': 'Bearer '+ token,
-                'Content-Type': 'application/json'
-            },
-        }).then(response=>{
-            if(response.status==200)
-            {
-                response.json().then(d=>{
-                    console.log("name: ", Object.keys(d.name).length)
-                    setData({
-                        ...data,
-                        name: d.name,
-                        phonenum: d.phone,
-                        avt: d.avt
-                    })
-
-                })
-            }
-            
-        })
-        .then(res => {
-            //console.log("reponse :", res); 
-           }).catch(error => {
-            console.error("eroor",error);
-            return { name: "network error", description: "" };
-          });
-        }
-        const getStatus = async(id, sta)=>
-        {
-            await fetch ('http://10.0.2.2:8000/order/?user='+ id + '&status='+sta,
-        {
-            method:'GET',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-        }).then(response=>{
-            if(response.status==200)
-            {
-                response.json().then(d=>{
-                    //console.log("status:"+sta+" ", Object.keys(d).length)
-                    if(sta==1)
-                        setPending(Object.keys(d).length)
-                    else if(sta==2)
-                        setWait(Object.keys(d).length)
-                    else if(sta==3)
-                        setDelivery(Object.keys(d).length)
-                    else {
-                        setSuccess(Object.keys(d).length)
-                    }
-
-                })
-            }
-            
-        })
-        .then(res => {
-            //console.log("reponse :", res); 
-           }).catch(error => {
-            console.error("eroor",error);
-            return { name: "network error", description: "" };
-          });
-        }
-
         getData();
-
-
     }, [])
+    const getData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('userToken')
+          const valueid = await AsyncStorage.getItem('id')
+          //console.log("value: ", value)
 
+          getInfo(valueid, value);
+          getStatus(valueid, 1);
 
+          getStatus(valueid, 2);
+
+          getStatus(valueid, 3);
+          
+          getStatus(valueid, 4);
+          if(value !== null) {
+          }
+        } catch(e) {
+            alert("no data")
+        }
+      }
+    const getInfo = async (id, token) => {
+        console.log("token: ", 'Bearer '+ token)
+        await fetch ('http://10.0.2.2:8000/user/'+ id + '/',
+    {
+        method:'GET',
+        headers:{
+            'Authorization': 'Bearer '+ token,
+            'Content-Type': 'application/json'
+        },
+    }).then(response=>{
+        if(response.status==200)
+        {
+            response.json().then(d=>{
+                console.log("name: ", Object.keys(d.name).length)
+                setData({
+                    ...data,
+                    name: d.name,
+                    phonenum: d.phone,
+                    avt: d.avt
+                })
+
+            })
+        }
+        
+    })
+    .then(res => {
+        //console.log("reponse :", res); 
+       }).catch(error => {
+        console.error("eroor",error);
+        return { name: "network error", description: "" };
+      });
+    }
+    const getStatus = async(id, sta)=>
+    {
+        await fetch ('http://10.0.2.2:8000/order/?user='+ id + '&status='+sta,
+    {
+        method:'GET',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+    }).then(response=>{
+        if(response.status==200)
+        {
+            response.json().then(d=>{
+                //console.log("status:"+sta+" ", Object.keys(d).length)
+                if(sta==1)
+                    setPending(Object.keys(d).length)
+                else if(sta==2)
+                    setWait(Object.keys(d).length)
+                else if(sta==3)
+                    setDelivery(Object.keys(d).length)
+                else {
+                    setSuccess(Object.keys(d).length)
+                }
+
+            })
+        }
+        
+    })
+    .then(res => {
+        //console.log("reponse :", res); 
+       }).catch(error => {
+        console.error("eroor",error);
+        return { name: "network error", description: "" };
+      });
+    }
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        getData().then(() => setRefreshing(false));
+      }, []);
 
     return(
         <View style={{flex:1}}>
-            <ScrollView style={{ backgroundColor:"#EEEEEE"}}>
+            <ScrollView style={{ backgroundColor:"#EEEEEE"}}
+            refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }>
             <View style={styles.container}>
                 <View style={{ marginLeft:scale(widthofscreen/15),flexDirection:"row"}}>
                     
