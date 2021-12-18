@@ -15,12 +15,12 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-export default class OrderSuccessfullScreen extends Component{
+export default class RecommendProductScreen extends Component{
     render(){
         const {navigation}=this.props;
         return(
             <View >
-                <Text>Đặt hàng thành công</Text>
+                <Text>Gợi ý sản phẩm</Text>
                 <TouchableOpacity 
                 onPress={()=>{navigation.navigate('HomeScreen')}}>
                     <Text>Trang chủ</Text>

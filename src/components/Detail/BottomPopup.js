@@ -87,12 +87,11 @@ export class BottomPopup extends Component {
                 </View>
               </View>
               <View style={styles.addCartContainer}>
-                <TouchableOpacity style={styles.addCartButton}
-                // onPress={()=>{
-                //   navigation.navigate('CartScreen')
-
-                // }}
-                >
+                <TouchableOpacity
+                  style={styles.seeCartButton}
+                  onPress={() => {
+                    navigation.navigate('CartScreen');
+                  }}>
                   <Text style={styles.addCartText}>Xem giỏ hàng</Text>
                 </TouchableOpacity>
               </View>
@@ -120,21 +119,21 @@ const styles = StyleSheet.create({
   },
   productNameText: {
     width: '70%',
-    fontSize: 16,   
+    fontSize: 16,
   },
   productPrice: {
     color: 'red',
     fontSize: 16,
     flexWrap: 'wrap',
   },
-  addCartContainer: {    
+  addCartContainer: {
     borderTopWidth: 0.6,
     borderTopColor: '#E5E5E5',
     height: 60,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  addCartButton: {
+  seeCartButton: {
     paddingHorizontal: width / 4,
     backgroundColor: 'green',
     height: height / 16,
