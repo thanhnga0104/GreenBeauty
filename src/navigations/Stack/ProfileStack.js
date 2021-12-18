@@ -8,8 +8,8 @@ import Waiting from '../../pages/OrderStatus/Waiting';
 import Delivery from '../../pages/OrderStatus/Delivery';
 import Success from '../../pages/OrderStatus/Success';
 import LoveListScreen from '../../pages/LoveList/LoveListScreen';
+import RatingHistory from '../../pages/Profile/RatingHistory/RatingHistory'
 import DetailScreen from '../../pages/Detail/DetailScreen';
-
 const stack = createStackNavigator();
 const ProfileStack = ({navigation}) => (
   <stack.Navigator>
@@ -45,7 +45,7 @@ const ProfileStack = ({navigation}) => (
       options={{
         headerShown: false,
       }}/>
-
+    <stack.Screen name="RatingHistory" component={RatingHistory} />
 {/* <stack.Screen
       name="Detail"
       component={DetailScreen}
