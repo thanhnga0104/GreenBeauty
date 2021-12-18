@@ -113,8 +113,12 @@ const SettingAccount = ({navigation}) => {
     setDate(currentDate);
 
     let tem = new Date(currentDate);
-    let fDate = tem.getDate() + '/' + tem.getMonth() + '/' + tem.getFullYear();
+    let fDate =tem.getFullYear()+ '-' + tem.getDate() + '-' + tem.getMonth();
     setbirthdaytext(fDate);
+    setData({
+      ...data,
+      birthday: fDate
+    })
   };
   const showMode = currentMode => {
     setShow(true);
@@ -151,6 +155,7 @@ const SettingAccount = ({navigation}) => {
   };
   //Hàm upload thông tin
   const UpdateData = async () => {
+    console.log("token: ", data.token);
     await fetch('http://10.0.2.2:8000/user/' + data.id + '/', {
       method: 'PUT',
       headers: {
@@ -163,7 +168,7 @@ const SettingAccount = ({navigation}) => {
         name: data.name,
         phone: data.phonenum,
         sex: data.sex,
-        dateofbirth: data.birthday,
+        dateofbirth: birthdaytext,
       }),
       //body: JSON.stringify({"email": data.email, "name": d.name, "phone": d.phonenum, "sex": d.sex, "dateofbirth": data.birthday})
     })
@@ -243,7 +248,7 @@ const SettingAccount = ({navigation}) => {
       bs.current.snapTo(1);
     });
   };
-  renderInner = () => (
+  const renderInner = () => (
     <View style={styles.panel}>
       <View style={{alignItems: 'center'}}>
         <Text style={styles.panelTitle}>Upload Photo</Text>
@@ -271,7 +276,7 @@ const SettingAccount = ({navigation}) => {
     </View>
   );
 
-  renderHeader = () => (
+  const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.panelHeader}>
         <View style={styles.panelHandle} />
@@ -456,7 +461,7 @@ const SettingAccount = ({navigation}) => {
           <TouchableOpacity
             style={styles.buttoncontainer}
             onPress={() => {
-              Update();
+              UpdateData();
             }}>
             <Text
               style={{fontSize: scale(17), fontWeight: '300', color: '#FFF'}}>
