@@ -85,7 +85,7 @@ export default class AddLocationScreen extends Component {
         ', ' +
         this.state.city.name;
       let defaultAddress = '';
-      console.log('defaultAddress:', this.props.route.params.defaultAddress);
+     // console.log('defaultAddress:', this.props.route.params.defaultAddress);
       if (this.props.route.params.defaultAddress == 'true') {
         defaultAddress = 'true';
       }
@@ -103,7 +103,8 @@ export default class AddLocationScreen extends Component {
         .catch(error => {
           console.error(`Error is: ${error}`);
         });
-      navigation.navigate('ConfirmScreen');
+        //console.log("log props:", this.props)
+      navigation.navigate('ConfirmScreen', {selectData: this.props.route.params.selectData});
     } else {
       alert('Hãy nhập đủ thông tin địa chỉ nhận hàng.');
     }

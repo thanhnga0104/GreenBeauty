@@ -15,15 +15,18 @@ import {
 } from 'react-native';
 import DetailHeader from '../../components/Detail/DetailHeader';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Ionicons  from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getProductById} from '../../networking/Server';
+import {getListImage} from '../../networking/Server';
 import {getImageFromServer} from '../../networking/Server';
 import {BottomPopup} from '../../components/Detail/BottomPopup';
-import {ProductData} from '../../data/ProductData';
 import {getDataUser} from '../../networking/Server';
 import {getProductFromCart} from '../../networking/Server';
 import {postItemToCart} from '../../networking/Server';
 import {putItemInCart} from '../../networking/Server';
+import {postToLoveList} from '../../networking/Server';
+import {getProductFromLoveList} from '../../networking/Server';
+
 
 class DetailScreen extends Component {
   constructor(props) {
@@ -34,29 +37,41 @@ class DetailScreen extends Component {
       userData: null,
       tontai: false, //chưa tồn tại sp
       product_Exist: '',
+      isLove: false,
     };
   }
 
   componentDidMount() {
-    this.refreshImageData();
     this.fetchProductFromCart();
+    this.fetchListImage();
+    
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.fetchProductFromCart();
+      this.fetchListImage();
+    });
   }
 
-  refreshImageData = () => {
-    let data = this.props.route.params.product.images;
-    console.log('data image: ', data);
-    let images = [];
-    data.forEach(data => {
-      getImageFromServer(data)
-        .then(image => {
-          images.push(image.img);
-          this.setState({imageData: images});
-        })
-        .catch(error => {
-          this.setState({imageData: []});
+  fetchListImage = () => {
+    let listImage = [];
+    getListImage(this.props.route.params.product.id)
+      .then(images => {
+        images.forEach(img => {
+          getImageFromServer(img.id)
+            .then(result => {
+              listImage.push(result.img);
+              this.setState({imageData: listImage});
+            })
+            .catch(error => {
+              this.setState({imageData: []});
+            });
         });
-    });
+      })
+      .catch(error => {
+        this.setState({imageData: []});
+      });
   };
+
   //fetch dữ liệu giỏ hàng
   fetchProductFromCart = () => {
     getDataUser()
@@ -65,7 +80,6 @@ class DetailScreen extends Component {
           .then(items => {
             items.forEach(item => {
               if (item.product === this.props.route.params.product.id) {
-                console.log('coi item:', item);
                 this.setState({tontai: true, product_Exist: item}); //sản phẩm đã tồn tại
               }
             });
@@ -74,11 +88,14 @@ class DetailScreen extends Component {
           .catch(error => {
             this.setState({listData: []});
           });
+
+          this.checkLoveList(user.userID);
       })
       .catch(error => {
         console.error(`Error is: ${error}`);
       });
   };
+
   //refresh khi thêm sản phẩm mới
   refreshProductFromCart = () => {
     getProductFromCart(this.state.userData.userID, '')
@@ -108,12 +125,26 @@ class DetailScreen extends Component {
     });
   };
 
+  checkLoveList = (user_id) => {
+    getProductFromLoveList(user_id)
+      .then(list => {
+        list.forEach(item => {
+          if (item.product_id == this.props.route.params.product.id) {
+            this.setState({isLove: true});
+          }
+        });
+      })
+      .catch(error => {
+        console.error(`Error is: ${error}`);
+      });
+  };
+
   render() {
     const {navigation, route} = this.props;
     const {product} = route.params;
-    const {image} = route.params;
     let img = [];
     img = this.state.imageData;
+   
 
     const handleChange = nativeEvent => {
       if (nativeEvent) {
@@ -126,35 +157,11 @@ class DetailScreen extends Component {
     //phần này là code của bottom pupup: như show dialog á
     //Phần này là code khi bấm thêm vào giỏ hàng
 
-    const addCart = () => {
-      let productItem = {
-        id: product.id,
-        quantity: 1,
-        name: product.name,
-        price: product.price,
-        images: product.images,
-      };
-
-      if (product_list.length == 0) {
-        product_list.push(productItem);
-      } else {
-        product_list.forEach(index => {
-          if (index.id != productItem.id) {
-            product_list.push(productItem);
-          } else {
-            index.quantity++;
-          }
-        });
-      }
-
-      popupRef.show();
-    };
-
     let popupRef = React.createRef();
     const addCartToServer = () => {
       {
-        console.log('ton tai:', this.state.tontai);
         if (this.state.tontai == false) {
+          this.fetchProductFromCart();
           postItemToCart(this.state.userData, product)
             .then(item => {
               console.log('Thêm vào giỏ hàng thành công');
@@ -165,7 +172,8 @@ class DetailScreen extends Component {
               console.error(`Error is: ${error}`);
             });
         } else if (this.state.tontai == true) {
-          putItemInCart('+',this.state.userData, this.state.product_Exist)
+          this.fetchProductFromCart();
+          putItemInCart('+', this.state.userData, this.state.product_Exist)
             .then(item => {
               console.log('Đã update số lượng sản phẩm');
               //Chỗ này phải so sánh số lượng đang ở trong giỏ hàng của 1 user, nhiều user với tổng số lượng sp
@@ -176,10 +184,45 @@ class DetailScreen extends Component {
             });
         }
       }
+      this.setState({tontai: true});
       popupRef.show();
     };
 
+    const handleLoveList = () => {
+      getProductFromLoveList(this.state.userData.userID)
+        .then(list => {
+          if (Object.keys(list).length == 0) {
+            postToLoveList(this.state.userData, product.id)
+              .then(() => {
+                this.setState({isLove: true});
+                Alert.alert('', 'Đã thêm sản phẩm vào mục yêu thích');
+                console.log('Thêm vào love list thành công');
+              })
+              .catch(error => {
+                console.error(`Error is: ${error}`);
+              });
+          } else {
+            list.forEach(item => {
+              if (item.product_id != product.id) {
+                postToLoveList(this.state.userData, product.id)
+                  .then(() => {
+                    Alert.alert('', 'Đã thêm sản phẩm vào mục yêu thích');
+                    console.log('Thêm vào love list thành công');
+                  })
+                  .catch(error => {
+                    console.error(`Error is: ${error}`);
+                  });
+              }
+            });
+          }
+        })
+        .catch(error => {
+          console.error(`Error is: ${error}`);
+        });
+    };
+
     return (
+
       <SafeAreaView
         style={{
           flex: 1,
@@ -213,15 +256,27 @@ class DetailScreen extends Component {
           </View>
 
           <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
-            <TouchableOpacity style={{marginRight: 10}}>
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => {
+                navigation.navigate('RatingScreen', {
+                  id: product.id,
+                });
+              }}>
               <Text>Đánh giá</Text>
             </TouchableOpacity>
 
             <TouchableOpacity>
               <Text>Hỏi đáp</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.heartContainer}>
-              <EvilIcons name="heart" size={32} color="black" />
+            <TouchableOpacity
+              style={styles.heartContainer}
+              onPress={handleLoveList}>
+              {this.state.isLove == false ? (
+                <Ionicons  name="heart-outline" size={28} color="black" />
+              ) : (
+                <Ionicons  name="heart-sharp" size={28} color="red" />
+              )}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.shareContainer}>
@@ -236,7 +291,7 @@ class DetailScreen extends Component {
             activeOpacity={1}
             onPress={() => {
               navigation.navigate('DescriptionScreen', {
-                product_description: product.description,
+                product: product,
               });
             }}>
             <View style={styles.descriptionSection}>
@@ -255,10 +310,20 @@ class DetailScreen extends Component {
           <View style={styles.spaceContainer}></View>
           <View style={styles.descriptionSection}>
             <Text style={styles.titleText}>Thông tin chi tiết</Text>
-            <Text style={styles.infoText}>Thương hiệu</Text>
-            <Text style={styles.infoText}>Xuất xứ thương hiệu</Text>
-            <Text style={styles.infoText}>Nơi sản xuất</Text>
-            <Text style={styles.infoText}>Loại da</Text>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{paddingRight: 30}}>
+                <Text style={styles.infoText}>Thương hiệu: </Text>
+                {/* <Text style={styles.infoText}>Xuất xứ thương hiệu</Text> */}
+                <Text style={styles.infoText}>Xuất xứ: </Text>
+                <Text style={styles.infoText}>Loại da: </Text>
+              </View>
+              <View>
+                <Text style={styles.infoText}></Text>
+                {/* <Text style={styles.infoText}>Xuất xứ thương hiệu</Text> */}
+                <Text style={styles.infoText}>{product.origin}</Text>
+                <Text style={styles.infoText}></Text>
+              </View>
+            </View>
           </View>
 
           {/* End Thông tin chi tiết */}
@@ -271,7 +336,7 @@ class DetailScreen extends Component {
             activeOpacity={1}
             onPress={() => {
               navigation.navigate('InstructionScreen', {
-                product: {product},
+                product: product,
               });
             }}>
             <Text style={styles.titleText}>Hướng dẫn sử dụng</Text>
@@ -292,12 +357,13 @@ class DetailScreen extends Component {
           <View style={styles.spaceContainer}></View>
 
           <View style={styles.spaceContainer}></View>
-          <TouchableOpacity style={{padding: 10, flexDirection: 'row'}}
-           onPress={() => {
-            navigation.navigate('RatingScreen', {
-              id: product.id,
-            });
-          }}>
+          <TouchableOpacity
+            style={{padding: 10, flexDirection: 'row'}}
+            onPress={() => {
+              navigation.navigate('RatingScreen', {
+                id: product.id,
+              });
+            }}>
             <Text style={styles.titleText}>Đánh giá</Text>
 
             <View style={styles.rightContainer}>
@@ -318,7 +384,7 @@ class DetailScreen extends Component {
         <BottomPopup
           ref={target => (popupRef = target)}
           product={product}
-          image={image}
+          image={this.props.route.params.product.imagepresent}
           navigation={navigation}
         />
       </SafeAreaView>
@@ -355,7 +421,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     right: 50,
-    marginTop: 8,
+    marginTop: 6,
   },
   shareContainer: {
     alignItems: 'center',
@@ -367,7 +433,6 @@ const styles = StyleSheet.create({
 
   descriptionSection: {
     justifyContent: 'center',
-    // height: 120,
     padding: 10,
     width: width / 1.07,
   },
@@ -386,17 +451,15 @@ const styles = StyleSheet.create({
   spaceContainer: {
     padding: 1,
     backgroundColor: '#E5E5E5',
-    // margin:4,
   },
 
   infoText: {
     marginLeft: 8,
     fontSize: 14,
-    fontWeight: '300',
+    fontWeight: '400',
   },
 
   addCartContainer: {
-    // borderWidth: 0.3,
     borderTopWidth: 0.6,
     borderTopColor: '#E5E5E5',
     height: 60,
