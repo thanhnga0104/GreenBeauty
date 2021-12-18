@@ -409,8 +409,21 @@ async function getDeliveryInformation(id) {
     console.error(`Error is: ${error}`);
   }
 }
-
+async function getRatingbyUserid(id) {
+  const apigetRatingbyUserid =
+    'http://10.0.2.2:8000/rating/' + id + '/';
+  try {
+    let response = await fetch(apigetRatingbyUserid, {
+      method: 'GET',
+    });
+    let responseJson = await response.json();
+    return responseJson;
+  } catch (error) {
+    console.error(`Error is: ${error}`);
+  }
+}
 export {
+  getRatingbyUserid,
   getDeliveryInformation,
   getDetailById,
   getTypeOfCategory,
