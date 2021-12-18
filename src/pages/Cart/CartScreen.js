@@ -13,13 +13,12 @@ import {
 import CheckBox from '@react-native-community/checkbox';
 import Swipeout from 'react-native-swipeout';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getImageFromServer} from '../../networking/Server';
 import {getProductFromCart} from '../../networking/Server';
 import {getProductById} from '../../networking/Server';
 import {getDataUser} from '../../networking/Server';
 import {getAddress} from '../../networking/Server';
 import {putItemInCart} from '../../networking/Server';
-import { deleteProductFromCart } from '../../networking/Server';
+import {deleteProductFromCart} from '../../networking/Server';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -29,11 +28,10 @@ class CartFlatListItem extends Component {
     super(props);
     this.state = {
       isSelected: false,
-      imageFromServer: [],
       productItem: [],
       quantity: null,
-
       activeRowKey: null,
+      
     };
   }
 
@@ -50,7 +48,6 @@ class CartFlatListItem extends Component {
     let product_id = this.props.item.product;
     getProductById(product_id)
       .then(product => {
-        this.refreshImageFromServer(product);
         this.setState({productItem: product});
       })
       .catch(error => {
@@ -58,20 +55,6 @@ class CartFlatListItem extends Component {
       });
   };
 
-  refreshImageFromServer = product => {
-    let data = product.images;
-    data.forEach(data => {
-      getImageFromServer(data)
-        .then(imageData => {
-          if (this.state.imageFromServer == '') {
-            this.setState({imageFromServer: imageData});
-          }
-        })
-        .catch(error => {
-          this.setState({imageFromServer: []});
-        });
-    });
-  };
 
   setQuantity = () => {
     this.setState({quantity: this.props.item.quantities});
@@ -120,51 +103,50 @@ class CartFlatListItem extends Component {
 
     const swipeSettings = {
       autoClose: true,
-      onClose: (secId, rowId, direction) =>{
-        if(this.state.activeRowKey != null){
-          this.setState({activeRowKey: null})
+      onClose: (secId, rowId, direction) => {
+        if (this.state.activeRowKey != null) {
+          this.setState({activeRowKey: null});
         }
-
       },
-      onOpen: (secId, rowId, direction) =>{
-        this.setState({activeRowKey: this.props.item.id})
-
+      onOpen: (secId, rowId, direction) => {
+        this.setState({activeRowKey: this.props.item.id});
       },
-      right:[
+      right: [
         {
-          onPress: ()=> {
+          onPress: () => {
             deleteProductFromCart(this.state.activeRowKey)
-            .then(()=>{              
-              //console.log("xóa ok rồi")
-              this.props.cartScreen.fetchProductFromCart();
-            })
-            .catch(error => {
-              console.log("xóa ko dc")
-            });
+              .then(() => {
+                //console.log("xóa ok rồi")
+                this.props.cartScreen.fetchProductFromCart();
+              })
+              .catch(error => {
+                console.log('xóa ko dc');
+              });
           },
-          text:'Xóa', type:'delete'
-        }
+          text: 'Xóa',
+          type: 'delete',
+        },
       ],
       rowId: this.props.index,
-      sectionId: 1
-
-    }
+      sectionId: 1,
+    };
     return (
       <Swipeout {...swipeSettings}>
-        <View style={styles.cartItem}>
+        <TouchableOpacity style={styles.cartItem}
+        onPress={()=> {navigation.navigate('DetailScreen', {product: this.state.productItem})}}>
           <View style={styles.checkboxContainer}>
             <CheckBox
               tintColors={{true: 'green'}}
               value={this.state.isSelected}
               onValueChange={event => {
-                handleSelect(event, this.state.productItem),
+                handleSelect(event, this.state.productItem, this.state.quantity),
                   this.isSelect(event);
               }}
             />
           </View>
 
           <Image
-            source={{uri: this.state.imageFromServer.img}}
+            source={{uri: this.state.productItem.imagepresent}}
             style={styles.itemImage}
           />
           <View style={{margin: 10}}>
@@ -193,16 +175,46 @@ class CartFlatListItem extends Component {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </Swipeout>
     );
   }
 }
 
-const EmptyComponent = () => {
+const EmptyComponent = navigation => {
   return (
-    <View>
-      <Text>Chưa có dữ liệu đâu </Text>
+    <View style={{paddingTop:150,  alignItems: 'center',}}>
+      <TouchableOpacity
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <AntDesign name="shoppingcart" size={80} color="#595654" />
+      </TouchableOpacity>
+      <Text style={{fontSize: 16}}>
+        Bạn chưa có sản phẩm nào trong giỏ hàng
+      </Text>
+      <TouchableOpacity
+        style={{
+          height: 40,
+          width: '85%',
+          margin: 10,
+          backgroundColor: '#FF5F04',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 3,
+        }}
+        onPress={()=>{navigation.navigate('HomeScreen')}}
+        >
+        <Text
+          style={{
+            color: '#fff',
+            fontSize: 18,
+            fontWeight: '500',
+          }}>
+          TIẾP TỤC MUA SẮM
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -216,6 +228,7 @@ export default class CartScreen extends Component {
       selected: 0,
       selectData: [],
       deleteRowKey: null,
+      totalCash: 0,
     };
   }
 
@@ -239,14 +252,15 @@ export default class CartScreen extends Component {
       });
   };
 
-  handleSelect = (event, product) => {
+  handleSelect = (event, product, quantity) => {
     let listItem = this.state.selectData;
     if (event == true) {
+      //console.log("product đang đợi:", product)
       listItem.push(product.id);
-      console.log('list item:', listItem);
       this.setState({
         selected: ++this.state.selected,
         selectData: listItem,
+        totalCash: quantity*product.price,
       });
     } else {
       let newList = listItem.filter(item => item !== product.id);
@@ -264,7 +278,11 @@ export default class CartScreen extends Component {
       getAddress(this.state.userData, '')
         .then(data => {
           if (Object.keys(data).length === 0) {
-            navigation.navigate('AddLocationScreen', {defaultAddress: 'true'});
+            navigation.navigate('AddLocationScreen', {
+              defaultAddress: 'true',
+              selectData: this.state.selectData,
+              userData: this.state.userData,
+            });
             console.log('Chưa có địa chỉ');
           } else {
             navigation.navigate('ConfirmScreen', {
@@ -291,7 +309,7 @@ export default class CartScreen extends Component {
     />
   );
   render() {
-    const {navigation} = this.props;   
+    const {navigation} = this.props;
     return (
       <SafeAreaView
         style={{
@@ -329,12 +347,11 @@ export default class CartScreen extends Component {
           showsHorizontalScrollIndicator={false}
           data={this.state.listData}
           keyExtractor={item => item.product}
-          ListEmptyComponent={EmptyComponent}
+          ListEmptyComponent={(EmptyComponent(navigation))}
           ItemSeparatorComponent={this.ItemSepatator}
           renderItem={({item, index}) => {
             return (
               <CartFlatListItem
-              
                 handleSelect={this.handleSelect}
                 userData={this.state.userData}
                 cartScreen={this}
@@ -364,7 +381,7 @@ export default class CartScreen extends Component {
               <Text style={{color: '#484848', marginHorizontal: 5}}>
                 Tổng tiền
               </Text>
-              <Text style={{color: 'green', marginRight: 5}}>0</Text>
+              <Text style={{color: 'green', marginRight: 5}}>{this.state.totalCash}</Text>
             </View>
             <TouchableOpacity
               style={{

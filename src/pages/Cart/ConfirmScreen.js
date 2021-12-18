@@ -22,6 +22,7 @@ import {getImageFromServer} from '../../networking/Server';
 import {getProductById} from '../../networking/Server';
 import {postOrder} from '../../networking/Server';
 import {postOrderDetail} from '../../networking/Server';
+import {deleteProductFromCart} from '../../networking/Server';
 
 export default class ConfirmScreen extends Component {
   constructor() {
@@ -80,22 +81,38 @@ export default class ConfirmScreen extends Component {
 
   btnConfirmOder = navigation => {
     postOrder(this.state.userData, this.state.total, this.state.delivery.id)
-      .then(result => {        
+      .then(result => {
         this.state.orderdetail.forEach(item => {
-
           postOrderDetail(result.id, item.product_id, item.quantity)
             .then(res => {
-              console.log("item.product_id:",item.product_id)
-              console.log('Add detail thành công', res);
-              
               this.setState({order_id: result.id});
             })
             .catch(error => {
               console.error(`Error is: ${error}`);
             });
-            
         });
-        
+
+        this.props.route.params.selectData.forEach(product_id => {
+          getProductFromCart(this.state.userData.userID, product_id)
+            .then(cartItem => {
+              console.log('cart id nè:', cartItem[0].id);
+              deleteProductFromCart(cartItem[0].id)
+                .then(() => {
+                  console.log(
+                    'Đặt hàng thành công, đã xóa sản phẩm vừa mua khỏi giỏ hàng',
+                  );
+                })
+                .catch(error => {
+                  console.log(
+                    'Đặt hàng ko thành công, list product in cart còn nguyên',
+                  );
+                });
+            })
+            .catch(error => {
+              console.log('Lỗi tại dòng 112 ConfirmScreen');
+            });
+        });
+
         navigation.navigate('OrderSuccessfullScreen');
       })
       .catch(error => {
@@ -107,7 +124,7 @@ export default class ConfirmScreen extends Component {
     let item = {product_id, quantity};
     let temp = this.state.orderdetail;
     temp.push(item);
-    console.log('temp: ', temp);
+    // console.log('temp: ', temp);
     this.setState({orderdetail: temp});
   };
 
@@ -118,6 +135,7 @@ export default class ConfirmScreen extends Component {
 
   render() {
     const {navigation} = this.props;
+    // console.log("select data:", this.props.route.params.selectData)
     return (
       <SafeAreaView style={{flex: 1, height: '100%'}}>
         <StatusBar backgroundColor="#316C49" barStyle="light-content" />
@@ -173,12 +191,13 @@ export default class ConfirmScreen extends Component {
               <FlatList
                 data={this.props.route.params.selectData}
                 ItemSeparatorComponent={this.ItemSepatator}
+                keyExtractor={item => item.id}
                 renderItem={({item, index}) => {
                   return (
                     <ProductItem
                       navigation={navigation}
                       provisional={this.function_provisional}
-                      orderDetail={this.function_OrderDetail}                      
+                      orderDetail={this.function_OrderDetail}
                       item={item}
                       index={index}></ProductItem>
                   );
@@ -215,7 +234,7 @@ class ProductItem extends Component {
     super(props);
     this.state = {
       product: [],
-      imageFromServer: [],
+      //imageFromServer: [],
       quantity: 0,
     };
   }
@@ -227,18 +246,21 @@ class ProductItem extends Component {
 
   fetchDataProduct = () => {
     getProductById(this.props.item).then(product => {
-      let data = product.images;
-      data.forEach(data => {
-        getImageFromServer(data)
-          .then(image => {
-            if (this.state.imageFromServer == '') {
-              this.setState({imageFromServer: image, product: product});
-            }
-          })
-          .catch(error => {
-            this.setState({imageFromServer: []});
-          });
-      });
+      this.setState({product: product});
+      // let data = product.images;
+      // data.forEach(data => {
+      //   getImageFromServer(data)
+      //     .then(image => {
+      //       // if (this.state.imageFromServer == '') {
+      //       //   this.setState({imageFromServer: image, product: product});
+      //       // }
+
+      //       this.setState({product: product})
+      //     })
+      //     .catch(error => {
+      //       //this.setState({imageFromServer: []});
+      //     });
+      // });
 
       ////////////////////
       getDataUser()
@@ -278,20 +300,20 @@ class ProductItem extends Component {
       });
   };
 
-  refreshImageFromServer = () => {
-    let data = this.props.item.images;
-    data.forEach(data => {
-      getImageFromServer(data)
-        .then(image => {
-          if (this.state.imageFromServer == '') {
-            this.setState({imageFromServer: image});
-          }
-        })
-        .catch(error => {
-          this.setState({imageFromServer: []});
-        });
-    });
-  };
+  // refreshImageFromServer = () => {
+  //   let data = this.props.item.images;
+  //   data.forEach(data => {
+  //     getImageFromServer(data)
+  //       .then(image => {
+  //         if (this.state.imageFromServer == '') {
+  //           this.setState({imageFromServer: image});
+  //         }
+  //       })
+  //       .catch(error => {
+  //         this.setState({imageFromServer: []});
+  //       });
+  //   });
+  // };
   render() {
     const {navigation} = this.props;
     return (
@@ -303,12 +325,12 @@ class ProductItem extends Component {
           style={styles.cartItem}
           onPress={() => {
             navigation.navigate('DetailScreen', {
-              image: this.state.imageFromServer.img,
+              //image: this.state.imageFromServer.img,
               product: this.props.item,
             });
           }}>
           <Image
-            source={{uri: this.state.imageFromServer.img}}
+            source={{uri: this.state.product.imagepresent}}
             style={styles.itemImage}
           />
           <View style={{margin: 10}}>

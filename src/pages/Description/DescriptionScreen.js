@@ -5,7 +5,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 export default class DescriptionScreen extends Component {
   render() {
     const {navigation, route} = this.props;
-    const {product_description} = route.params;
+    const {product} = route.params;
     return (
       <SafeAreaView
         style={{
@@ -28,8 +28,8 @@ export default class DescriptionScreen extends Component {
             <Text style={styles.titleScreen}>Mô tả sản phẩm</Text>
           </View>
         </View>
-        <View>
-          <Text>{product_description}</Text>
+        <View style={{padding:10}}>
+          <Text style={{fontSize:16}}>{product.description}</Text>
         </View>
       </SafeAreaView>
     );

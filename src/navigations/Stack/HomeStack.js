@@ -15,21 +15,16 @@ import DescriptionScreen from '../../pages/Description/DescriptionScreen';
 import AddLocationScreen from '../../pages/Address/AddLocationScreen';
 import ConfirmScreen from '../../pages/Cart/ConfirmScreen';
 import AddressScreen from '../../pages/Address/AddressScreen';
-import SettingAccount from '../../pages/Profile/SettingAccount/SettingAccount';
 import OrderSuccessfullScreen from '../../pages/Cart/OrderSuccessfulScreen';
 import DetailRating from '../../pages/Detail/Rating/DetailRating';
 import DetailIngredients from '../../components/Ingredients/DetailIngredient/DetailIngredients';
 import IngredientsScreen from '../../pages/Ingredients/IngredientScreen';
 import DetailOrder from '../../pages/DetailOrder/DetailOrder';
 import RatingScreen from '../../pages/Rating/RatingScreen';
-import Pending from '../../pages/OrderStatus/Pending'
-import Waiting from '../../pages/OrderStatus/Waiting';
-import Delivery from '../../pages/OrderStatus/Delivery'
-import Success from '../../pages/OrderStatus/Success'
+
 const stack = createStackNavigator();
 const HomeStack = ({navigation}) => (
   <stack.Navigator>
-    
     <stack.Screen
       name="HomeScreen"
       component={HomeScreen}
@@ -65,13 +60,13 @@ const HomeStack = ({navigation}) => (
     <stack.Screen name="HomeCircleSection" component={HomeCircleSection} />
 
     <stack.Screen
-      name="CategoryScreen"
+      name="CategoryHome"
       component={CategoryScreen}
       options={{
         headerShown: false,
       }}
     />
-    <stack.Screen name="CategoryHeader" component={CategoryHeader} />
+    <stack.Screen name="CategoryHeaderHome" component={CategoryHeader} />
     <stack.Screen
       name="CartScreen"
       component={CartScreen}
@@ -103,7 +98,13 @@ const HomeStack = ({navigation}) => (
       }}
     />
 
-    <stack.Screen name="InstructionScreen" component={InstructionScreen} />
+    <stack.Screen
+      name="InstructionScreen"
+      component={InstructionScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
 
     <stack.Screen
       name="DescriptionScreen"
@@ -112,41 +113,18 @@ const HomeStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-    <stack.Screen
-      name="SettingAccount"
-      component={SettingAccount}
-      options={{
-        headerShown: false,
-      }}
-    />
 
     <stack.Screen
       name="OrderSuccessfullScreen"
       component={OrderSuccessfullScreen}
-      // options={{
-      //   headerShown: false,
-      // }}
     />
-    <stack.Screen
-      name="RatingScreen"
-      component={DetailRating}
-      // options={{
-      //   headerShown: false,
-      // }}
-    />
-    <stack.Screen
-      name="DetailIngredient"
-      component={DetailIngredients}
-      // options={{
-      //   headerShown: false,
-      // }}
-    />
-    <stack.Screen name= "Pending" component={Pending}/>
-    <stack.Screen name="Delivery" component={Delivery}/>
-    <stack.Screen name="Success" component={Success}/>
-    <stack.Screen name= "Rating" component={RatingScreen}/>
-    <stack.Screen name="DetailOrder" component={DetailOrder}/>
-    <stack.Screen name="Waiting" component={Waiting}/>
+    <stack.Screen name="RatingScreen" component={DetailRating} />
+    <stack.Screen name="DetailIngredient" component={DetailIngredients} />
+    <stack.Screen name="Rating" component={RatingScreen} />
+    <stack.Screen name="DetailOrder" component={DetailOrder} />
+
+    
+ 
   </stack.Navigator>
 );
 

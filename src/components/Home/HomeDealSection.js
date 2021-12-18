@@ -9,37 +9,8 @@ import {
 } from 'react-native';
 import {Component} from 'react';
 import {getProductsFromServer} from '../../networking/Server';
-import {getImageFromServer} from '../../networking/Server';
 
 class HorizontalFlatListItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      imageFromServer: [],
-    };
-  }
-
-  componentDidMount() {
-    this.refreshImageFromServer();
-  }
-
-  refreshImageFromServer = () => {
-    let data = [];
-    data = this.props.item.images;
-    data.forEach(data => {
-      getImageFromServer(data)
-        .then(image => {
-          if (this.state.imageFromServer == '') {
-           // console.log('log ở deal:', image);
-            this.setState({imageFromServer: image});
-          }
-        })
-        .catch(error => {
-          this.setState({imageFromServer: []});
-        });
-    });
-  };
-
   render() {
     const {navigation} = this.props;
     return (
@@ -47,12 +18,11 @@ class HorizontalFlatListItem extends Component {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('DetailScreen', {
-              image: this.state.imageFromServer.img,
               product: this.props.item,
             });
           }}>
           <Image
-            source={{uri: this.state.imageFromServer.img}}
+            source={{uri: this.props.item.imagepresent}}
             style={styles.itemImage}
           />
           <Text style={styles.itemPrice}>{this.props.item.price}</Text>
