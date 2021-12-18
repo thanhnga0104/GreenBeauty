@@ -29,9 +29,7 @@ import {Avatar} from 'react-native-paper';
 import {AuthContext} from '../../context/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
 
 const ProfileScreen = ({navigation}) => {
   const {signOut} = React.useContext(AuthContext);
@@ -47,6 +45,7 @@ const ProfileScreen = ({navigation}) => {
   const [Delivery, setDelivery] = useState(0);
   const [Success, setSuccess] = useState(0);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [id, setId] = useState(0)
   useEffect(() => {
     getData();
   }, []);
@@ -54,6 +53,7 @@ const ProfileScreen = ({navigation}) => {
     try {
       const value = await AsyncStorage.getItem('userToken');
       const valueid = await AsyncStorage.getItem('id');
+      setId(valueid)
       //console.log("value: ", value)
 
       getInfo(valueid, value);
@@ -140,24 +140,31 @@ const ProfileScreen = ({navigation}) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-{/* bắt đầu  header */}
+        {/* bắt đầu  header */}
 
-<View style={styles.headerContainer}>
-        <View style={styles.menuContainer}>
-        <Feather name="menu" size={28} color="#fff"
-         onPress={()=>{navigation.openDrawer()}}
-           />
-      </View>
-
-        <View style={styles.inputContainer}>
-          <View style={{marginHorizontal:10}}>
-            <FontAwesome name="search" size={14} color="#7D7D7D" />
+        <View style={styles.headerContainer}>
+          <View style={styles.menuContainer}>
+            <Feather
+              name="menu"
+              size={28}
+              color="#fff"
+              onPress={() => {
+                navigation.openDrawer();
+              }}
+            />
           </View>
-          <TextInput style={styles.inputText} placeholder="Tìm sản phẩm, thương hiệu, ...?" ></TextInput>
-        </View>
-      </View>
 
-{/* kết thúc header */}
+          <View style={styles.inputContainer}>
+            <View style={{marginHorizontal: 10}}>
+              <FontAwesome name="search" size={14} color="#7D7D7D" />
+            </View>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Tìm sản phẩm, thương hiệu, ...?"></TextInput>
+          </View>
+        </View>
+
+        {/* kết thúc header */}
 
         <View style={styles.container}>
           <View
@@ -358,8 +365,11 @@ const ProfileScreen = ({navigation}) => {
         </View>
 
         <View style={styles.setting}>
-          <TouchableOpacity style={styles.itemsetting} 
-          onPress={()=>{navigation.navigate("LoveListScreen")}}>
+          <TouchableOpacity
+            style={styles.itemsetting}
+            onPress={() => {
+              navigation.navigate('LoveListScreen');
+            }}>
             <Icon
               name="heart-o"
               size={scale(24)}
@@ -376,7 +386,10 @@ const ProfileScreen = ({navigation}) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.itemsetting}>
+          <TouchableOpacity style={styles.itemsetting}
+          onPress={() => {
+            navigation.navigate('RatingHistory',{user: id});
+          }}>
             <MaterialIcons
               name="star-outline"
               size={scale(24)}
@@ -393,9 +406,11 @@ const ProfileScreen = ({navigation}) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.itemsetting}
-          onPress={()=> {navigation.navigate("Cart")}}
-          >
+          <TouchableOpacity
+            style={styles.itemsetting}
+            onPress={() => {
+              navigation.navigate('Cart');
+            }}>
             <MaterialCommunityIcons
               name="shopping-outline"
               size={scale(24)}
@@ -597,9 +612,8 @@ const styles = StyleSheet.create({
     bottom: scale(40),
   },
 
-
-//   của header
-headerContainer: {
+  //   của header
+  headerContainer: {
     flexDirection: 'row',
     paddingVertical: 10,
     backgroundColor: '#316C49',
@@ -613,7 +627,7 @@ headerContainer: {
     marginRight: 20,
     borderRadius: 4,
     borderWidth: 0.3,
-    borderEndColor:"#7D7D7D",
+    borderEndColor: '#7D7D7D',
   },
 
   menuContainer: {
@@ -622,10 +636,10 @@ headerContainer: {
     justifyContent: 'center',
   },
 
-  inputText:{
-    alignItems:'center',
-    justifyContent:'center',
-    paddingVertical:4
-  }
+  inputText: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+  },
 });
 export default ProfileScreen;
