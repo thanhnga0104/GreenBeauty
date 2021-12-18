@@ -16,6 +16,7 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {getDataUser} from '../../networking/Server';
 import {getAddress} from '../../networking/Server';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default class AddressScreen extends Component {
   constructor() {
@@ -68,24 +69,43 @@ export default class AddressScreen extends Component {
 
           <View>
             <Text style={styles.titleHeader}>Địa chỉ nhận hàng</Text>
-          </View>          
+          </View>
         </View>
 
         {/* Bắt đầu body */}
         <View>
-            <FlatList              
-              data={this.state.delivery}
-              ItemSeparatorComponent={this.ItemSepatator}
-              renderItem={({item, index}) => {
-                return (
-                  <AddressFlatListItem
-                    navigation={navigation}
-                    item={item}
-                    index={index}></AddressFlatListItem>
-                );
-              }}
-            />
-          </View>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              padding: 10,
+              backgroundColor: '#fff',
+              justifyContent: 'space-between',
+            }}
+            onPress={()=>{navigation.navigate("AddLocationScreen")}}>
+            <Text style={{fontSize: 16}}>Thêm địa chỉ</Text>
+            <Ionicons name="add-outline" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            borderBottomWidth: 1,
+            borderColor: '#E5E5E5',
+          }}
+        />
+        <View>
+          <FlatList
+            data={this.state.delivery}
+            ItemSeparatorComponent={this.ItemSepatator}
+            renderItem={({item, index}) => {
+              return (
+                <AddressFlatListItem
+                  navigation={navigation}
+                  item={item}
+                  index={index}></AddressFlatListItem>
+              );
+            }}
+          />
+        </View>
       </SafeAreaView>
     );
   }
@@ -95,10 +115,12 @@ class AddressFlatListItem extends Component {
   render() {
     const {navigation} = this.props;
     return (
+      <View>
       <View style={styles.addressItem}>
         <Text>{this.props.item.receiveName}</Text>
         <Text>{this.props.item.phone}</Text>
         <Text>{this.props.item.fullAddress}</Text>
+      </View>
       </View>
     );
   }
@@ -128,9 +150,8 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
 
-  addressItem:{
-    backgroundColor:'#fff',
-    padding:10
-
-  }
+  addressItem: {
+    backgroundColor: '#fff',
+    padding: 10,
+  },
 });

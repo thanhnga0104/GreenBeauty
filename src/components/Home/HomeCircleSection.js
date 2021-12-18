@@ -9,7 +9,7 @@ const HomeCircleSection = ({navigation}) => {
     <View
       style={styles.container}>
       <TouchableOpacity style={{alignItems: 'center'}} 
-      onPress={()=> {navigation.navigate('CategoryScreen');}}>
+      onPress={()=> {navigation.navigate("CategoryHome");}}>
         <View style={styles.categoryContainer}>
           <Ionicons name="grid" size={28} color="#fff" />
         </View>

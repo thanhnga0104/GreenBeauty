@@ -65,13 +65,14 @@ class TypeFlatListItem extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <View style={styles.TypeItem}>
+      <TouchableOpacity style={styles.TypeItem}
+      onPress={()=>{navigation.navigate("RecommendProductScreen")}}>
         <Image
           style={styles.imageTypeItem}
           source={{uri: this.props.item.imagecategory}}></Image>
 
         <Text style={styles.nameTypeItem}>{this.props.item.name}</Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

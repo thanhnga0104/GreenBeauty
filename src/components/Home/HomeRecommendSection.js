@@ -9,36 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {getProductsFromServer} from '../../networking/Server';
-import {getImageFromServer} from '../../networking/Server';
 
 class RecommendFlatListItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      imageFromServer: [],
-    };
-  }
-
-  componentDidMount() {
-    this.refreshImageFromServer();
-  }
-
-  refreshImageFromServer = () => {
-    let data = this.props.item.images;
-    data.forEach(data => {
-      getImageFromServer(data)
-        .then(image => {
-          if (this.state.imageFromServer == '') {
-           // console.log('log ở recommend:', image);
-            this.setState({imageFromServer: image});
-          }
-        })
-        .catch(error => {
-          this.setState({imageFromServer: []});
-        });
-    });
-  };
-
   render() {
     const {navigation} = this.props;
     return (
@@ -46,22 +18,11 @@ class RecommendFlatListItem extends Component {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('DetailScreen', {
-              image: this.state.imageFromServer.img,
               product: this.props.item,
             });
           }}>
-          {/* <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('DetailScreen', {
-              product_id: this.props.item.id,
-              image: this.state.imageFromServer.img,
-              price: this.props.item.price,
-              name: this.props.item.name,
-              product: this.props.item,
-            });
-          }}> */}
           <Image
-            source={{uri: this.state.imageFromServer.img}}
+            source={{uri: this.props.item.imagepresent}}
             style={styles.imageContainer}
           />
           <Text style={styles.priceContainer}>{this.props.item.price}</Text>
@@ -84,25 +45,7 @@ export default class HomeRecommendSection extends Component {
 
   componentDidMount() {
     this.refreshDataFromServer();
-  }
-
-  // refreshDataFromServer = () => {
-  //   this.setState({refreshing: true});
-  //   getProductsFromServer()
-  //     .then(products => {
-  //       this.setState({productsFromServer: products});
-  //       this.setState({refreshing: false});
-  //     })
-  //     .catch(error => {
-  //       this.setState({productsFromServer: []});
-  //     });
-  // };
-
-  // handleRefresh = () => {
-  //   this.setState({refreshing: false}, () => {
-  //     this.refreshDataFromServer();
-  //   });
-  // };
+  }  
 
   refreshDataFromServer = () => {
     this.setState({refreshing: true});
