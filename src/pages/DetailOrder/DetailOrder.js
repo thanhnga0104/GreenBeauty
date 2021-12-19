@@ -26,6 +26,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductOrder from '../../components/DetailOrder/ProductOrder';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import { getDetailById, getDeliveryInformation } from '../../networking/Server';
 import Modal from "react-native-modal";
 const DetailOrder = ({navigation, route}) =>{
@@ -104,6 +105,23 @@ const DetailOrder = ({navigation, route}) =>{
     return(
         <View>
             <ScrollView>
+            <StatusBar backgroundColor="#316C49" barStyle="light-content" />
+      <View style={styles.headerContainer}>
+        <View style={styles.backContainer}>
+          <AntDesign
+            name="arrowleft"
+            size={24}
+            color="#fff"
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+        </View>
+
+        <View>
+          <Text style={styles.titleScreen}>Chờ xử lý</Text>
+        </View>
+      </View>
                 <View style={{flexDirection:"column", marginTop: 5, backgroundColor:"white"}}>
                     <View style={{flexDirection:"row", marginTop:5, marginLeft: 5}}>
                         <MaterialCommunityIcons name="truck-fast-outline" size={scale(15)} />
@@ -294,5 +312,25 @@ const styles = StyleSheet.create({
         width: "100%",
         marginBottom: scale(10)
     },
+    headerContainer: {
+        flexDirection: 'row',
+        paddingVertical: 10,
+        backgroundColor: '#316C49',
+      },
+    
+      backContainer: {
+        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+    
+      titleScreen: {
+        flex: 1,
+        color: '#fff',
+        marginLeft: 8,
+        fontSize: 16,
+        fontWeight: '600',
+        textAlignVertical: 'center',
+      },
 })
 export default DetailOrder;

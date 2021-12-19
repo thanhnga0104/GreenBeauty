@@ -17,6 +17,7 @@ import {
   TouchableOpacityBase,
   TouchableOpacity,
   Button,
+  Modal,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -30,7 +31,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
-
+import ModalPicker from '../../../components/Profile/SexModalPicker';
 const SettingAccount = ({navigation}) => {
   const [data, setData] = useState({
     name: 'Loading...',
@@ -50,7 +51,8 @@ const SettingAccount = ({navigation}) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [birthdaytext, setbirthdaytext] = useState('01/01/2000');
-
+  const [chooseData, setChooseData] = useState('');
+  const [isModalVisible, setisModalVisible] = useState(false);
   useEffect(() => {
     const getData = async () => {
       try {
@@ -86,13 +88,14 @@ const SettingAccount = ({navigation}) => {
                 token: token,
               });
               console.log('giới tính render: ', d.sex);
-              if (d.sex == 'Male') {
-                setMale(true);
-                setFemal(false);
-              } else if (d.sex == 'Female') {
-                setFemal(true);
-                setMale(false);
-              }
+              // if (d.sex == 'Male') {
+              //   setMale(true);
+              //   setFemal(false);
+              // } else if (d.sex == 'Female') {
+              //   setFemal(true);
+              //   setMale(false);
+              // }
+              setChooseData(d.sex)
             });
           }
         })
@@ -113,7 +116,8 @@ const SettingAccount = ({navigation}) => {
     setDate(currentDate);
 
     let tem = new Date(currentDate);
-    let fDate =tem.getFullYear()+ '-' + tem.getDate() + '-' + tem.getMonth();
+    let temmonth = parseInt(tem.getMonth())+1
+    let fDate= tem.getFullYear() + "-" + temmonth +'-'+ tem.getDate();
     setbirthdaytext(fDate);
     setData({
       ...data,
@@ -167,8 +171,8 @@ const SettingAccount = ({navigation}) => {
         email: data.email,
         name: data.name,
         phone: data.phonenum,
-        sex: data.sex,
-        dateofbirth: birthdaytext,
+        sex: chooseData,
+        dateofbirth: data.birthday,
       }),
       //body: JSON.stringify({"email": data.email, "name": d.name, "phone": d.phonenum, "sex": d.sex, "dateofbirth": data.birthday})
     })
@@ -283,6 +287,12 @@ const SettingAccount = ({navigation}) => {
       </View>
     </View>
   );
+  const setdata = (name) => {
+    setChooseData(name);
+  };
+  const ChangeModalVisible = bool => {
+    setisModalVisible(bool);
+  };
   return (
     <View style={{flex: 1}}>
       <BottomSheet
@@ -333,17 +343,17 @@ const SettingAccount = ({navigation}) => {
           </View>
 
           <View>
-            <Text style={{marginLeft: scale(10), fontSize: scale(14)}}>
+            <Text style={{marginLeft: scale(10), fontSize: scale(14), color:"#316C49"}}>
               Họ tên
             </Text>
             <TextInput
               style={styles.input}
-              defaultValue={data.name}
+              value={data.name}
               onChangeText={val => handleNameChange(val)}></TextInput>
           </View>
 
           <View style={{marginTop: 10}}>
-            <Text style={{marginLeft: scale(10), fontSize: scale(14)}}>
+            <Text style={{marginLeft: scale(10), fontSize: scale(14), color:"#316C49"}}>
               Số điện thoại
             </Text>
             <TextInput
@@ -360,7 +370,7 @@ const SettingAccount = ({navigation}) => {
               marginLeft: scale(10),
               marginRight: scale(10),
             }}>
-            <Text style={{fontSize: scale(14)}} size={scale(10)}>
+            <Text style={{fontSize: scale(14), color:"#316C49"}} size={scale(10)}>
               Ngày sinh
             </Text>
             <View
@@ -370,7 +380,7 @@ const SettingAccount = ({navigation}) => {
                 paddingTop: scale(10),
                 paddingBottom: scale(10),
               }}>
-              <Text>{data.birthday}</Text>
+              <Text style={{fontSize:scale(14)}}>{data.birthday}</Text>
               <TouchableOpacity onPress={() => showMode('date')}>
                 <Fontisto name="date" size={scale(20)} />
               </TouchableOpacity>
@@ -389,67 +399,30 @@ const SettingAccount = ({navigation}) => {
 
           <View
             style={{
-              flexDirection: 'column',
+              flexDirection: 'row',
               marginLeft: scale(10),
               marginTop: scale(10),
             }}>
-            <Text style={{fontSize: scale(14)}}>Giới tính:</Text>
-            <View style={{flexDirection: 'row', marginTop: scale(5)}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <CheckBox
-                  disabled={false}
-                  value={male}
-                  onValueChange={() => {
-                    setMale(!male);
-                  }}
-                />
-
-                <Text style={{marginLeft: scale(5)}}>Nam</Text>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: scale(10),
-                }}>
-                <CheckBox
-                  disabled={false}
-                  value={female}
-                  onValueChange={() => {
-                    setFemal(!female);
-                  }}
-                />
-
-                <Text style={{marginLeft: scale(5)}}>Nữ</Text>
-              </View>
-            </View>
+            <Text style={{fontSize: scale(14), alignSelf:"center", color:"#316C49"}}>Giới tính:</Text>
+            <TouchableOpacity
+            style={styles.shortwrapper}
+            onPress={() => ChangeModalVisible(true)}>
+            <Text>{chooseData}</Text>
+          </TouchableOpacity>
+          <Modal
+            transparent={true}
+            animationType="fade"
+            visible={isModalVisible}
+            nRequestClose={() => ChangeModalVisible(false)}>
+            <ModalPicker
+              ChangeModalVisible={ChangeModalVisible}
+              setdata={setdata}
+            />
+          </Modal>
           </View>
         </View>
 
-        <View style={styles.setting}>
-          <TouchableOpacity style={styles.itemsetting}>
-            <Text
-              style={{
-                fontSize: scale(17),
-                fontWeight: '400',
-                marginLeft: scale(10),
-              }}>
-              Đổi mật khẩu
-            </Text>
-            <Entypo
-              name="chevron-small-right"
-              size={scale(24)}
-              style={{marginLeft: scale(10)}}
-            />
-          </TouchableOpacity>
-        </View>
+        
 
         <View
           style={{
@@ -538,9 +511,10 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 0.5,
-    color: '#B6C7D1',
+    color: 'black',
     marginLeft: scale(10),
     marginRight: scale(10),
+    fontSize: scale(14)
   },
   panel: {
     padding: 20,
@@ -589,6 +563,17 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     color: 'white',
+  },
+  shortwrapper: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    marginTop: 5,
+    marginLeft: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+    width: widthofscreen / 3,
   },
 });
 export default SettingAccount;

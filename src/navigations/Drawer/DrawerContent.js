@@ -10,7 +10,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '../../context/context';
 export function DrawerContent(props) {
+  const {signOut} = React.useContext(AuthContext);
   const [data, setData] = useState({
     name: 'Loading...',
     phonenum: 'Loading...',
@@ -116,7 +118,6 @@ export function DrawerContent(props) {
               icon={({color, size}) => (
                 // <Ionicons name="grid-outline" color={color} size={size} />
                 <FontAwesome name="search" size={22} color={color} />
-
               )}
               label="Tra cứu thành phần"
               onPress={() => {
@@ -132,7 +133,9 @@ export function DrawerContent(props) {
             <Icon name="exit-to-app" color={color} size={size} />
           )}
           label="Sign out"
-          onPress={() => {}}
+          onPress={() => {
+            signOut();
+          }}
         />
       </Drawer.Section>
     </View>

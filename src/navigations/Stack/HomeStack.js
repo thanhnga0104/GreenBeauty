@@ -123,8 +123,8 @@ const HomeStack = ({navigation}) => (
     />
     <stack.Screen name="RatingScreen" component={DetailRating} />
     <stack.Screen name="DetailIngredient" component={DetailIngredients} />
-    <stack.Screen name="Rating" component={RatingScreen} />
-    <stack.Screen name="DetailOrder" component={DetailOrder} />
+    
+    
 
     
  

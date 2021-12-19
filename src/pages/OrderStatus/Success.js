@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Dimensions,
-    ImageBackground,
-    Image,
+  Dimensions,
+  ImageBackground,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -18,77 +18,117 @@ import {
   TouchableOpacity,
   Button,
   FlatList,
-  VirtualizedList
+  VirtualizedList,
 } from 'react-native';
-import {scale} from 'react-native-size-matters'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import {scale} from 'react-native-size-matters';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import StatusComponent from '../../components/OrderStatus/Statuscomponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const Success = ({navigation, route}) => {
-    const [renderData,setRenderData] = useState([]) 
-    useEffect(() => {
+  const [renderData, setRenderData] = useState([]);
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const valueid = await AsyncStorage.getItem('id');
 
-        const getData = async () => {
-            try {
+        GetData(valueid);
 
-              const valueid = await AsyncStorage.getItem('id')
-
-              GetData(valueid);
-
-              if(value !== null) {
-              }
-            } catch(e) {
-                //alert("no data")
-            }
-          }
-          const GetData = async(id)=>
-          {
-              await fetch ('http://10.0.2.2:8000/order/?user='+ id + '&status=4',
-          {
-              method:'GET',
-              headers:{
-                  'Content-Type': 'application/json'
-              },
-          }).then(response=>{
-              if(response.status==200)
-              {
-                  response.json().then(d=>{
-                      //console.log("status:"+sta+" ", Object.keys(d).length)
-                      setRenderData(d);
-                  })
-              }
-          })
-          .then(res => {
-              //console.log("reponse :", res); 
-             }).catch(error => {
-              console.error("eroor",error);
-              return { name: "network error", description: "" };
+        if (value !== null) {
+        }
+      } catch (e) {
+        //alert("no data")
+      }
+    };
+    const GetData = async id => {
+      await fetch('http://10.0.2.2:8000/order/?user=' + id + '&status=4', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => {
+          if (response.status == 200) {
+            response.json().then(d => {
+              //console.log("status:"+sta+" ", Object.keys(d).length)
+              setRenderData(d);
             });
           }
-        getData();
-    },[])
+        })
+        .then(res => {
+          //console.log("reponse :", res);
+        })
+        .catch(error => {
+          console.error('eroor', error);
+          return {name: 'network error', description: ''};
+        });
+    };
+    getData();
+  }, []);
 
-    return(
-        Object.keys(renderData).length==0?
-        <Text>Chưa có đơn hàng</Text>
-        :
-        <FlatList
+  return Object.keys(renderData).length == 0 ? (
+    <Text>Chưa có đơn hàng</Text>
+  ) : (
+    <SafeAreaView style={{flex: 1}}>
+      <StatusBar backgroundColor="#316C49" barStyle="light-content" />
+      <View style={styles.headerContainer}>
+        <View style={styles.backContainer}>
+          <AntDesign
+            name="arrowleft"
+            size={24}
+            color="#fff"
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+        </View>
+
+        <View>
+          <Text style={styles.titleScreen}>Chờ xử lý</Text>
+        </View>
+      </View>
+
+      <FlatList
         data={renderData}
-        renderItem={({item})=>{
-        return(
+        renderItem={({item}) => {
+          return (
             <TouchableOpacity
-            onPress={()=>navigation.navigate("DetailOrder",{order: item})}>
-                <StatusComponent navigation={navigation} id={item.id} total={item.totalValue} status={item.status}/>
+              onPress={() => navigation.navigate('DetailOrder', {order: item})}>
+              <StatusComponent
+                id={item.id}
+                total={item.totalValue}
+                status={item.status}
+                navigation={navigation}
+              />
             </TouchableOpacity>
-        )
+          );
         }}
-        keyExtractor={(item) => item.id}/>
-    )
-}
-
+        keyExtractor={item => item.id}
+      />
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    paddingVertical: 10,
+    backgroundColor: '#316C49',
+  },
 
+  backContainer: {
+    marginHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  titleScreen: {
+    flex: 1,
+    color: '#fff',
+    marginLeft: 8,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlignVertical: 'center',
+  },
 });
 
 export default Success;
