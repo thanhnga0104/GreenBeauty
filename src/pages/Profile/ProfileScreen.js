@@ -525,7 +525,7 @@ const ProfileScreen = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.setting}>
+        <View style={[styles.setting, {marginBottom: 10}]}>
           <TouchableOpacity
             style={styles.itemsetting}
             onPress={() => {

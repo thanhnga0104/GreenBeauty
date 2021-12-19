@@ -8,8 +8,10 @@ import Waiting from '../../pages/OrderStatus/Waiting';
 import Delivery from '../../pages/OrderStatus/Delivery';
 import Success from '../../pages/OrderStatus/Success';
 import LoveListScreen from '../../pages/LoveList/LoveListScreen';
-import RatingHistory from '../../pages/Profile/RatingHistory/RatingHistory'
+import RatingHistory from '../../pages/Profile/RatingHistory/RatingHistory';
 import DetailScreen from '../../pages/Detail/DetailScreen';
+import DetailOrder from '../../pages/DetailOrder/DetailOrder'
+import RatingScreen from '../../pages/Rating/RatingScreen';
 const stack = createStackNavigator();
 const ProfileStack = ({navigation}) => (
   <stack.Navigator>
@@ -20,7 +22,7 @@ const ProfileStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-     <stack.Screen
+    <stack.Screen
       name="Cart"
       component={CartScreen}
       options={{
@@ -35,23 +37,59 @@ const ProfileStack = ({navigation}) => (
       }}
     />
 
-    <stack.Screen name="Pending" component={Pending} />
-    <stack.Screen name="Delivery" component={Delivery} />
-    <stack.Screen name="Success" component={Success} />
-    <stack.Screen name="Waiting" component={Waiting} />
+    <stack.Screen
+      name="Pending"
+      component={Pending}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <stack.Screen
+      name="Delivery"
+      component={Delivery}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <stack.Screen
+      name="Success"
+      component={Success}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <stack.Screen
+      name="Waiting"
+      component={Waiting}
+      options={{
+        headerShown: false,
+      }}
+    />
     <stack.Screen
       name="LoveListScreen"
       component={LoveListScreen}
       options={{
         headerShown: false,
-      }}/>
-    <stack.Screen name="RatingHistory" component={RatingHistory} />
-{/* <stack.Screen
+      }}
+    />
+    <stack.Screen name="RatingHistory" component={RatingHistory} 
+    options={{
+      headerShown: false,
+    }}/>
+    {/* <stack.Screen
       name="Detail"
       component={DetailScreen}
       options={{
         headerShown: false,
       }}/> */}
+      <stack.Screen name="DetailOrder" component={DetailOrder} 
+      options={{
+        headerShown: false,
+      }}/>
+    <stack.Screen name="Rating" component={RatingScreen} 
+    options={{
+        headerShown: false,
+      }}/>
   </stack.Navigator>
 );
 

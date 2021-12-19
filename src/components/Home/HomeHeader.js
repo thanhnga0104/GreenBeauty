@@ -30,14 +30,14 @@ export default class HomeHeader extends Component {
           <Text style={styles.inputText}> Tìm kiếm sản phẩm</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.cartContainer}
+          style={[styles.cartContainer,{alignSelf:"center",top: scale(5)}]}
           onPress={() => {
             navigation.navigate('CartScreen');
           }}>
           <AntDesign name="shoppingcart" size={28} color="#fff" />
 
           {quantityOfCart > 0 ? (
-            <View style={styles.circle}>
+            <View style={[styles.circle,{alignSelf:"flex-end"}]}>
               <Text
                 style={{
                   fontSize: scale(7),
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
     alignContent: 'flex-end',
     backgroundColor: '#F28244',
     alignItems: 'center',
-    bottom: scale(40),
+    bottom: scale(30),
+    left: 7
   },
 });
