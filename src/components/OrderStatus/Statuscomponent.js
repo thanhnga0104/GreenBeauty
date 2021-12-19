@@ -155,17 +155,20 @@ const styles = StyleSheet.create({
     margin: scale(10),
     width: "40%"
   },
+  line1:{
+    // width: "100%",
+    // height: 0.5,
+    // backgroundColor:"#000",
+    // marginTop: 5
+    borderBottomWidth: 0.5,
+    borderColor: 'black',
+    marginTop: 15
+  },
   line:{
     width: "100%",
     height: 0.5,
     backgroundColor:"#000",
-    marginTop: 5
-  },
-  line1:{
-    width: "100%",
-    height: 0.5,
-    backgroundColor:"#000",
-    marginTop: 15
+    
   },
   Image:{
     width: scale(70),
