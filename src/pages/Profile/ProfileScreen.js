@@ -45,7 +45,7 @@ const ProfileScreen = ({navigation}) => {
   const [Delivery, setDelivery] = useState(0);
   const [Success, setSuccess] = useState(0);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [id, setId] = useState(0)
+  const [id, setId] = useState(0);
   useEffect(() => {
     getData();
   }, []);
@@ -53,7 +53,7 @@ const ProfileScreen = ({navigation}) => {
     try {
       const value = await AsyncStorage.getItem('userToken');
       const valueid = await AsyncStorage.getItem('id');
-      setId(valueid)
+      setId(valueid);
       //console.log("value: ", value)
 
       getInfo(valueid, value);
@@ -153,15 +153,31 @@ const ProfileScreen = ({navigation}) => {
               }}
             />
           </View>
+          <View
+            style={{
+              paddingRight: 20,
+              // justifyContent: 'flex-start',
+              // marginTop: scale(10),
+              // marginRight: scale(5),
+            }}>
+            <Feather
+              name="settings"
+              color="#FFF"
+              size={scale(24)}
+              onPress={() => {
+                navigation.navigate('SettingAccount');
+              }}
+            />
+          </View>
 
-          <View style={styles.inputContainer}>
+          {/* <View style={styles.inputContainer}>
             <View style={{marginHorizontal: 10}}>
               <FontAwesome name="search" size={14} color="#7D7D7D" />
             </View>
             <TextInput
               style={styles.inputText}
               placeholder="Tìm sản phẩm, thương hiệu, ...?"></TextInput>
-          </View>
+          </View> */}
         </View>
 
         {/* kết thúc header */}
@@ -201,14 +217,14 @@ const ProfileScreen = ({navigation}) => {
             </View>
           </View>
 
-          <View
+          {/* <View
             style={{
               justifyContent: 'flex-start',
               marginTop: scale(10),
               marginRight: scale(5),
             }}>
             <Feather name="settings" color="#FFF" size={scale(24)} />
-          </View>
+          </View> */}
         </View>
 
         <View style={styles.purchased}>
@@ -386,10 +402,11 @@ const ProfileScreen = ({navigation}) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.itemsetting}
-          onPress={() => {
-            navigation.navigate('RatingHistory',{user: id});
-          }}>
+          <TouchableOpacity
+            style={styles.itemsetting}
+            onPress={() => {
+              navigation.navigate('RatingHistory', {user: id});
+            }}>
             <MaterialIcons
               name="star-outline"
               size={scale(24)}
@@ -451,12 +468,19 @@ const ProfileScreen = ({navigation}) => {
             onPress={() => {
               navigation.navigate('SettingAccount');
             }}>
-            <MaterialCommunityIcons
+            {/* <MaterialCommunityIcons
               name="account-outline"
               size={scale(24)}
               style={{marginLeft: scale(10)}}
               color="#231F20"
+            /> */}
+            <Feather
+              style={{marginLeft: scale(10)}}
+              name="settings"
+              color="#231F20"
+              size={scale(24)}
             />
+
             <Text
               style={{
                 fontSize: scale(17),
@@ -617,6 +641,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 10,
     backgroundColor: '#316C49',
+    justifyContent: 'space-between',
   },
   inputContainer: {
     backgroundColor: '#E5E5E5',

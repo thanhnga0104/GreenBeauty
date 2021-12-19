@@ -117,6 +117,9 @@ const HomeStack = ({navigation}) => (
     <stack.Screen
       name="OrderSuccessfullScreen"
       component={OrderSuccessfullScreen}
+      options={{
+        headerShown: false,
+      }}
     />
     <stack.Screen name="RatingScreen" component={DetailRating} />
     <stack.Screen name="DetailIngredient" component={DetailIngredients} />

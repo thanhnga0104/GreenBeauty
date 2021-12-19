@@ -31,7 +31,6 @@ class CartFlatListItem extends Component {
       productItem: [],
       quantity: null,
       activeRowKey: null,
-      
     };
   }
 
@@ -54,7 +53,6 @@ class CartFlatListItem extends Component {
         console.log('Lỗi tải ảnh trong giỏ hàng');
       });
   };
-
 
   setQuantity = () => {
     this.setState({quantity: this.props.item.quantities});
@@ -132,14 +130,23 @@ class CartFlatListItem extends Component {
     };
     return (
       <Swipeout {...swipeSettings}>
-        <TouchableOpacity style={styles.cartItem}
-        onPress={()=> {navigation.navigate('DetailScreen', {product: this.state.productItem})}}>
+        <TouchableOpacity
+          style={styles.cartItem}
+          onPress={() => {
+            navigation.navigate('DetailScreen', {
+              product: this.state.productItem,
+            });
+          }}>
           <View style={styles.checkboxContainer}>
             <CheckBox
               tintColors={{true: 'green'}}
               value={this.state.isSelected}
               onValueChange={event => {
-                handleSelect(event, this.state.productItem, this.state.quantity),
+                handleSelect(
+                  event,
+                  this.state.productItem,
+                  this.state.quantity,
+                ),
                   this.isSelect(event);
               }}
             />
@@ -183,7 +190,7 @@ class CartFlatListItem extends Component {
 
 const EmptyComponent = navigation => {
   return (
-    <View style={{paddingTop:150,  alignItems: 'center',}}>
+    <View style={{paddingTop: 150, alignItems: 'center'}}>
       <TouchableOpacity
         style={{
           alignItems: 'center',
@@ -204,8 +211,9 @@ const EmptyComponent = navigation => {
           justifyContent: 'center',
           borderRadius: 3,
         }}
-        onPress={()=>{navigation.navigate('HomeScreen')}}
-        >
+        onPress={() => {
+          navigation.navigate('HomeScreen');
+        }}>
         <Text
           style={{
             color: '#fff',
@@ -255,19 +263,18 @@ export default class CartScreen extends Component {
   handleSelect = (event, product, quantity) => {
     let listItem = this.state.selectData;
     if (event == true) {
-      //console.log("product đang đợi:", product)
       listItem.push(product.id);
       this.setState({
         selected: ++this.state.selected,
         selectData: listItem,
-        totalCash: quantity*product.price,
+        totalCash: this.state.totalCash + quantity * product.price,
       });
     } else {
       let newList = listItem.filter(item => item !== product.id);
-      console.log('list item:', newList);
       this.setState({
         selected: --this.state.selected,
         selectData: newList,
+        totalCash: this.state.totalCash - quantity * product.price,
       });
     }
   };
@@ -279,7 +286,8 @@ export default class CartScreen extends Component {
         .then(data => {
           if (Object.keys(data).length === 0) {
             navigation.navigate('AddLocationScreen', {
-              defaultAddress: 'true',
+              // defaultAddress: 'true',
+              isFirst: 'true',
               selectData: this.state.selectData,
               userData: this.state.userData,
             });
@@ -347,7 +355,7 @@ export default class CartScreen extends Component {
           showsHorizontalScrollIndicator={false}
           data={this.state.listData}
           keyExtractor={item => item.product}
-          ListEmptyComponent={(EmptyComponent(navigation))}
+          ListEmptyComponent={EmptyComponent(navigation)}
           ItemSeparatorComponent={this.ItemSepatator}
           renderItem={({item, index}) => {
             return (
@@ -381,7 +389,9 @@ export default class CartScreen extends Component {
               <Text style={{color: '#484848', marginHorizontal: 5}}>
                 Tổng tiền
               </Text>
-              <Text style={{color: 'green', marginRight: 5}}>{this.state.totalCash}</Text>
+              <Text style={{color: 'green', marginRight: 5}}>
+                {this.state.totalCash}
+              </Text>
             </View>
             <TouchableOpacity
               style={{

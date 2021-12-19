@@ -128,7 +128,7 @@ const RegisterScreen = ({navigation})=>{
                     <View style={styles.action}>
                         <FontAwesome name="user-o" color="#05375a" size = {scale(12)}/>
                         <TextInput style={styles.input} 
-                            placeholder="your email"
+                            placeholder="Your email"
                             keyboardType="email-address"
                             onChangeText={(val)=> textInputChange(val)}>
                         </TextInput>
