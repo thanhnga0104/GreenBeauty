@@ -25,8 +25,10 @@ class HorizontalFlatListItem extends Component {
             source={{uri: this.props.item.imagepresent}}
             style={styles.itemImage}
           />
-          <Text style={styles.itemPrice}>{this.props.item.price}</Text>
-          <Text style={styles.itemName} numberOfLines={3}>{this.props.item.name}</Text>
+          <Text style={styles.itemPrice}>{this.props.item.priceSale}</Text>
+          <Text style={styles.itemName} numberOfLines={3}>
+            {this.props.item.name}
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -76,12 +78,12 @@ export default class HomeDealSection extends Component {
             horizontal={true}
             data={this.state.productsFromServer}
             renderItem={({item, index}) => {
-              return (
+              return item.IsFlashsale ? (
                 <HorizontalFlatListItem
                   navigation={navigation}
                   item={item}
                   index={index}></HorizontalFlatListItem>
-              );
+              ) : null;
             }}
             refreshing={this.state.refreshing}
             onRefresh={this.handleRefresh}></FlatList>
@@ -124,13 +126,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#484848',
     marginVertical: 4,
-    marginHorizontal: 4
+    marginHorizontal: 4,
   },
 
   itemPrice: {
     fontSize: 16,
     fontWeight: '500',
     color: '#FF5F04',
-    marginHorizontal: 4
+    marginHorizontal: 4,
   },
 });
