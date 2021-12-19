@@ -81,12 +81,10 @@ export default class LoveListScreen extends Component {
             <Text style={styles.titleScreen}>Sản phẩm yêu thích</Text>
           </View>
         </View>
-        <View style={{padding: 10}}>
-          <Text style={{fontSize: 16}}></Text>
-        </View>
+     
 
         {/* <View style={styles.sectionContainer}> */}
-        <View>
+        <View style={{padding:10}}>
           <FlatList
             scrollEnabled={false}
             nestedScrollEnabled={true}
