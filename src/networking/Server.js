@@ -262,8 +262,6 @@ async function getInfoUser(user_id, user_token) {
     });
 
     let responseJson = await response.json();
-    //console.log('info user: ', responseJson);
-
     return responseJson;
   } catch (error) {
     console.error(`Error is: ${error}`);
@@ -331,6 +329,33 @@ async function postAddress(
     console.error(`Error is: ${error}`);
   }
 }
+
+
+async function putAddress(user, address_id) {
+ // console.log("product:", product)
+  const apiPutAddress =
+    'http://' + SERVER_NAME + ':8000/delivery/' + address_id + '/'; 
+  try {
+    let response = await fetch(apiPutAddress, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + user.userToken,
+      },
+
+      body: JSON.stringify({
+        defaultAddress: 0,
+      }),
+    });
+
+    let responseJson = await response.json();
+    return responseJson;
+  } catch (error) {
+    console.error(`Error is: ${error}`);
+  }
+}
+
 
 async function postOrder(user, totalValue, delivery_id) {
   const apiPostOrder = 'http://' + SERVER_NAME + ':8000/order/';
@@ -442,7 +467,7 @@ export {
   getAddress,
 };
 
-export {postItemToCart, putItemInCart, postAddress, postOrder, postOrderDetail};
+export {postItemToCart, putItemInCart, postAddress, postOrder, putAddress, postOrderDetail};
 
 //Xóa item khỏi giỏ hàng
 async function deleteProductFromCart(cart_id) {
@@ -479,6 +504,7 @@ async function postToLoveList(user, product_id) {
     });
 
     let responseJson = await response.json();
+    //console.log("responseJson:", responseJson)
     return responseJson;
   } catch (error) {
    
@@ -502,6 +528,20 @@ async function getProductFromLoveList(user_id) {
   }
 }
 
-export {postToLoveList, getProductFromLoveList};
+async function deleteProducLoveList(id) {
+  const apiDeleteProductLoveList =
+    'http://' + SERVER_NAME + ':8000/lovelist/' + id + '/';
+  try {
+    let response = await fetch(apiDeleteProductLoveList, {
+      method: 'DELETE',
+    });
+  //  console.log("respon:", response)
+  } catch (error) {
+    console.error(`Error is: ${error}`);
+  }
+}
+
+
+export {postToLoveList, getProductFromLoveList, deleteProducLoveList};
 
 

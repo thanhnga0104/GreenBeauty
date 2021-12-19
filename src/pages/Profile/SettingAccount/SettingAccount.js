@@ -333,7 +333,7 @@ const SettingAccount = ({navigation}) => {
           </View>
 
           <View>
-            <Text style={{marginLeft: scale(10), fontSize: scale(10)}}>
+            <Text style={{marginLeft: scale(10), fontSize: scale(14)}}>
               Họ tên
             </Text>
             <TextInput
@@ -343,7 +343,7 @@ const SettingAccount = ({navigation}) => {
           </View>
 
           <View style={{marginTop: 10}}>
-            <Text style={{marginLeft: scale(10), fontSize: scale(10)}}>
+            <Text style={{marginLeft: scale(10), fontSize: scale(14)}}>
               Số điện thoại
             </Text>
             <TextInput
@@ -360,7 +360,7 @@ const SettingAccount = ({navigation}) => {
               marginLeft: scale(10),
               marginRight: scale(10),
             }}>
-            <Text style={{fontSize: scale(10)}} size={scale(10)}>
+            <Text style={{fontSize: scale(14)}} size={scale(10)}>
               Ngày sinh
             </Text>
             <View
@@ -393,7 +393,7 @@ const SettingAccount = ({navigation}) => {
               marginLeft: scale(10),
               marginTop: scale(10),
             }}>
-            <Text style={{fontSize: scale(10)}}>Giới tính:</Text>
+            <Text style={{fontSize: scale(14)}}>Giới tính:</Text>
             <View style={{flexDirection: 'row', marginTop: scale(5)}}>
               <View
                 style={{
@@ -438,7 +438,7 @@ const SettingAccount = ({navigation}) => {
             <Text
               style={{
                 fontSize: scale(17),
-                fontWeight: '300',
+                fontWeight: '400',
                 marginLeft: scale(10),
               }}>
               Đổi mật khẩu
@@ -464,7 +464,7 @@ const SettingAccount = ({navigation}) => {
               UpdateData();
             }}>
             <Text
-              style={{fontSize: scale(17), fontWeight: '300', color: '#FFF'}}>
+              style={{fontSize: scale(17), fontWeight: '400', color: '#FFF'}}>
               Cập nhật thay đổi
             </Text>
           </TouchableOpacity>
@@ -482,7 +482,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '70%',
-    backgroundColor: '#93F48A',
+    backgroundColor:"#FF5F04",
+    //backgroundColor: '#93F48A',
     borderRadius: scale(4),
     shadowColor: '#000',
     shadowOffset: {
@@ -507,7 +508,7 @@ const styles = StyleSheet.create({
   container: {
     width: widthofscreen,
     height: scale(heightofscreen / 6),
-    backgroundColor: '#93F48A',
+    backgroundColor: '#316C49',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -580,7 +581,7 @@ const styles = StyleSheet.create({
   panelButton: {
     padding: 13,
     borderRadius: 10,
-    backgroundColor: '#93F48A',
+    backgroundColor: '#316C49',
     alignItems: 'center',
     marginVertical: 7,
   },

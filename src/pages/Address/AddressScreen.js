@@ -28,6 +28,12 @@ export default class AddressScreen extends Component {
   }
   componentDidMount() {
     this.fetchDataUser();
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.fetchDataUser();
+    });   
+
+
   }
 
   fetchDataUser = () => {
@@ -45,8 +51,9 @@ export default class AddressScreen extends Component {
   ItemSepatator = () => (
     <View
       style={{
-        borderBottomWidth: 0.3,
-        borderColor: '#E5E5E5',
+        borderBottomWidth: 0.6,
+        //borderColor: '#E5E5E5',
+        borderColor: "black"
       }}
     />
   );
@@ -81,7 +88,7 @@ export default class AddressScreen extends Component {
               backgroundColor: '#fff',
               justifyContent: 'space-between',
             }}
-            onPress={()=>{navigation.navigate("AddLocationScreen")}}>
+            onPress={()=>{navigation.navigate("AddLocationScreen", {isFirst: false})}}>
             <Text style={{fontSize: 16}}>Thêm địa chỉ</Text>
             <Ionicons name="add-outline" size={24} color="black" />
           </TouchableOpacity>
@@ -95,6 +102,7 @@ export default class AddressScreen extends Component {
         <View>
           <FlatList
             data={this.state.delivery}
+            ListEmptyComponent={EmptyComponent(navigation)}
             ItemSeparatorComponent={this.ItemSepatator}
             renderItem={({item, index}) => {
               return (
@@ -110,6 +118,45 @@ export default class AddressScreen extends Component {
     );
   }
 }
+
+const EmptyComponent = navigation => {
+  return (
+    <View style={{paddingTop: 150, alignItems: 'center'}}>
+      <TouchableOpacity
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <AntDesign name="shoppingcart" size={80} color="#595654" />
+      </TouchableOpacity>
+      <Text style={{fontSize: 16}}>
+        Bạn chưa có sản phẩm nào trong giỏ hàng
+      </Text>
+      <TouchableOpacity
+        style={{
+          height: 40,
+          width: '85%',
+          margin: 10,
+          backgroundColor: '#FF5F04',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 3,
+        }}
+        onPress={() => {
+          navigation.navigate('HomeScreen');
+        }}>
+        <Text
+          style={{
+            color: '#fff',
+            fontSize: 18,
+            fontWeight: '500',
+          }}>
+          TIẾP TỤC MUA SẮM
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 class AddressFlatListItem extends Component {
   render() {

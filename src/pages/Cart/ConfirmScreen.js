@@ -6,19 +6,16 @@ import {
   View,
   Image,
   Text,
-  Keyboard,
   Dimensions,
   TouchableOpacity,
   TextInput,
   StatusBar,
   ScrollView,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {getDataUser, getProductFromCart} from '../../networking/Server';
 import {getAddress} from '../../networking/Server';
-import {getImageFromServer} from '../../networking/Server';
 import {getProductById} from '../../networking/Server';
 import {postOrder} from '../../networking/Server';
 import {postOrderDetail} from '../../networking/Server';
@@ -46,7 +43,7 @@ export default class ConfirmScreen extends Component {
   fetchData = () => {
     getDataUser()
       .then(user => {
-        getAddress(user, 'true').then(address => {
+        getAddress(user, 1).then(address => {
           address.forEach(_address => {
             this.setState({userData: user, delivery: _address});
           });

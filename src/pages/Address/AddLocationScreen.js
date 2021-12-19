@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   TextInput,
   StatusBar,
+  Switch,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import WardComponent from './WardComponent';
@@ -19,6 +20,8 @@ import DistrictComponent from './DistrictComponent';
 import CityComponent from './CityComponent';
 import {getDataUser} from '../../networking/Server';
 import {postAddress} from '../../networking/Server';
+import {putAddress} from '../../networking/Server';
+import {getAddress} from '../../networking/Server';
 
 export default class AddLocationScreen extends Component {
   constructor() {
@@ -31,10 +34,13 @@ export default class AddLocationScreen extends Component {
       district: [],
       ward: [],
       address: null,
+      isEnable: true,
+      isFirst: false, // isFirst = false tức là đây ko phải địa chỉ đầu tiên, bắt buộc của khách hàng
     };
   }
   componentDidMount() {
     this.fetchDataUser();
+    this.setFirst();
   }
 
   fetchDataUser = () => {
@@ -45,6 +51,12 @@ export default class AddLocationScreen extends Component {
       .catch(error => {
         console.error(`Error is: ${error}`);
       });
+  };
+
+  setFirst = () => {
+    if (this.props.route.params.isFirst == 'true') {
+      this.setState({isFirst: true});
+    }
   };
 
   setName = text => {
@@ -67,7 +79,6 @@ export default class AddLocationScreen extends Component {
   };
 
   pressButton(navigation) {
-    //if(this.state.city!=[] && this.state.district!=[]&&this.state.ward!=[]&&this.state.name!=null&&this.state.phone!=null&&this.state.address!=null){
     if (
       Object.keys(this.state.city.name) != 0 &&
       Object.keys(this.state.district.name) != 0 &&
@@ -84,10 +95,16 @@ export default class AddLocationScreen extends Component {
         this.state.district.name +
         ', ' +
         this.state.city.name;
-      let defaultAddress = '';
-     // console.log('defaultAddress:', this.props.route.params.defaultAddress);
-      if (this.props.route.params.defaultAddress == 'true') {
-        defaultAddress = 'true';
+      let defaultAddress = 0;
+      if (this.state.isEnable == true) {
+        defaultAddress = 1;
+        getAddress(this.state.userData, 1).then(address => {
+          address.forEach(_address => {
+            putAddress(this.state.userData, _address.id).then(
+              () => 'Set previous default dress = 0',
+            );
+          });
+        });
       }
       postAddress(
         this.state.userData,
@@ -98,13 +115,20 @@ export default class AddLocationScreen extends Component {
         defaultAddress,
       )
         .then(item => {
-          console.log('Thêm địa chỉ thành công');
+          console.log('Thêm địa chỉ thành công', item);
         })
         .catch(error => {
           console.error(`Error is: ${error}`);
         });
-        //console.log("log props:", this.props)
-      navigation.navigate('ConfirmScreen', {selectData: this.props.route.params.selectData});
+      if (this.state.isFirst == true) {
+        console.log("ko hề goback")
+        navigation.navigate('ConfirmScreen', {
+          selectData: this.props.route.params.selectData,
+        });
+      } else {
+        console.log("goback")
+        navigation.goBack();
+      }
     } else {
       alert('Hãy nhập đủ thông tin địa chỉ nhận hàng.');
     }
@@ -115,101 +139,121 @@ export default class AddLocationScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, height: '100%'}}>
         <StatusBar backgroundColor="#316C49" barStyle="light-content" />
-        <View style={styles.headerContainer}>
-          <View style={styles.backContainer}>
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="#fff"
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
+        <View style={{height: '100%', backgroundColor: '#fff'}}>
+          <View style={styles.headerContainer}>
+            <View style={styles.backContainer}>
+              <AntDesign
+                name="arrowleft"
+                size={24}
+                color="#fff"
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              />
+            </View>
+
+            <View>
+              <Text style={styles.titleHeader}>Thêm địa chỉ mới</Text>
+            </View>
           </View>
 
-          <View>
-            <Text style={styles.titleHeader}>Thêm địa chỉ mới</Text>
-          </View>
-        </View>
-
-        <View style={{backgroundColor: '#fff', padding: 10}}>
-          <View>
-            <TextInput
-              placeholder="Tên người nhận"
-              onChangeText={text => {
-                this.setName(text);
-              }}
-              // underlineColorAndroid="#E5E5E5"
-            ></TextInput>
-            <View
-              style={{
-                borderBottomWidth: 0.3,
-                borderColor: 'black',
-              }}
-            />
-
-            <TextInput
-              placeholder="Số điện thoại"
-              onChangeText={text => {
-                this.setPhone(text);
-              }}
-              // underlineColorAndroid="#E5E5E5"
-              keyboardType="numeric"></TextInput>
-            <View
-              style={{
-                borderBottomWidth: 0.3,
-                borderColor: 'black',
-              }}
-            />
-            <View>
-              <CityComponent
-                navigation={navigation}
-                name={'Tỉnh/Thành phố*'}
-                city={this.setProvince}
-                district={this.setDistrict}
-                ward={this.setWard}
-              />
-            </View>
-            <View>
-              <DistrictComponent
-                navigation={navigation}
-                name={'Quận/Huyện'}
-                city={this.state.city}
-                district={this.setDistrict}
-                ward={this.setWard}
-              />
-            </View>
-            <View>
-              <WardComponent
-                navigation={navigation}
-                name={'Phường/Xã'}
-                city={this.state.city}
-                district={this.state.district}
-                ward={this.setWard}
-              />
-            </View>
+          <View style={{backgroundColor: '#fff', padding: 10}}>
             <View>
               <TextInput
-                placeholder="Số nhà + Tên đường"
+                placeholder="Tên người nhận"
                 onChangeText={text => {
-                  this.setAddress(text);
-                }}></TextInput>
+                  this.setName(text);
+                }}
+                // underlineColorAndroid="#E5E5E5"
+              ></TextInput>
               <View
                 style={{
                   borderBottomWidth: 0.3,
                   borderColor: 'black',
                 }}
               />
+
+              <TextInput
+                placeholder="Số điện thoại"
+                onChangeText={text => {
+                  this.setPhone(text);
+                }}
+                // underlineColorAndroid="#E5E5E5"
+                keyboardType="numeric"></TextInput>
+              <View
+                style={{
+                  borderBottomWidth: 0.3,
+                  borderColor: 'black',
+                }}
+              />
+              <View>
+                <CityComponent
+                  navigation={navigation}
+                  name={'Tỉnh/Thành phố*'}
+                  city={this.setProvince}
+                  district={this.setDistrict}
+                  ward={this.setWard}
+                />
+              </View>
+              <View>
+                <DistrictComponent
+                  navigation={navigation}
+                  name={'Quận/Huyện'}
+                  city={this.state.city}
+                  district={this.setDistrict}
+                  ward={this.setWard}
+                />
+              </View>
+              <View>
+                <WardComponent
+                  navigation={navigation}
+                  name={'Phường/Xã'}
+                  city={this.state.city}
+                  district={this.state.district}
+                  ward={this.setWard}
+                />
+              </View>
+              <View>
+                <TextInput
+                  placeholder="Số nhà + Tên đường"
+                  onChangeText={text => {
+                    this.setAddress(text);
+                  }}></TextInput>
+                <View
+                  style={{
+                    borderBottomWidth: 0.3,
+                    borderColor: 'black',
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  marginVertical: 10,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Text style={{fontSize: 15}}>Đặt làm địa chỉ mặc định</Text>
+                <Switch
+                  trackColor={{false: '#767577', true: '#81b0ff'}}
+                  thumbColor={this.state.isEnable ? '#316C49' : '#f4f3f4'}
+                  // ios_backgroundColor="#3e3e3e"
+                  onValueChange={tempValue => {
+                    this.setState({isEnable: tempValue});
+                    console.log('tempValue:', tempValue);
+                  }}
+                  value={this.state.isEnable}
+                />
+              </View>
             </View>
           </View>
-        </View>
 
-        <View style={styles.addAddressContainer}>
-          <TouchableOpacity
-            style={styles.addAddressButton}
-            onPress={() => this.pressButton(navigation)}>
-            <Text style={styles.addAddressText}>Thêm mới</Text>
-          </TouchableOpacity>
+          <View style={styles.addAddressContainer}>
+            <TouchableOpacity
+              style={styles.addAddressButton}
+              onPress={() => this.pressButton(navigation)}>
+              <Text style={styles.addAddressText}>Thêm mới</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     );
@@ -239,7 +283,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   addAddressContainer: {
-    borderTopWidth: 0.6,
+    //borderTopWidth: 0.6,
     borderTopColor: '#E5E5E5',
     height: 60,
     alignItems: 'center',
