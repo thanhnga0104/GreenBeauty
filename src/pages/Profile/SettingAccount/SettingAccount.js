@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   Button,
   Modal,
+  ActivityIndicator
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -44,6 +45,7 @@ const SettingAccount = ({navigation}) => {
     token: '',
   });
   const bs = React.createRef();
+  const [loading, setloading] = useState(false)
   const fall = new Animated.Value(1);
   const [male, setMale] = useState();
   const [female, setFemal] = useState();
@@ -183,6 +185,7 @@ const SettingAccount = ({navigation}) => {
         } else {
           alert('Error: There is some errors occour!');
         }
+        setloading(false)
       })
       .then(res => {
         console.log('reponse :', res);
@@ -434,6 +437,7 @@ const SettingAccount = ({navigation}) => {
           <TouchableOpacity
             style={styles.buttoncontainer}
             onPress={() => {
+              setloading(true)
               UpdateData();
             }}>
             <Text
@@ -443,6 +447,7 @@ const SettingAccount = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <ActivityIndicator style={{ alignSelf:"center", bottom:Dimensions.get('window').height/2, position:"absolute"}} size='large' animating={loading} color='green'/>
     </View>
   );
 };
