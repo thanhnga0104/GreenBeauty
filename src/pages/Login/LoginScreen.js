@@ -17,7 +17,6 @@ import {
     TouchableOpacityBase,
     TouchableOpacity,
     Button,
-    Alert,
 } from 'react-native';
 import {scale} from 'react-native-size-matters'
 import { AuthContext } from '../../context/context';
@@ -99,10 +98,6 @@ const LoginScreen =({navigation})=>{
             else if (response.status==401)
             {
                 alert("Error: Account has not verified yet, please check register mail again" )
-            }
-            else
-            {
-                Alert.alert("Warning", "Tài khoản không tồn tại")
             }
         })
         .then(res => {
