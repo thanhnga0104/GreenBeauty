@@ -5,45 +5,13 @@ import {scale} from 'react-native-size-matters';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getDataUser} from '../../networking/Server';
-import {getProductFromCart} from '../../networking/Server';
-import { black } from 'react-native-paper/lib/typescript/styles/colors';
 
 const colorIcon = '#827A7A';
 export default class DetailHeader extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      quantityOfCart: 0,
-    };
-  }
-
-  componentDidMount() {
-    this.fetchProductFromCart();
-    this.focusListener = this.props.navigation.addListener('focus', () => {
-      this.fetchProductFromCart();
-    });
-  }
-
-  fetchProductFromCart = () => {
-    getDataUser()
-      .then(user => {
-        getProductFromCart(user.userID, '')
-          .then(items => {
-            this.setState({quantityOfCart: Object.keys(items).length});
-          })
-          .catch(error => {
-            console.log('Lỗi tại DetailHeader');
-            this.setState({quantityOfCart: 0});
-          });
-      })
-      .catch(error => {
-        console.error(`Error is: ${error}`);
-      });
-  };
+ 
   render() {
     const {navigation} = this.props;
-
+    const {quantityOfCart} = this.props;
     return (
       <View style={styles.headerContainer}>
         <View style={styles.backContainer}>
@@ -76,7 +44,7 @@ export default class DetailHeader extends Component {
               navigation.navigate('CartScreen');
             }}
           />
-          {this.state.quantityOfCart > 0 ? (
+          {quantityOfCart > 0 ? (
             <View style={styles.circle}>
               <Text
                 style={{
@@ -84,7 +52,7 @@ export default class DetailHeader extends Component {
                   fontWeight: 'bold',
                   color: '#FFF',
                 }}>
-                {this.state.quantityOfCart}
+                {quantityOfCart}
               </Text>
             </View>
           ) : (
@@ -133,17 +101,13 @@ const styles = StyleSheet.create({
   },
   cartContainer: {
     height: 24,
-    width: 24,
-   // borderRadius: 12,
-   //paddingLeft:15,
+    width: 24,  
    marginLeft: 5,
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    //backgroundColor: colorIcon,
   },
   ellipsisContainer: {
-   // borderRadius: 15,
     paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',

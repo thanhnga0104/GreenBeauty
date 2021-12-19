@@ -121,11 +121,13 @@ const styles = StyleSheet.create({
   },
 
   nameContainer: {
+    paddingLeft:5,
     fontSize: 14,
     color: '#484848',
   },
 
   priceContainer: {
+    paddingLeft:5,
     fontSize: 16,
     fontWeight: '500',
     color: '#FF5F04',

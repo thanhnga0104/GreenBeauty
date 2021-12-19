@@ -26,7 +26,7 @@ class HorizontalFlatListItem extends Component {
             style={styles.itemImage}
           />
           <Text style={styles.itemPrice}>{this.props.item.price}</Text>
-          <Text style={styles.itemName}>{this.props.item.name}</Text>
+          <Text style={styles.itemName} numberOfLines={3}>{this.props.item.name}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -109,26 +109,28 @@ const styles = StyleSheet.create({
   },
 
   itemContainer: {
-    width: 100,
+    width: 120,
     backgroundColor: '#fff',
-    marginRight: 2,
+    marginRight: 8,
     borderRadius: 4,
   },
 
   itemImage: {
     borderRadius: 4,
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
   },
   itemName: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#484848',
     marginVertical: 4,
+    marginHorizontal: 4
   },
 
   itemPrice: {
     fontSize: 16,
     fontWeight: '500',
     color: '#FF5F04',
+    marginHorizontal: 4
   },
 });

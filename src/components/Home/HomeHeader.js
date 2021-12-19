@@ -9,7 +9,6 @@ export default class HomeHeader extends Component {
   render() {
     const {navigation} = this.props;
     const {quantityOfCart} = this.props;
-   // console.log('quantity in header: ', quantityOfCart);
     return (
       <View style={styles.headerContainer}>
         <View style={styles.menuContainer}>

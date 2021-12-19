@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import DetailHeader from '../../components/Detail/DetailHeader';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Ionicons  from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getListImage} from '../../networking/Server';
 import {getImageFromServer} from '../../networking/Server';
@@ -26,7 +26,7 @@ import {postItemToCart} from '../../networking/Server';
 import {putItemInCart} from '../../networking/Server';
 import {postToLoveList} from '../../networking/Server';
 import {getProductFromLoveList} from '../../networking/Server';
-
+import {deleteProducLoveList} from '../../networking/Server';
 
 class DetailScreen extends Component {
   constructor(props) {
@@ -37,20 +37,24 @@ class DetailScreen extends Component {
       userData: null,
       tontai: false, //chưa tồn tại sp
       product_Exist: '',
+      isLoveExist: false,
       isLove: false,
+      isLoveID: '',
+      quantityOfCart: 0,
     };
   }
 
   componentDidMount() {
     this.fetchProductFromCart();
     this.fetchListImage();
-    
 
     this.focusListener = this.props.navigation.addListener('focus', () => {
       this.fetchProductFromCart();
       this.fetchListImage();
-    });
+    });   
+
   }
+
 
   fetchListImage = () => {
     let listImage = [];
@@ -83,13 +87,16 @@ class DetailScreen extends Component {
                 this.setState({tontai: true, product_Exist: item}); //sản phẩm đã tồn tại
               }
             });
-            this.setState({listData: items, userData: user});
+            this.setState({listData: items, userData: user, quantityOfCart: Object.keys(items).length});
+
+            
+
           })
           .catch(error => {
             this.setState({listData: []});
           });
 
-          this.checkLoveList(user.userID);
+        this.checkLoveList(user.userID);
       })
       .catch(error => {
         console.error(`Error is: ${error}`);
@@ -125,14 +132,21 @@ class DetailScreen extends Component {
     });
   };
 
-  checkLoveList = (user_id) => {
+  checkLoveList = user_id => {
     getProductFromLoveList(user_id)
       .then(list => {
-        list.forEach(item => {
-          if (item.product_id == this.props.route.params.product.id) {
-            this.setState({isLove: true});
-          }
-        });
+        if (Object.keys(list).length == 0) {
+          this.setState({isLoveExist: false});
+        } else {
+          list.forEach(item => {
+            if (item.product_id == this.props.route.params.product.id) {
+              console.log('item.id', item.id);
+              console.log('item.productid', item.product_id);
+              console.log('productid', this.props.route.params.product.id);
+              this.setState({isLoveE: true, isLoveID: item.id});
+            }
+          });
+        }
       })
       .catch(error => {
         console.error(`Error is: ${error}`);
@@ -144,7 +158,6 @@ class DetailScreen extends Component {
     const {product} = route.params;
     let img = [];
     img = this.state.imageData;
-   
 
     const handleChange = nativeEvent => {
       if (nativeEvent) {
@@ -189,46 +202,42 @@ class DetailScreen extends Component {
     };
 
     const handleLoveList = () => {
-      getProductFromLoveList(this.state.userData.userID)
-        .then(list => {
-          if (Object.keys(list).length == 0) {
-            postToLoveList(this.state.userData, product.id)
-              .then(() => {
-                this.setState({isLove: true});
-                Alert.alert('', 'Đã thêm sản phẩm vào mục yêu thích');
-                console.log('Thêm vào love list thành công');
-              })
-              .catch(error => {
-                console.error(`Error is: ${error}`);
-              });
-          } else {
-            list.forEach(item => {
-              if (item.product_id != product.id) {
-                postToLoveList(this.state.userData, product.id)
-                  .then(() => {
-                    Alert.alert('', 'Đã thêm sản phẩm vào mục yêu thích');
-                    console.log('Thêm vào love list thành công');
-                  })
-                  .catch(error => {
-                    console.error(`Error is: ${error}`);
-                  });
-              }
-            });
-          }
-        })
-        .catch(error => {
-          console.error(`Error is: ${error}`);
-        });
+      if (this.state.isLoveExist == false) {
+        postToLoveList(this.state.userData, product.id)
+          .then(result => {
+            this.setState({isLove: true, isLoveExist: true, isLoveID:result.id});
+            Alert.alert('', 'Đã thêm sản phẩm vào mục yêu thích');
+            console.log('Thêm vào love list thành công 1');
+          })
+          .catch(error => {
+            console.error(`Error is: ${error}`);
+          });
+
+          this.checkLoveList(this.state.userData.userID)
+      } else {
+        console.log("this.state.isLoveID:",this.state.isLoveID)
+        deleteProducLoveList(this.state.isLoveID)
+          .then(() => {
+            this.setState({isLove: false, isLoveExist: false});
+            Alert.alert('', 'Đã xóa sản phẩm khỏi mục yêu thích');
+            console.log('Xóa sản phẩm trong love list thành công');
+            return;
+          })
+          .catch(error => {
+            console.error(`Error is: ${error}`);
+          });
+          this.checkLoveList(this.state.userData.userID)
+      }
     };
 
     return (
-
       <SafeAreaView
         style={{
           flex: 1,
         }}>
         <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-        <DetailHeader navigation={navigation} />
+        <DetailHeader navigation={navigation} 
+        quantityOfCart={this.state.quantityOfCart}/>
 
         {/* Bắt đầu phần detail */}
         <ScrollView style={{backgroundColor: '#fff'}}>
@@ -273,9 +282,9 @@ class DetailScreen extends Component {
               style={styles.heartContainer}
               onPress={handleLoveList}>
               {this.state.isLove == false ? (
-                <Ionicons  name="heart-outline" size={28} color="black" />
+                <Ionicons name="heart-outline" size={28} color="black" />
               ) : (
-                <Ionicons  name="heart-sharp" size={28} color="red" />
+                <Ionicons name="heart-sharp" size={28} color="red" />
               )}
             </TouchableOpacity>
 
