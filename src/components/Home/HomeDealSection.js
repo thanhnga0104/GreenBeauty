@@ -8,6 +8,8 @@ import {
   FlatList,
 } from 'react-native';
 import {Component} from 'react';
+import {scale} from 'react-native-size-matters';
+
 import {getProductsFromServer} from '../../networking/Server';
 
 class HorizontalFlatListItem extends Component {
@@ -21,11 +23,55 @@ class HorizontalFlatListItem extends Component {
               product: this.props.item,
             });
           }}>
-          <Image
-            source={{uri: this.props.item.imagepresent}}
-            style={styles.itemImage}
-          />
-          <Text style={styles.itemPrice}>{this.props.item.priceSale}</Text>
+          <View>
+            <Image
+              source={{uri: this.props.item.imagepresent}}
+              style={styles.itemImage}
+            />
+            {this.props.item.IsFlashsale == true ? (
+              <View style={styles.sale}>
+                <Text
+                  style={{
+                    fontSize: scale(14),
+                    fontWeight: 'bold',
+                    color: '#FFF',
+                  }}>
+                  -{this.props.item.priceSale}%
+                </Text>
+              </View>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
+          {this.props.item.IsFlashsale == true ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text style={styles.itemPrice}>
+                {this.props.item.price -
+                  (this.props.item.price * this.props.item.priceSale) / 100}
+                đ
+              </Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    color: '#827A7A',
+                    textDecorationLine: 'line-through',
+                    fontSize: 16,
+                    marginRight: 4,
+                    alignItems: 'center',
+                  }}>
+                  {this.props.item.price}đ
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <Text style={styles.itemPrice}>{this.props.item.price}</Text>
+          )}
+          {/* <Text style={styles.itemPrice}>{this.props.item.priceSale}</Text> */}
           <Text style={styles.itemName} numberOfLines={3}>
             {this.props.item.name}
           </Text>
@@ -94,8 +140,9 @@ export default class HomeDealSection extends Component {
 }
 const styles = StyleSheet.create({
   sectionContainer: {
-    backgroundColor: '#E5E5E5',
-    paddingHorizontal: 12,
+   // backgroundColor: '#E5E5E5',
+   // paddingHorizontal: 12,
+   marginHorizontal:12
   },
 
   sectionTile: {
@@ -111,7 +158,7 @@ const styles = StyleSheet.create({
   },
 
   itemContainer: {
-    width: 120,
+    width: 180,
     backgroundColor: '#fff',
     marginRight: 8,
     borderRadius: 4,
@@ -119,8 +166,8 @@ const styles = StyleSheet.create({
 
   itemImage: {
     borderRadius: 4,
-    width: 120,
-    height: 120,
+    width: 180,
+    height: 180,
   },
   itemName: {
     fontSize: 15,
@@ -134,5 +181,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#FF5F04',
     marginHorizontal: 4,
+  },
+  sale: {
+    height: scale(20),
+    width: scale(40),
+     borderRadius: scale(3),
+    justifyContent: 'center',
+    alignContent: 'flex-end',
+    backgroundColor: '#FF5F04',
+    alignItems: 'center',
+    //top:scale(10)
+     bottom: scale(152),
+     left: scale(111),
   },
 });

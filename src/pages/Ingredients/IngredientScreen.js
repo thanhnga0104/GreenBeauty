@@ -17,6 +17,8 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import IngredientComponent from '../../components/Ingredients/ingredients';
 import {scale} from 'react-native-size-matters'
 import PieChart from 'react-native-pie-chart';
+import Feather from 'react-native-vector-icons/Feather';
+
 
 class IngredientsScreen extends React.Component{
     constructor(props)
@@ -121,6 +123,23 @@ class IngredientsScreen extends React.Component{
       const {navigation, route} = this.props;
       return(
         <SafeAreaView style={styles.container}>
+          {/* bắt đầu header */}
+
+          <View style={styles.headerContainer}>
+          <View style={styles.menuContainer}>
+            <Feather
+              name="menu"
+              size={28}
+              color="#fff"
+              onPress={() => {
+                navigation.openDrawer();
+              }}
+            />
+          </View>
+          <Text style={{color:"#FFF", fontSize:20}}>Tra cứu thành phần</Text>
+          
+        </View>
+          {/* kết thúc header */}
           <View style={styles.container1}>
             <View style={styles.inputarea}>
               <>
@@ -232,6 +251,17 @@ const styles = StyleSheet.create({
   square:{
     height: scale(1),
     width: scale(1)
-  }
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    paddingVertical: 10,
+    backgroundColor: '#316C49',
+   // justifyContent: 'space-between',
+  },
+  menuContainer: {
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 export default IngredientsScreen

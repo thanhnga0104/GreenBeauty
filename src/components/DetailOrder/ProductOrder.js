@@ -49,8 +49,37 @@ const ProductOrder = (props) =>{
                 <Text style={{margin:10}} ellipsizeMode="tail"
                 numberOfLines= {2}>{product.name}</Text>
                 <View style={{marginLeft:10,flexDirection:"column",}}>
-                  <Text style={{marginLeft: 5}}>x{props.quanlity}</Text>
-                  <Text style={{color:"red", marginLeft:5}}>{product.price}</Text>
+                  <Text style={{marginLeft: 5, color:"#FF5F04"}}>x{props.quanlity}</Text>
+                  {product.IsFlashsale == true ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.itemPrice}>
+                  {product.price -
+                    (product.price *
+                      product.priceSale) /
+                      100}
+                  đ
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#FF5F04',
+                      borderRadius: 3,
+                      justifyContent: 'center',
+                      marginTop: 6,
+                    }}></TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={styles.itemPrice}>
+                {product.price}đ
+              </Text>
+            )}
+                  {/* <Text style={{color:"#FF5F04", marginLeft:5}}>{product.price}</Text> */}
                 </View>
             </View>
           </View>
@@ -70,6 +99,11 @@ const styles = StyleSheet.create({
         height: 0.5,
         backgroundColor:"#000",
         marginTop: 5
+      },
+      itemPrice: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#FF5F04',
       },
 })
 export default ProductOrder;

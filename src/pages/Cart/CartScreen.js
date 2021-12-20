@@ -19,6 +19,8 @@ import {getDataUser} from '../../networking/Server';
 import {getAddress} from '../../networking/Server';
 import {putItemInCart} from '../../networking/Server';
 import {deleteProductFromCart} from '../../networking/Server';
+import {scale} from 'react-native-size-matters';
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -158,7 +160,36 @@ class CartFlatListItem extends Component {
           />
           <View style={{margin: 10}}>
             <Text style={styles.itemName}>{this.state.productItem.name}</Text>
-            <Text style={styles.itemPrice}>{this.state.productItem.price}</Text>
+            {/* <Text style={styles.itemPrice}>{this.state.productItem.price}</Text> */}
+            {this.state.productItem.IsFlashsale == true ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.itemPrice}>
+                  {this.state.productItem.price -
+                    (this.state.productItem.price *
+                      this.state.productItem.priceSale) /
+                      100}
+                  đ
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#FF5F04',
+                      borderRadius: 3,
+                      justifyContent: 'center',
+                      marginTop: 6,
+                    }}></TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={styles.itemPrice}>
+                {this.state.productItem.price}đ
+              </Text>
+            )}
             <View style={{flexDirection: 'row'}}>
               <Text
                 style={{width: 20, borderWidth: 0.3, textAlign: 'center'}}
@@ -378,7 +409,8 @@ export default class CartScreen extends Component {
             borderWidth: 0.3,
             justifyContent: 'space-between',
           }}>
-          <Text>Tất cả</Text>
+          {/* <Text>Tất cả</Text> */}
+          <Text></Text>
 
           <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
             <View
@@ -386,10 +418,10 @@ export default class CartScreen extends Component {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              <Text style={{color: '#484848', marginHorizontal: 5}}>
+              <Text style={{color: '#484848', marginHorizontal: 5, fontSize:14, fontWeight:"400"}}>
                 Tổng tiền
               </Text>
-              <Text style={{color: 'green', marginRight: 5}}>
+              <Text style={{color: 'green', marginRight: 5, fontSize:14, fontWeight:"400"}}>
                 {this.state.totalCash}
               </Text>
             </View>
@@ -449,6 +481,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#484848',
     marginVertical: 4,
+    fontWeight:"500"
   },
 
   itemPrice: {

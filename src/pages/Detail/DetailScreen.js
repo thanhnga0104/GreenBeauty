@@ -51,13 +51,12 @@ class DetailScreen extends Component {
     this.focusListener = this.props.navigation.addListener('focus', () => {
       this.fetchProductFromCart();
       this.fetchListImage();
-    });   
-
+    });
   }
-
 
   fetchListImage = () => {
     let listImage = [];
+    listImage.push(this.props.route.params.product.imagepresent);
     getListImage(this.props.route.params.product.id)
       .then(images => {
         images.forEach(img => {
@@ -87,10 +86,11 @@ class DetailScreen extends Component {
                 this.setState({tontai: true, product_Exist: item}); //sản phẩm đã tồn tại
               }
             });
-            this.setState({listData: items, userData: user, quantityOfCart: Object.keys(items).length});
-
-            
-
+            this.setState({
+              listData: items,
+              userData: user,
+              quantityOfCart: Object.keys(items).length,
+            });
           })
           .catch(error => {
             this.setState({listData: []});
@@ -205,7 +205,11 @@ class DetailScreen extends Component {
       if (this.state.isLoveExist == false) {
         postToLoveList(this.state.userData, product.id)
           .then(result => {
-            this.setState({isLove: true, isLoveExist: true, isLoveID:result.id});
+            this.setState({
+              isLove: true,
+              isLoveExist: true,
+              isLoveID: result.id,
+            });
             Alert.alert('', 'Đã thêm sản phẩm vào mục yêu thích');
             console.log('Thêm vào love list thành công 1');
           })
@@ -213,9 +217,9 @@ class DetailScreen extends Component {
             console.error(`Error is: ${error}`);
           });
 
-          this.checkLoveList(this.state.userData.userID)
+        this.checkLoveList(this.state.userData.userID);
       } else {
-        console.log("this.state.isLoveID:",this.state.isLoveID)
+        console.log('this.state.isLoveID:', this.state.isLoveID);
         deleteProducLoveList(this.state.isLoveID)
           .then(() => {
             this.setState({isLove: false, isLoveExist: false});
@@ -226,9 +230,14 @@ class DetailScreen extends Component {
           .catch(error => {
             console.error(`Error is: ${error}`);
           });
-          this.checkLoveList(this.state.userData.userID)
+        this.checkLoveList(this.state.userData.userID);
       }
     };
+
+    // const onClosePopup = () =>{
+    //   popupRef.close();
+
+    // }
 
     return (
       <SafeAreaView
@@ -236,8 +245,10 @@ class DetailScreen extends Component {
           flex: 1,
         }}>
         <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-        <DetailHeader navigation={navigation} 
-        quantityOfCart={this.state.quantityOfCart}/>
+        <DetailHeader
+          navigation={navigation}
+          quantityOfCart={this.state.quantityOfCart}
+        />
 
         {/* Bắt đầu phần detail */}
         <ScrollView style={{backgroundColor: '#fff'}}>
@@ -261,25 +272,67 @@ class DetailScreen extends Component {
 
           <View style={{padding: 10}}>
             <Text style={styles.productNameText}>{product.name}</Text>
-            <Text style={styles.productPrice}>{product.price}</Text>
+            {/* // <Text style={styles.productPrice}>{product.priceSale}</Text> */}
+            {product.IsFlashsale == true ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.productPrice}>
+                  {product.price - (product.price * product.priceSale) / 100}đ
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Text
+                    style={{
+                      color: '#827A7A',
+                      textDecorationLine: 'line-through',
+                      marginTop: 8,
+                      fontSize: 16,
+                      marginRight: 2,
+                      alignItems: 'center',
+                    }}>
+                    {product.price}đ
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#FF5F04',
+                      borderRadius: 3,
+                      justifyContent: 'center',
+                      marginTop: 6,
+                    }}>
+                    <Text style={{padding: 2, color: '#fff', fontSize: 16}}>
+                      {' '}
+                      -{product.priceSale}%
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={styles.productPrice}>{product.price}đ</Text>
+            )}
           </View>
 
           <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
             <TouchableOpacity
-              style={{marginRight: 10}}
+              // style={{marginRight: 10}}
               onPress={() => {
                 navigation.navigate('RatingScreen', {
                   id: product.id,
                 });
               }}>
-              <Text>Đánh giá</Text>
+              <Text style={{fontSize: 16}}>Đánh giá</Text>
             </TouchableOpacity>
-
+            <TouchableOpacity style={{paddingHorizontal: 5}}>
+              <Text style={{fontSize: 16, color: '#827A7A'}}>|</Text>
+            </TouchableOpacity>
             <TouchableOpacity>
-              <Text>Hỏi đáp</Text>
+              <Text style={{fontSize: 16}}>Đã bán </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.heartContainer}
+              //style={styles.heartContainer}
+              style={styles.shareContainer}
               onPress={handleLoveList}>
               {this.state.isLove == false ? (
                 <Ionicons name="heart-outline" size={28} color="black" />
@@ -288,9 +341,9 @@ class DetailScreen extends Component {
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.shareContainer}>
+            {/* <TouchableOpacity style={styles.shareContainer}>
               <Icon name="share-outline" size={32} color="black" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={styles.spaceContainer}></View>
 
@@ -327,7 +380,7 @@ class DetailScreen extends Component {
                 <Text style={styles.infoText}>Loại da: </Text>
               </View>
               <View>
-                <Text style={styles.infoText}></Text>
+                <Text style={styles.infoText}>{product.brand}</Text>
                 {/* <Text style={styles.infoText}>Xuất xứ thương hiệu</Text> */}
                 <Text style={styles.infoText}>{product.origin}</Text>
                 <Text style={styles.infoText}></Text>
@@ -356,7 +409,13 @@ class DetailScreen extends Component {
 
           {/* end Hướng dẫn sử dụng */}
           <View style={styles.spaceContainer}></View>
-          <TouchableOpacity style={{padding: 10, flexDirection: 'row'}}>
+          <TouchableOpacity style={{padding: 10, flexDirection: 'row'}}
+          activeOpacity={1}
+          onPress={() => {
+            navigation.navigate('ThanhPhan', {
+              product: product,
+            });
+          }}>
             <Text style={styles.titleText}>Thành phần sản phẩm</Text>
 
             <View style={styles.rightContainer}>
@@ -368,6 +427,7 @@ class DetailScreen extends Component {
           <View style={styles.spaceContainer}></View>
           <TouchableOpacity
             style={{padding: 10, flexDirection: 'row'}}
+            activeOpacity={1}
             onPress={() => {
               navigation.navigate('RatingScreen', {
                 id: product.id,
@@ -395,6 +455,7 @@ class DetailScreen extends Component {
           product={product}
           image={this.props.route.params.product.imagepresent}
           navigation={navigation}
+          // onTouchOutside={onClosePopup}
         />
       </SafeAreaView>
     );
@@ -422,8 +483,9 @@ const styles = StyleSheet.create({
 
   productPrice: {
     marginTop: 8,
-    color: 'red',
+    color: '#FF5F04',
     fontSize: 18,
+    fontWeight: 'bold',
   },
   heartContainer: {
     alignItems: 'center',
