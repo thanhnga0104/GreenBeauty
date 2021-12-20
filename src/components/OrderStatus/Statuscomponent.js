@@ -83,7 +83,36 @@ const StatusComponent = (props) =>{
                 <Text style={{margin:10}} ellipsizeMode="tail"
                 numberOfLines= {2}>{product.name}</Text>
                 <View style={{margin:10}}>
-                  <Text style={{alignItems:"flex-end", color:"red", alignContent:"flex-end"}}>{product.price}</Text>
+                {product.IsFlashsale == true ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.itemPrice}>
+                  {product.price -
+                    (product.price *
+                      product.priceSale) /
+                      100}
+                  đ
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#FF5F04',
+                      borderRadius: 3,
+                      justifyContent: 'center',
+                      marginTop: 6,
+                    }}></TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={styles.itemPrice}>
+                {product.price}đ
+              </Text>
+            )}
+                  {/* <Text style={{alignItems:"flex-end", color:"red", alignContent:"flex-end"}}>{product.price}</Text> */}
                 </View>
                 
             </View>
@@ -174,6 +203,12 @@ const styles = StyleSheet.create({
     width: scale(70),
     height: scale(70),
     margin: 10,
-  }
+  },
+  
+  itemPrice: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#FF5F04',
+  },
 })
 export default StatusComponent;

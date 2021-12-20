@@ -156,9 +156,6 @@ const ProfileScreen = ({navigation}) => {
           <View
             style={{
               paddingRight: 20,
-              // justifyContent: 'flex-start',
-              // marginTop: scale(10),
-              // marginRight: scale(5),
             }}>
             <Feather
               name="settings"
@@ -169,15 +166,6 @@ const ProfileScreen = ({navigation}) => {
               }}
             />
           </View>
-
-          {/* <View style={styles.inputContainer}>
-            <View style={{marginHorizontal: 10}}>
-              <FontAwesome name="search" size={14} color="#7D7D7D" />
-            </View>
-            <TextInput
-              style={styles.inputText}
-              placeholder="Tìm sản phẩm, thương hiệu, ...?"></TextInput>
-          </View> */}
         </View>
 
         {/* kết thúc header */}

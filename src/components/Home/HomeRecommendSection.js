@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import {scale} from 'react-native-size-matters';
 import {getProductsFromServer} from '../../networking/Server';
 
 class RecommendFlatListItem extends Component {
@@ -21,11 +22,55 @@ class RecommendFlatListItem extends Component {
               product: this.props.item,
             });
           }}>
+            <View>
           <Image
             source={{uri: this.props.item.imagepresent}}
             style={styles.imageContainer}
           />
-          <Text style={styles.priceContainer}>{this.props.item.price}</Text>
+          {this.props.item.IsFlashsale == true ? (
+              <View style={styles.sale}>
+                <Text
+                  style={{
+                    fontSize: scale(14),
+                    fontWeight: 'bold',
+                    color: '#FFF',
+                  }}>
+                  -{this.props.item.priceSale}%
+                </Text>
+              </View>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
+          {this.props.item.IsFlashsale == true ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text style={styles.priceContainer}>
+                {this.props.item.price -
+                  (this.props.item.price * this.props.item.priceSale) / 100}
+                đ
+              </Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    color: '#827A7A',
+                    textDecorationLine: 'line-through',
+                    fontSize: 16,
+                    marginRight: 4,
+                    alignItems: 'center',
+                  }}>
+                  {this.props.item.price}đ
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <Text style={styles.priceContainer}>{this.props.item.price}</Text>
+          )}
+          {/* <Text style={styles.priceContainer}>{this.props.item.price}</Text> */}
           <Text style={styles.nameContainer}>{this.props.item.name}</Text>
         </TouchableOpacity>
       </View>
@@ -97,7 +142,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    backgroundColor: '#E5E5E5',
+   // backgroundColor: '#E5E5E5',
     marginHorizontal: 8,
   },
 
@@ -131,5 +176,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#FF5F04',
+  },
+  sale: {
+    height: scale(20),
+    width: scale(40),
+     borderRadius: scale(3),
+    justifyContent: 'center',
+    alignContent: 'flex-end',
+    backgroundColor: '#FF5F04',
+    alignItems: 'center',
+     bottom: scale(156),
+     left: scale(116),
   },
 });

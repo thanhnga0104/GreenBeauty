@@ -21,7 +21,7 @@ import DetailIngredients from '../../components/Ingredients/DetailIngredient/Det
 import IngredientsScreen from '../../pages/Ingredients/IngredientScreen';
 import DetailOrder from '../../pages/DetailOrder/DetailOrder';
 import RatingScreen from '../../pages/Rating/RatingScreen';
-
+import ThanhPhanComponent from '../../pages/Detail/IngredientComponent';
 const stack = createStackNavigator();
 const HomeStack = ({navigation}) => (
   <stack.Navigator>
@@ -32,13 +32,13 @@ const HomeStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-    <stack.Screen
+    {/* <stack.Screen
       name="Ingriedient"
       component={IngredientsScreen}
       options={{
         headerShown: false,
       }}
-    />
+    /> */}
     <stack.Screen name="HomeDealSection" component={HomeDealSection} />
     <stack.Screen name="DetailHeader" component={DetailHeader} />
     <stack.Screen
@@ -107,12 +107,21 @@ const HomeStack = ({navigation}) => (
     />
 
     <stack.Screen
+      name="ThanhPhan"
+      component={ThanhPhanComponent}
+      options={{
+        headerShown: false,
+      }}
+    />
+<stack.Screen
       name="DescriptionScreen"
       component={DescriptionScreen}
       options={{
         headerShown: false,
       }}
     />
+
+
 
     <stack.Screen
       name="OrderSuccessfullScreen"

@@ -14,6 +14,9 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import {scale} from 'react-native-size-matters';
+
 import {getDataUser, getProductFromCart} from '../../networking/Server';
 import {getAddress} from '../../networking/Server';
 import {getProductById} from '../../networking/Server';
@@ -121,7 +124,6 @@ export default class ConfirmScreen extends Component {
     let item = {product_id, quantity};
     let temp = this.state.orderdetail;
     temp.push(item);
-    // console.log('temp: ', temp);
     this.setState({orderdetail: temp});
   };
 
@@ -132,7 +134,6 @@ export default class ConfirmScreen extends Component {
 
   render() {
     const {navigation} = this.props;
-    // console.log("select data:", this.props.route.params.selectData)
     return (
       <SafeAreaView style={{flex: 1, height: '100%'}}>
         <StatusBar backgroundColor="#316C49" barStyle="light-content" />
@@ -161,8 +162,11 @@ export default class ConfirmScreen extends Component {
               onPress={() => {
                 navigation.navigate('AddressScreen');
               }}>
-              <Text style={styles.titleComponent}>Địa chỉ nhận hàng</Text>
+                <View style={{flexDirection:'row'}}>
+                <Ionicons name="md-location-outline" size={scale(15)} />
 
+              <Text style={styles.titleComponent}>Địa chỉ nhận hàng</Text>
+</View>
               <View style={{flexDirection: 'row'}}>
                 <View style={{width: width / 1.1}}>
                   {/* <Text>Nhà riêng, cơ quan</Text> */}
@@ -180,7 +184,7 @@ export default class ConfirmScreen extends Component {
             <View style={styles.spaceContainer}></View>
             <View style={styles.childContainer}>
               <Text style={styles.titleComponent}>Phương thức thanh toán</Text>
-              <Text>Ở đây hiển thị phương thức thanh toán</Text>
+              <Text>COD nhanh</Text>
             </View>
             <View style={styles.spaceContainer}></View>
             <View style={styles.childContainer}>
@@ -244,22 +248,7 @@ class ProductItem extends Component {
   fetchDataProduct = () => {
     getProductById(this.props.item).then(product => {
       this.setState({product: product});
-      // let data = product.images;
-      // data.forEach(data => {
-      //   getImageFromServer(data)
-      //     .then(image => {
-      //       // if (this.state.imageFromServer == '') {
-      //       //   this.setState({imageFromServer: image, product: product});
-      //       // }
-
-      //       this.setState({product: product})
-      //     })
-      //     .catch(error => {
-      //       //this.setState({imageFromServer: []});
-      //     });
-      // });
-
-      ////////////////////
+      
       getDataUser()
         .then(user => {
           getProductFromCart(user.userID, this.props.item)
@@ -297,20 +286,6 @@ class ProductItem extends Component {
       });
   };
 
-  // refreshImageFromServer = () => {
-  //   let data = this.props.item.images;
-  //   data.forEach(data => {
-  //     getImageFromServer(data)
-  //       .then(image => {
-  //         if (this.state.imageFromServer == '') {
-  //           this.setState({imageFromServer: image});
-  //         }
-  //       })
-  //       .catch(error => {
-  //         this.setState({imageFromServer: []});
-  //       });
-  //   });
-  // };
   render() {
     const {navigation} = this.props;
     return (
@@ -332,7 +307,36 @@ class ProductItem extends Component {
           />
           <View style={{margin: 10}}>
             <Text style={styles.itemName}>{this.state.product.name}</Text>
-            <Text style={styles.itemPrice}>{this.state.product.price}</Text>
+            {this.state.product.IsFlashsale == true ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.itemPrice}>
+                  {this.state.product.price -
+                    (this.state.product.price *
+                      this.state.product.priceSale) /
+                      100}
+                  đ
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#FF5F04',
+                      borderRadius: 3,
+                      justifyContent: 'center',
+                      marginTop: 6,
+                    }}></TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={styles.itemPrice}>
+                {this.state.product.price}đ
+              </Text>
+            )}
+            {/* <Text style={styles.itemPrice}>{this.state.product.price}</Text> */}
             <Text style={styles.itemPrice}>x{this.state.quantity}</Text>
           </View>
         </TouchableOpacity>

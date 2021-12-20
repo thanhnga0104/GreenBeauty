@@ -51,25 +51,6 @@ class SearchFlatListItem extends Component {
     };
   }
 
-  componentDidMount() {
-    this.refreshImageFromServer();
-  }
-
-  refreshImageFromServer = () => {
-    let data = [];
-    data = this.props.item.images;
-    data.forEach(data => {
-      getImageFromServer(data)
-        .then(image => {
-          if (this.state.imageFromServer == '') {
-            this.setState({imageFromServer: image});
-          }
-        })
-        .catch(error => {
-          this.setState({imageFromServer: []});
-        });
-    });
-  };
   render() {
     const {navigation} = this.props;
     return (
@@ -81,7 +62,7 @@ class SearchFlatListItem extends Component {
           });
         }}>
         <Image
-          source={{uri: this.state.imageFromServer.img}}
+          source={{uri: this.props.item.imagepresent}}
           style={styles.itemImage}
         />
 
