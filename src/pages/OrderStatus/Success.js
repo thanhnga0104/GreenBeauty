@@ -66,7 +66,9 @@ const Success = ({navigation, route}) => {
   }, []);
 
   return Object.keys(renderData).length == 0 ? (
-    <Text>Chưa có đơn hàng</Text>
+    <Text>
+      {/* Chưa có đơn hàng */}
+      </Text>
   ) : (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar backgroundColor="#316C49" barStyle="light-content" />
@@ -83,7 +85,7 @@ const Success = ({navigation, route}) => {
         </View>
 
         <View>
-          <Text style={styles.titleScreen}>Chờ xử lý</Text>
+          <Text style={styles.titleScreen}>Giao hàng thành công</Text>
         </View>
       </View>
 

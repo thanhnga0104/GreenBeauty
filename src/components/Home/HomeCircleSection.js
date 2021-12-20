@@ -49,7 +49,9 @@ const HomeCircleSection = ({navigation}) => {
 const styles = StyleSheet.create({
 
   container: {
+    paddingTop:10,
     margin: 20,
+  // padding:20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',

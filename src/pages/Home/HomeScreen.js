@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Text,
   View,
+  FlatList,
 } from 'react-native';
 import HomeCircleSection from '../../components/Home/HomeCircleSection';
 import HomeHeader from '../../components/Home/HomeHeader';
@@ -60,7 +61,7 @@ export default class HomeScreen extends Component {
           quantityOfCart={this.state.quantityOfCart}
         />
         <View style={{flex: 1}}>
-          <ScrollView style={styles.bodyContainer}>
+          {/* <ScrollView style={styles.bodyContainer}>
             <View>
               <BannerComponent />
             </View>
@@ -73,7 +74,23 @@ export default class HomeScreen extends Component {
             <View>
               <HomeRecommendSection navigation={navigation} />
             </View>
-          </ScrollView>
+          </ScrollView> */}
+          <FlatList
+            LisHeaderComponent={<Text></Text>}
+            // data={recipes}
+            // renderItem={renderItem}
+            ListFooterComponent={
+              <>
+                <BannerComponent />
+                <HomeCircleSection navigation={navigation} />
+
+                <HomeDealSection navigation={navigation} />
+
+                <HomeRecommendSection navigation={navigation} />
+              </>
+              //<Footer/>
+            }
+          />
         </View>
       </SafeAreaView>
     );

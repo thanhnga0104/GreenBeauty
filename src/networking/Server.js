@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const SERVER_NAME = '10.0.2.2';
+ const SERVER_NAME = '10.0.2.2';
 
+//const SERVER_NAME ='192.168.1.4'
 //Api get type of category
 async function getTypeOfCategory() {
   const apiGetType = 'http://' + SERVER_NAME + ':8000/type/';
@@ -31,7 +32,7 @@ async function getCategory(type_id) {
 
 //Api get all products
 async function getProductsFromServer() {
-  const apiGetAllProduct = 'http://' + SERVER_NAME + ':8000/product/';
+  const apiGetAllProduct = 'http://' + SERVER_NAME + ':8000/product/?IsActive=true';
   try {
     let response = await fetch(apiGetAllProduct, {
       method: 'GET',
@@ -46,12 +47,28 @@ async function getProductsFromServer() {
 //Api get product by id
 async function getProductById(id) {
   const apiGetProductById =
-    'http://' + SERVER_NAME + ':8000/product/' + id + '/';
+    'http://' + SERVER_NAME + ':8000/product/' + id + '/?IsActive=true';
   try {
     let response = await fetch(apiGetProductById, {
       method: 'GET',
     });
     let responseJson = await response.json();
+    return responseJson;
+  } catch (error) {
+    console.error(`Error is: ${error}`);
+  }
+}
+
+//Api get product by id
+async function getProductByCategory(category) {
+  const apiGetProductByCategory=
+    'http://' + SERVER_NAME + ':8000/product/?category=' + category ;
+  try {
+    let response = await fetch(apiGetProductByCategory, {
+      method: 'GET',
+    });
+    let responseJson = await response.json();
+    console.log("category:", responseJson)
     return responseJson;
   } catch (error) {
     console.error(`Error is: ${error}`);
@@ -451,6 +468,7 @@ export {
   getRatingbyUserid,
   getDeliveryInformation,
   getDetailById,
+  getProductByCategory,
   getTypeOfCategory,
   getCategory,
   getProductsFromServer,

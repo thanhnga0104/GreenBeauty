@@ -119,7 +119,7 @@ const Rating = props => {
       .then(responseData => {
         //alert("Succes "+ responseData)
         setRating(props.order);
-        alert('Succes ' + responseData);
+        alert('Success');
       })
       .done();
   };

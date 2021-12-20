@@ -40,6 +40,14 @@ class CategoryFlatListItem extends Component {
 }
 
 class CategoryFlatList extends Component {
+  // ItemSepatator = () => (
+  //   <View
+  //     style={{
+  //       borderBottomWidth: 1,
+  //       //borderColor: '#E5E5E5',
+  //     }}
+  //   />
+  // );
   render() {
     const {navigation} = this.props;
     return (
@@ -47,6 +55,8 @@ class CategoryFlatList extends Component {
         <FlatList
           //extraData={this.state}
           data={this.props.listType}
+        //  ItemSeparatorComponent={this.ItemSepatator}
+
           renderItem={({item, index}) => {
             return (
               <CategoryFlatListItem
@@ -64,9 +74,10 @@ class CategoryFlatList extends Component {
 class TypeFlatListItem extends Component {
   render() {
     const {navigation} = this.props;
+    //console.log("TypeFlatListItem:",this.props.item)
     return (
       <TouchableOpacity style={styles.TypeItem}
-      onPress={()=>{navigation.navigate("RecommendProductScreen")}}>
+      onPress={()=>{navigation.navigate("RecommendProductScreen", {item:this.props.item})}}>
         <Image
           style={styles.imageTypeItem}
           source={{uri: this.props.item.imagecategory}}></Image>
@@ -81,7 +92,7 @@ class TypeFlastList extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <View>
+      <View >
         <FlatList
           numColumns={3}
           data={this.props.listCategory}
@@ -179,7 +190,7 @@ export default class CategoryComponent extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <View style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row', backgroundColor:"#FFF"}}>
         <CategoryFlatList
           navigation={navigation}
           listType={this.state.listTypeCategory}
@@ -200,7 +211,8 @@ const styles = StyleSheet.create({
     width: 70,
     height: 80,
     backgroundColor: '#fff',
-    borderWidth: 0.6,
+    borderBottomWidth: 0.6,
+    borderRightWidth: 0.6,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -209,7 +221,8 @@ const styles = StyleSheet.create({
     width: 70,
     height: 80,
     backgroundColor: '#E5E5E5',
-    borderWidth: 0.6,
+    borderBottomWidth: 0.6,
+   borderRightWidth: 0.6,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -61,7 +61,7 @@ export default class HomeHeader extends Component {
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
-    paddingTop: 50,
+    paddingTop: 20,
     paddingBottom: 4,
     backgroundColor: '#316C49',
   },

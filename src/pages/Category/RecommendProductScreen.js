@@ -14,7 +14,7 @@ import {getProductsFromServer} from '../../networking/Server';
 import {getDataUser} from '../../networking/Server';
 import {getProductById} from '../../networking/Server';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
+import { getProductByCategory } from '../../networking/Server';
 export default class RecommendProductScreen extends Component {
   constructor(props) {
     super(props);
@@ -30,18 +30,19 @@ export default class RecommendProductScreen extends Component {
   }
 
   refreshDataFromServer = () => {
-    getDataUser()
-      .then(user => {
-        
-          
-      })
-      .catch(error => {
-        console.error(`Error is: ${error}`);
-      });
+    getProductByCategory(this.props.route.params.item.id)
+    .then(products=>{
+      console.log("hyyyy:", products)
+      this.setState({productsFromServer:products})
+    })
+    .catch(error=>{
+      console.log("Lỗi ở RecommendProductScreen")
+    })
   };
 
   render() {
     const {navigation, route} = this.props;
+    //console.log("log navi:", this.props.route.params.item.id)
     return (
       <SafeAreaView
         style={{

@@ -8,6 +8,7 @@ import {
   Image,
   Modal,
   Dimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -29,9 +30,21 @@ export class BottomPopup extends Component {
     this.setState({show: false});
   };
 
+  // rederOutsideTouchable(onTouch) {
+  //   const view = <View style={{flex: 1, width: '100%'}} />;
+  //   if (!onTouch) return view;
+
+  //   return (
+  //     <TouchableWithoutFeedback
+  //       onPress={onTouch}
+  //       style={{flex: 1, width: '100%'}}>{view}</TouchableWithoutFeedback>
+  //   );
+  // }
+
   render() {
     const {navigation, product, image} = this.props;
     let {show} = this.state;
+   // const {onTouchOutside}=this.props
     return (
       <Modal
         animationType={'fade'}
@@ -44,6 +57,7 @@ export class BottomPopup extends Component {
             backgroundColor: '#000000AA',
             justifyContent: 'flex-end',
           }}>
+          {/* {this.rederOutsideTouchable(onTouchOutside)} */}
           <View style={styles.container}>
             <View
               style={{
@@ -72,7 +86,7 @@ export class BottomPopup extends Component {
             </View>
 
             <View>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row',alignItems:'center'}}>
                 <Image
                   style={styles.image}
                   source={{
@@ -83,7 +97,33 @@ export class BottomPopup extends Component {
                   <Text style={styles.productNameText} numberOfLines={2}>
                     {product.name}
                   </Text>
-                  <Text style={styles.productPrice}>{product.price}</Text>
+                  {/* <Text style={styles.productPrice}>{product.price}</Text> */}
+                  {product.IsFlashsale == true ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.productPrice}>
+                  {product.price - (product.price * product.priceSale) / 100}đ
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#FF5F04',
+                      borderRadius: 3,
+                      justifyContent: 'center',
+                      marginTop: 6,
+                    }}>
+                    
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={styles.productPrice}>{product.price}đ</Text>
+            )}
                 </View>
               </View>
               <View style={styles.addCartContainer}>
@@ -120,6 +160,7 @@ const styles = StyleSheet.create({
   productNameText: {
     width: '70%',
     fontSize: 16,
+    fontWeight:"500"
   },
   productPrice: {
     color: 'red',
