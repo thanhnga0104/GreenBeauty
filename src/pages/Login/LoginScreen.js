@@ -93,6 +93,7 @@ const LoginScreen = ({navigation}) => {
             'Error: Account has not verified yet, please check register mail again',
           );
         }
+        setloading(false)
       })
       .then(res => {
         console.log('reponse :', res);

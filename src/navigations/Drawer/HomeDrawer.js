@@ -8,6 +8,7 @@ import HomeStack from '../Stack/HomeStack';
 import ProfileStack from '../Stack/ProfileStack';
 import CategoryStack from '../Stack/CategoryStack';
 import IngredientsScreen from '../../pages/Ingredients/IngredientScreen';
+import IngredientStack from '../Stack/IngredientStack';
 import MainTab from '../Tab/MainTab';
 const drawer = createDrawerNavigator();
 
@@ -34,7 +35,7 @@ const HomeDrawer = () => {
 
       <drawer.Screen
         name="Ingredients"
-        component={IngredientsScreen}
+        component={IngredientStack}
         options={{headerShown: false}}
       />
     </drawer.Navigator>
