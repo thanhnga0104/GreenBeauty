@@ -19,12 +19,8 @@ import {getDataUser} from '../../networking/Server';
 import {getAddress} from '../../networking/Server';
 import {putItemInCart} from '../../networking/Server';
 import {deleteProductFromCart} from '../../networking/Server';
-import {scale} from 'react-native-size-matters';
-
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 class CartFlatListItem extends Component {
   constructor(props) {
     super(props);
@@ -116,11 +112,10 @@ class CartFlatListItem extends Component {
           onPress: () => {
             deleteProductFromCart(this.state.activeRowKey)
               .then(() => {
-                //console.log("xóa ok rồi")
                 this.props.cartScreen.fetchProductFromCart();
               })
               .catch(error => {
-                console.log('xóa ko dc');
+                console.log(error);
               });
           },
           text: 'Xóa',
@@ -160,7 +155,6 @@ class CartFlatListItem extends Component {
           />
           <View style={{margin: 10}}>
             <Text style={styles.itemName}>{this.state.productItem.name}</Text>
-            {/* <Text style={styles.itemPrice}>{this.state.productItem.price}</Text> */}
             {this.state.productItem.IsFlashsale == true ? (
               <View
                 style={{
@@ -317,7 +311,6 @@ export default class CartScreen extends Component {
         .then(data => {
           if (Object.keys(data).length === 0) {
             navigation.navigate('AddLocationScreen', {
-              // defaultAddress: 'true',
               isFirst: 'true',
               selectData: this.state.selectData,
               userData: this.state.userData,
@@ -409,7 +402,6 @@ export default class CartScreen extends Component {
             borderWidth: 0.3,
             justifyContent: 'space-between',
           }}>
-          {/* <Text>Tất cả</Text> */}
           <Text></Text>
 
           <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
@@ -418,10 +410,22 @@ export default class CartScreen extends Component {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              <Text style={{color: '#484848', marginHorizontal: 5, fontSize:14, fontWeight:"400"}}>
+              <Text
+                style={{
+                  color: '#484848',
+                  marginHorizontal: 5,
+                  fontSize: 14,
+                  fontWeight: '400',
+                }}>
                 Tổng tiền
               </Text>
-              <Text style={{color: 'green', marginRight: 5, fontSize:14, fontWeight:"400"}}>
+              <Text
+                style={{
+                  color: 'green',
+                  marginRight: 5,
+                  fontSize: 14,
+                  fontWeight: '400',
+                }}>
                 {this.state.totalCash}
               </Text>
             </View>
@@ -481,7 +485,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#484848',
     marginVertical: 4,
-    fontWeight:"500"
+    fontWeight: '500',
   },
 
   itemPrice: {

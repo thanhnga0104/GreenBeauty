@@ -10,18 +10,14 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
-import {getProductsFromServer} from '../../networking/Server';
-import {getDataUser} from '../../networking/Server';
-import {getProductById} from '../../networking/Server';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { getProductByCategory } from '../../networking/Server';
+import {getProductByCategory} from '../../networking/Server';
 export default class RecommendProductScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       productsFromServer: [],
       imageFromServer: [],
-      //   refreshing: true,
     };
   }
 
@@ -31,18 +27,17 @@ export default class RecommendProductScreen extends Component {
 
   refreshDataFromServer = () => {
     getProductByCategory(this.props.route.params.item.id)
-    .then(products=>{
-      console.log("hyyyy:", products)
-      this.setState({productsFromServer:products})
-    })
-    .catch(error=>{
-      console.log("Lỗi ở RecommendProductScreen")
-    })
+      .then(products => {
+        console.log('hyyyy:', products);
+        this.setState({productsFromServer: products});
+      })
+      .catch(error => {
+        console.log('Lỗi ở RecommendProductScreen');
+      });
   };
 
   render() {
     const {navigation, route} = this.props;
-    //console.log("log navi:", this.props.route.params.item.id)
     return (
       <SafeAreaView
         style={{
@@ -65,10 +60,8 @@ export default class RecommendProductScreen extends Component {
             <Text style={styles.titleScreen}>Danh mục theo ...</Text>
           </View>
         </View>
-     
 
-        {/* <View style={styles.sectionContainer}> */}
-        <View style={{padding:10}}>
+        <View style={{padding: 10}}>
           <FlatList
             scrollEnabled={false}
             nestedScrollEnabled={true}
@@ -81,10 +74,8 @@ export default class RecommendProductScreen extends Component {
                   item={item}
                   index={index}></RecommendFlatListItem>
               );
-            }}
-          ></FlatList>
+            }}></FlatList>
         </View>
-        {/* </View> */}
       </SafeAreaView>
     );
   }

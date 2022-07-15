@@ -1,5 +1,4 @@
 import React from 'react';
-import {useState} from 'react';
 import {Component} from 'react';
 import {
   ScrollView,
@@ -16,7 +15,6 @@ import {
 import DetailHeader from '../../components/Detail/DetailHeader';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getListImage} from '../../networking/Server';
 import {getImageFromServer} from '../../networking/Server';
 import {BottomPopup} from '../../components/Detail/BottomPopup';
@@ -234,11 +232,6 @@ class DetailScreen extends Component {
       }
     };
 
-    // const onClosePopup = () =>{
-    //   popupRef.close();
-
-    // }
-
     return (
       <SafeAreaView
         style={{
@@ -250,7 +243,6 @@ class DetailScreen extends Component {
           quantityOfCart={this.state.quantityOfCart}
         />
 
-        {/* Bắt đầu phần detail */}
         <ScrollView style={{backgroundColor: '#fff'}}>
           <View style={styles.wrap}>
             <ScrollView
@@ -272,7 +264,6 @@ class DetailScreen extends Component {
 
           <View style={{padding: 10}}>
             <Text style={styles.productNameText}>{product.name}</Text>
-            {/* // <Text style={styles.productPrice}>{product.priceSale}</Text> */}
             {product.IsFlashsale == true ? (
               <View
                 style={{
@@ -316,7 +307,6 @@ class DetailScreen extends Component {
 
           <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
             <TouchableOpacity
-              // style={{marginRight: 10}}
               onPress={() => {
                 navigation.navigate('RatingScreen', {
                   id: product.id,
@@ -331,7 +321,6 @@ class DetailScreen extends Component {
               <Text style={{fontSize: 16}}>Đã bán </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              //style={styles.heartContainer}
               style={styles.shareContainer}
               onPress={handleLoveList}>
               {this.state.isLove == false ? (
@@ -340,14 +329,9 @@ class DetailScreen extends Component {
                 <Ionicons name="heart-sharp" size={28} color="red" />
               )}
             </TouchableOpacity>
-
-            {/* <TouchableOpacity style={styles.shareContainer}>
-              <Icon name="share-outline" size={32} color="black" />
-            </TouchableOpacity> */}
           </View>
           <View style={styles.spaceContainer}></View>
 
-          {/* Mô tả sản phẩm */}
           <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}
             activeOpacity={1}
@@ -365,32 +349,23 @@ class DetailScreen extends Component {
             </View>
           </TouchableOpacity>
 
-          {/* End Mô tả sản phẩm */}
-
-          {/* Thông tin chi tiết */}
-
           <View style={styles.spaceContainer}></View>
           <View style={styles.descriptionSection}>
             <Text style={styles.titleText}>Thông tin chi tiết</Text>
             <View style={{flexDirection: 'row'}}>
               <View style={{paddingRight: 30}}>
                 <Text style={styles.infoText}>Thương hiệu: </Text>
-                {/* <Text style={styles.infoText}>Xuất xứ thương hiệu</Text> */}
                 <Text style={styles.infoText}>Xuất xứ: </Text>
                 <Text style={styles.infoText}>Loại da: </Text>
               </View>
               <View>
                 <Text style={styles.infoText}>{product.brand}</Text>
-                {/* <Text style={styles.infoText}>Xuất xứ thương hiệu</Text> */}
                 <Text style={styles.infoText}>{product.origin}</Text>
                 <Text style={styles.infoText}></Text>
               </View>
             </View>
           </View>
 
-          {/* End Thông tin chi tiết */}
-
-          {/* Hướng dẫn sử dụng */}
           <View style={styles.spaceContainer}></View>
 
           <TouchableOpacity
@@ -407,15 +382,15 @@ class DetailScreen extends Component {
             </View>
           </TouchableOpacity>
 
-          {/* end Hướng dẫn sử dụng */}
           <View style={styles.spaceContainer}></View>
-          <TouchableOpacity style={{padding: 10, flexDirection: 'row'}}
-          activeOpacity={1}
-          onPress={() => {
-            navigation.navigate('ThanhPhan', {
-              product: product,
-            });
-          }}>
+          <TouchableOpacity
+            style={{padding: 10, flexDirection: 'row'}}
+            activeOpacity={1}
+            onPress={() => {
+              navigation.navigate('ThanhPhan', {
+                product: product,
+              });
+            }}>
             <Text style={styles.titleText}>Thành phần sản phẩm</Text>
 
             <View style={styles.rightContainer}>
@@ -455,7 +430,6 @@ class DetailScreen extends Component {
           product={product}
           image={this.props.route.params.product.imagepresent}
           navigation={navigation}
-          // onTouchOutside={onClosePopup}
         />
       </SafeAreaView>
     );

@@ -1,8 +1,7 @@
 import React from 'react';
-import {View, StatusBar, StyleSheet, SafeAreaView} from 'react-native';
+import {StatusBar, SafeAreaView} from 'react-native';
 import {Component} from 'react';
 import SearchHeader from '../../components/Search/SearchHeader';
-
 import {getSearchProduct} from '../../networking/Server';
 import SearchComponent from '../../components/Search/SearchComponent';
 

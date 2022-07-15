@@ -1,22 +1,8 @@
 import React, {Component} from 'react';
 
-import {
-  StyleSheet,
-  SafeAreaView,
-  FlatList,
-  View,
-  Image,
-  Text,
-  Keyboard,
-  Dimensions,
-  TouchableOpacity,
-  TextInput,
-  StatusBar,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {FlatList, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getDistrict} from '../../networking/Server';
-import { getWard } from '../../networking/Server';
+import {getWard} from '../../networking/Server';
 
 export default class WardComponent extends Component {
   constructor() {
@@ -123,9 +109,8 @@ class FlatListItem extends Component {
       <TouchableOpacity
         style={{marginLeft: 10, marginTop: 10}}
         onPress={() => {
-          selectedWard(this.props.item),
-            hide('');
-            ward(this.props.item);
+          selectedWard(this.props.item), hide('');
+          ward(this.props.item);
         }}>
         <Text style={{fontSize: 16, margin: 5}}>{this.props.item.name}</Text>
       </TouchableOpacity>
