@@ -1,45 +1,16 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, {useEffect} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from 'react-native';
-
-//  import {NavigationContainer} from '@react-navigation/native';
-//  import {createDrawerNavigator, DrawerContent} from '@react-navigation/drawer';
-//  import HomeScreen from './src/pages/Home/HomeScreen';
-//  import {DrawerNav} from './src/components/DrawerNav';
-//  import MainTabScreen from './src/navigations/stackNavigation';
-//  import Profile from './src/components/Profile';
-//  import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import HomeScreen from './src/pages/Home/HomeScreen';
-import HomeStack from './src/navigations/Stack/HomeStack';
-import DetailScreen from './src/pages/Detail/DetailScreen';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import TempStack from './src/navigations/Stack/tempStack';
 import HomeDrawer from './src/navigations/Drawer/HomeDrawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from './src/context/context';
-import {createStackNavigator} from '@react-navigation/stack';
 import {ActivityIndicator} from 'react-native-paper';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import LoginScreen from './src/pages/Login/LoginScreen';
-import RegisterScreen from './src/pages/Register/RegisterScreen';
-//  const Drawer = createDrawerNavigator();
+import Login from './src/pages/Login/Login';
+import Register from './src/pages/Register/Register';
+
 const Stack = createNativeStackNavigator();
+
 const App = () => {
   initialLoginSate = {
     isLoading: true,
@@ -94,8 +65,6 @@ const App = () => {
         dispatch({type: 'LOGIN', id: email, token: password});
       },
       signOut: async () => {
-        //setuserToken(null);
-        //setisLoading(false);
         try {
           await AsyncStorage.removeItem('userToken');
           await AsyncStorage.removeItem('id');
@@ -104,17 +73,13 @@ const App = () => {
         }
         dispatch({type: 'LOGOUT'});
       },
-      signUp: () => {
-        //setuserToken("asdasd");
-        //setisLoading(false);
-      },
+      signUp: () => {},
     }),
     [],
   );
 
   useEffect(() => {
     setTimeout(async () => {
-      //setisLoading(false);
       let userToken;
       userToken = null;
       try {
@@ -140,8 +105,8 @@ const App = () => {
           <Stack.Navigator
             initialRouteName="Login"
             screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
           </Stack.Navigator>
         ) : (
           <HomeDrawer />
