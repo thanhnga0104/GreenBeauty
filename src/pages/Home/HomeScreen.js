@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-  ScrollView,
   StatusBar,
   StyleSheet,
   SafeAreaView,
@@ -39,7 +38,7 @@ export default class HomeScreen extends Component {
             this.setState({quantityOfCart: Object.keys(items).length});
           })
           .catch(error => {
-            console.log('Lỗi tại HomeHeader');
+            console.log(error);
             this.setState({quantityOfCart: 0});
           });
       })
@@ -61,24 +60,8 @@ export default class HomeScreen extends Component {
           quantityOfCart={this.state.quantityOfCart}
         />
         <View style={{flex: 1}}>
-          {/* <ScrollView style={styles.bodyContainer}>
-            <View>
-              <BannerComponent />
-            </View>
-            <View>
-              <HomeCircleSection navigation={navigation} />
-            </View>
-            <View>
-              <HomeDealSection navigation={navigation} />
-            </View>
-            <View>
-              <HomeRecommendSection navigation={navigation} />
-            </View>
-          </ScrollView> */}
           <FlatList
             LisHeaderComponent={<Text></Text>}
-            // data={recipes}
-            // renderItem={renderItem}
             ListFooterComponent={
               <>
                 <BannerComponent />
@@ -88,7 +71,6 @@ export default class HomeScreen extends Component {
 
                 <HomeRecommendSection navigation={navigation} />
               </>
-              //<Footer/>
             }
           />
         </View>

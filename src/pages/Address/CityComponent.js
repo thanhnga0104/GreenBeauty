@@ -1,14 +1,5 @@
 import React, {Component} from 'react';
-
-import {
-  FlatList,
-  View,
-  Text,
-  Keyboard,
-  Dimensions,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
+import {FlatList, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {getProvince} from '../../networking/Server';
 
@@ -68,11 +59,7 @@ export default class CityComponent extends Component {
     return (
       <View>
         <TouchableOpacity
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}
-          // onPress={() =>
-          //   this.setState({filterCity: this.state.cityData, selectedCity: []})
-          // }
-        >
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TextInput
             value={this.state.selectedCity.name}
             placeholder={name}

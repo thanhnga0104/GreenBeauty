@@ -1,31 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Dimensions,
-  ImageBackground,
-  Image,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Item,
-  Label,
-  TextInput,
-  Touchable,
-  TouchableOpacityBase,
-  TouchableOpacity,
-  Button,
   FlatList,
-  VirtualizedList,
 } from 'react-native';
-import {scale} from 'react-native-size-matters';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import RatingComponent from '../../../components/Rating/RatingComponent';
 import {getRatingbyUserid} from '../../../networking/Server';
 import ProductComponent from '../../../components/Profile/ProductComponent';
+
 const RatingHistory = ({navigation, route}) => {
   const ItemSepatator = () => (
     <View
@@ -104,5 +90,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlignVertical: 'center',
   },
-})
+});
 export default RatingHistory;

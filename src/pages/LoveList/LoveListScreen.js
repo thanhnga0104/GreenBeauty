@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
-import {getProductsFromServer} from '../../networking/Server';
 import {getProductFromLoveList} from '../../networking/Server';
 import {getDataUser} from '../../networking/Server';
 import {getProductById} from '../../networking/Server';
@@ -22,7 +21,6 @@ export default class LoveListScreen extends Component {
     this.state = {
       productsFromServer: [],
       imageFromServer: [],
-      //   refreshing: true,
     };
   }
 
@@ -35,7 +33,7 @@ export default class LoveListScreen extends Component {
       .then(user => {
         getProductFromLoveList(user.userID)
           .then(products => {
-            let listProduct =this.state.productsFromServer;
+            let listProduct = this.state.productsFromServer;
             products.forEach(item => {
               getProductById(item.product_id)
                 .then(result => {
@@ -44,10 +42,9 @@ export default class LoveListScreen extends Component {
                   console.log('listProduct:', listProduct);
                   this.setState({productsFromServer: listProduct});
                 })
-                .catch(error => {
-                });
+                .catch(error => {});
             });
-            
+
             this.setState({productsFromServer: listProduct});
           })
           .catch(error => {});
@@ -81,10 +78,8 @@ export default class LoveListScreen extends Component {
             <Text style={styles.titleScreen}>Sản phẩm yêu thích</Text>
           </View>
         </View>
-     
 
-        {/* <View style={styles.sectionContainer}> */}
-        <View style={{padding:10}}>
+        <View style={{padding: 10}}>
           <FlatList
             scrollEnabled={false}
             nestedScrollEnabled={true}
@@ -97,10 +92,8 @@ export default class LoveListScreen extends Component {
                   item={item}
                   index={index}></RecommendFlatListItem>
               );
-            }}
-          ></FlatList>
+            }}></FlatList>
         </View>
-        {/* </View> */}
       </SafeAreaView>
     );
   }
@@ -131,7 +124,6 @@ class RecommendFlatListItem extends Component {
 }
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   headerContainer: {

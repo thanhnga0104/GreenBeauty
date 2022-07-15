@@ -4,14 +4,10 @@ import {
   SafeAreaView,
   FlatList,
   View,
-  Image,
   Text,
-  Keyboard,
   Dimensions,
   TouchableOpacity,
-  TextInput,
   StatusBar,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {getDataUser} from '../../networking/Server';
@@ -31,9 +27,7 @@ export default class AddressScreen extends Component {
 
     this.focusListener = this.props.navigation.addListener('focus', () => {
       this.fetchDataUser();
-    });   
-
-
+    });
   }
 
   fetchDataUser = () => {
@@ -52,8 +46,7 @@ export default class AddressScreen extends Component {
     <View
       style={{
         borderBottomWidth: 0.6,
-        //borderColor: '#E5E5E5',
-        borderColor: "black"
+        borderColor: 'black',
       }}
     />
   );
@@ -79,7 +72,6 @@ export default class AddressScreen extends Component {
           </View>
         </View>
 
-        {/* Bắt đầu body */}
         <View>
           <TouchableOpacity
             style={{
@@ -88,7 +80,9 @@ export default class AddressScreen extends Component {
               backgroundColor: '#fff',
               justifyContent: 'space-between',
             }}
-            onPress={()=>{navigation.navigate("AddLocationScreen", {isFirst: false})}}>
+            onPress={() => {
+              navigation.navigate('AddLocationScreen', {isFirst: false});
+            }}>
             <Text style={{fontSize: 16}}>Thêm địa chỉ</Text>
             <Ionicons name="add-outline" size={24} color="black" />
           </TouchableOpacity>
@@ -163,17 +157,15 @@ class AddressFlatListItem extends Component {
     const {navigation} = this.props;
     return (
       <View>
-      <View style={styles.addressItem}>
-        <Text>{this.props.item.receiveName}</Text>
-        <Text>{this.props.item.phone}</Text>
-        <Text>{this.props.item.fullAddress}</Text>
-      </View>
+        <View style={styles.addressItem}>
+          <Text>{this.props.item.receiveName}</Text>
+          <Text>{this.props.item.phone}</Text>
+          <Text>{this.props.item.fullAddress}</Text>
+        </View>
       </View>
     );
   }
 }
-
-const {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   headerContainer: {

@@ -1,13 +1,9 @@
 import React, {Component} from 'react';
-
 import {
   StyleSheet,
   SafeAreaView,
-  FlatList,
   View,
-  Image,
   Text,
-  Keyboard,
   Dimensions,
   TouchableOpacity,
   TextInput,
@@ -121,12 +117,12 @@ export default class AddLocationScreen extends Component {
           console.error(`Error is: ${error}`);
         });
       if (this.state.isFirst == true) {
-        console.log("ko hề goback")
+        console.log('ko hề goback');
         navigation.navigate('ConfirmScreen', {
           selectData: this.props.route.params.selectData,
         });
       } else {
-        console.log("goback")
+        console.log('goback');
         navigation.goBack();
       }
     } else {
@@ -163,9 +159,7 @@ export default class AddLocationScreen extends Component {
                 placeholder="Tên người nhận"
                 onChangeText={text => {
                   this.setName(text);
-                }}
-                // underlineColorAndroid="#E5E5E5"
-              ></TextInput>
+                }}></TextInput>
               <View
                 style={{
                   borderBottomWidth: 0.3,
@@ -178,7 +172,6 @@ export default class AddLocationScreen extends Component {
                 onChangeText={text => {
                   this.setPhone(text);
                 }}
-                // underlineColorAndroid="#E5E5E5"
                 keyboardType="numeric"></TextInput>
               <View
                 style={{
@@ -236,7 +229,6 @@ export default class AddLocationScreen extends Component {
                 <Switch
                   trackColor={{false: '#767577', true: '#81b0ff'}}
                   thumbColor={this.state.isEnable ? '#316C49' : '#f4f3f4'}
-                  // ios_backgroundColor="#3e3e3e"
                   onValueChange={tempValue => {
                     this.setState({isEnable: tempValue});
                     console.log('tempValue:', tempValue);
@@ -283,7 +275,6 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   addAddressContainer: {
-    //borderTopWidth: 0.6,
     borderTopColor: '#E5E5E5',
     height: 60,
     alignItems: 'center',

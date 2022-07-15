@@ -1,26 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Dimensions,
-  ImageBackground,
-  Image,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Item,
-  Label,
-  TextInput,
-  Touchable,
-  TouchableOpacityBase,
   TouchableOpacity,
-  Button,
   FlatList,
-  VirtualizedList,
 } from 'react-native';
-import {scale} from 'react-native-size-matters';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import StatusComponent from '../../components/OrderStatus/Statuscomponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -37,7 +24,7 @@ const Pending = ({navigation, route}) => {
         if (value !== null) {
         }
       } catch (e) {
-        //alert("no data")
+        console.log(e);
       }
     };
     const GetData = async id => {
@@ -50,14 +37,11 @@ const Pending = ({navigation, route}) => {
         .then(response => {
           if (response.status == 200) {
             response.json().then(d => {
-              //console.log("status:"+sta+" ", Object.keys(d).length)
               setRenderData(d);
             });
           }
         })
-        .then(res => {
-          //console.log("reponse :", res);
-        })
+        .then(res => {})
         .catch(error => {
           console.error('eroor', error);
           return {name: 'network error', description: ''};

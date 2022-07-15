@@ -1,24 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
-  ImageBackground,
-  Image,
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Item,
-  Label,
   TextInput,
-  Touchable,
-  TouchableOpacityBase,
   TouchableOpacity,
-  Button,
   Modal,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -26,13 +16,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Avatar} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import Entypo from 'react-native-vector-icons/Entypo';
-import CheckBox from '@react-native-community/checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
 import ModalPicker from '../../../components/Profile/SexModalPicker';
+
 const SettingAccount = ({navigation}) => {
   const [data, setData] = useState({
     name: 'Loading...',
@@ -45,7 +34,7 @@ const SettingAccount = ({navigation}) => {
     token: '',
   });
   const bs = React.createRef();
-  const [loading, setloading] = useState(false)
+  const [loading, setloading] = useState(false);
   const fall = new Animated.Value(1);
   const [male, setMale] = useState();
   const [female, setFemal] = useState();
@@ -90,20 +79,12 @@ const SettingAccount = ({navigation}) => {
                 token: token,
               });
               console.log('giới tính render: ', d.sex);
-              // if (d.sex == 'Male') {
-              //   setMale(true);
-              //   setFemal(false);
-              // } else if (d.sex == 'Female') {
-              //   setFemal(true);
-              //   setMale(false);
-              // }
-              setChooseData(d.sex)
+
+              setChooseData(d.sex);
             });
           }
         })
-        .then(res => {
-          //console.log("reponse :", res);
-        })
+        .then(res => {})
         .catch(error => {
           console.error('eroor', error);
           return {name: 'network error', description: ''};
@@ -118,13 +99,13 @@ const SettingAccount = ({navigation}) => {
     setDate(currentDate);
 
     let tem = new Date(currentDate);
-    let temmonth = parseInt(tem.getMonth())+1
-    let fDate= tem.getFullYear() + "-" + temmonth +'-'+ tem.getDate();
+    let temmonth = parseInt(tem.getMonth()) + 1;
+    let fDate = tem.getFullYear() + '-' + temmonth + '-' + tem.getDate();
     setbirthdaytext(fDate);
     setData({
       ...data,
-      birthday: fDate
-    })
+      birthday: fDate,
+    });
   };
   const showMode = currentMode => {
     setShow(true);
@@ -161,7 +142,7 @@ const SettingAccount = ({navigation}) => {
   };
   //Hàm upload thông tin
   const UpdateData = async () => {
-    console.log("token: ", data.token);
+    console.log('token: ', data.token);
     await fetch('http://10.0.2.2:8000/user/' + data.id + '/', {
       method: 'PUT',
       headers: {
@@ -176,16 +157,14 @@ const SettingAccount = ({navigation}) => {
         sex: chooseData,
         dateofbirth: data.birthday,
       }),
-      //body: JSON.stringify({"email": data.email, "name": d.name, "phone": d.phonenum, "sex": d.sex, "dateofbirth": data.birthday})
     })
       .then(response => {
-        //console.log("status: ", response.status)
         if (response.status == 200) {
           alert('Update successfully!');
         } else {
           alert('Error: There is some errors occour!');
         }
-        setloading(false)
+        setloading(false);
       })
       .then(res => {
         console.log('reponse :', res);
@@ -290,7 +269,7 @@ const SettingAccount = ({navigation}) => {
       </View>
     </View>
   );
-  const setdata = (name) => {
+  const setdata = name => {
     setChooseData(name);
   };
   const ChangeModalVisible = bool => {
@@ -311,7 +290,6 @@ const SettingAccount = ({navigation}) => {
         <View style={styles.container}>
           <TouchableOpacity
             onPress={() => {
-              //navigation.navigate('Profile');
               navigation.goBack();
             }}>
             <MaterialIcons name="arrow-back" size={scale(27)} color="#FFF" />
@@ -346,7 +324,12 @@ const SettingAccount = ({navigation}) => {
           </View>
 
           <View>
-            <Text style={{marginLeft: scale(10), fontSize: scale(14), color:"#316C49"}}>
+            <Text
+              style={{
+                marginLeft: scale(10),
+                fontSize: scale(14),
+                color: '#316C49',
+              }}>
               Họ tên
             </Text>
             <TextInput
@@ -356,7 +339,12 @@ const SettingAccount = ({navigation}) => {
           </View>
 
           <View style={{marginTop: 10}}>
-            <Text style={{marginLeft: scale(10), fontSize: scale(14), color:"#316C49"}}>
+            <Text
+              style={{
+                marginLeft: scale(10),
+                fontSize: scale(14),
+                color: '#316C49',
+              }}>
               Số điện thoại
             </Text>
             <TextInput
@@ -373,7 +361,9 @@ const SettingAccount = ({navigation}) => {
               marginLeft: scale(10),
               marginRight: scale(10),
             }}>
-            <Text style={{fontSize: scale(14), color:"#316C49"}} size={scale(10)}>
+            <Text
+              style={{fontSize: scale(14), color: '#316C49'}}
+              size={scale(10)}>
               Ngày sinh
             </Text>
             <View
@@ -383,7 +373,7 @@ const SettingAccount = ({navigation}) => {
                 paddingTop: scale(10),
                 paddingBottom: scale(10),
               }}>
-              <Text style={{fontSize:scale(14)}}>{data.birthday}</Text>
+              <Text style={{fontSize: scale(14)}}>{data.birthday}</Text>
               <TouchableOpacity onPress={() => showMode('date')}>
                 <Fontisto name="date" size={scale(20)} />
               </TouchableOpacity>
@@ -406,26 +396,31 @@ const SettingAccount = ({navigation}) => {
               marginLeft: scale(10),
               marginTop: scale(10),
             }}>
-            <Text style={{fontSize: scale(14), alignSelf:"center", color:"#316C49"}}>Giới tính:</Text>
+            <Text
+              style={{
+                fontSize: scale(14),
+                alignSelf: 'center',
+                color: '#316C49',
+              }}>
+              Giới tính:
+            </Text>
             <TouchableOpacity
-            style={styles.shortwrapper}
-            onPress={() => ChangeModalVisible(true)}>
-            <Text>{chooseData}</Text>
-          </TouchableOpacity>
-          <Modal
-            transparent={true}
-            animationType="fade"
-            visible={isModalVisible}
-            nRequestClose={() => ChangeModalVisible(false)}>
-            <ModalPicker
-              ChangeModalVisible={ChangeModalVisible}
-              setdata={setdata}
-            />
-          </Modal>
+              style={styles.shortwrapper}
+              onPress={() => ChangeModalVisible(true)}>
+              <Text>{chooseData}</Text>
+            </TouchableOpacity>
+            <Modal
+              transparent={true}
+              animationType="fade"
+              visible={isModalVisible}
+              nRequestClose={() => ChangeModalVisible(false)}>
+              <ModalPicker
+                ChangeModalVisible={ChangeModalVisible}
+                setdata={setdata}
+              />
+            </Modal>
           </View>
         </View>
-
-        
 
         <View
           style={{
@@ -437,7 +432,7 @@ const SettingAccount = ({navigation}) => {
           <TouchableOpacity
             style={styles.buttoncontainer}
             onPress={() => {
-              setloading(true)
+              setloading(true);
               UpdateData();
             }}>
             <Text
@@ -447,7 +442,16 @@ const SettingAccount = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <ActivityIndicator style={{ alignSelf:"center", bottom:Dimensions.get('window').height/2, position:"absolute"}} size='large' animating={loading} color='green'/>
+      <ActivityIndicator
+        style={{
+          alignSelf: 'center',
+          bottom: Dimensions.get('window').height / 2,
+          position: 'absolute',
+        }}
+        size="large"
+        animating={loading}
+        color="green"
+      />
     </View>
   );
 };
@@ -460,8 +464,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '70%',
-    backgroundColor:"#FF5F04",
-    //backgroundColor: '#93F48A',
+    backgroundColor: '#FF5F04',
     borderRadius: scale(4),
     shadowColor: '#000',
     shadowOffset: {
@@ -519,7 +522,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginLeft: scale(10),
     marginRight: scale(10),
-    fontSize: scale(14)
+    fontSize: scale(14),
   },
   panel: {
     padding: 20,
@@ -532,7 +535,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: -1, height: -3},
     shadowRadius: 2,
     shadowOpacity: 0.4,
-    // elevation: 5,
     paddingTop: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,

@@ -1,25 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
-  ImageBackground,
-  Image,
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Item,
-  Label,
-  TextInput,
-  Touchable,
-  TouchableOpacityBase,
   TouchableOpacity,
-  Button,
   RefreshControl,
 } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
 import {scale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -28,8 +16,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import {Avatar} from 'react-native-paper';
 import {AuthContext} from '../../context/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const ProfileScreen = ({navigation}) => {
   const {signOut} = React.useContext(AuthContext);
@@ -54,7 +40,6 @@ const ProfileScreen = ({navigation}) => {
       const value = await AsyncStorage.getItem('userToken');
       const valueid = await AsyncStorage.getItem('id');
       setId(valueid);
-      //console.log("value: ", value)
 
       getInfo(valueid, value);
       getStatus(valueid, 1);
@@ -92,9 +77,7 @@ const ProfileScreen = ({navigation}) => {
           });
         }
       })
-      .then(res => {
-        //console.log("reponse :", res);
-      })
+      .then(res => {})
       .catch(error => {
         console.error('eroor', error);
         return {name: 'network error', description: ''};
@@ -110,7 +93,6 @@ const ProfileScreen = ({navigation}) => {
       .then(response => {
         if (response.status == 200) {
           response.json().then(d => {
-            //console.log("status:"+sta+" ", Object.keys(d).length)
             if (sta == 1) setPending(Object.keys(d).length);
             else if (sta == 2) setWait(Object.keys(d).length);
             else if (sta == 3) setDelivery(Object.keys(d).length);
@@ -120,9 +102,7 @@ const ProfileScreen = ({navigation}) => {
           });
         }
       })
-      .then(res => {
-        //console.log("reponse :", res);
-      })
+      .then(res => {})
       .catch(error => {
         console.error('eroor', error);
         return {name: 'network error', description: ''};
@@ -140,8 +120,6 @@ const ProfileScreen = ({navigation}) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        {/* bắt đầu  header */}
-
         <View style={styles.headerContainer}>
           <View style={styles.menuContainer}>
             <Feather
@@ -167,8 +145,6 @@ const ProfileScreen = ({navigation}) => {
             />
           </View>
         </View>
-
-        {/* kết thúc header */}
 
         <View style={styles.container}>
           <View
@@ -204,15 +180,6 @@ const ProfileScreen = ({navigation}) => {
               </Text>
             </View>
           </View>
-
-          {/* <View
-            style={{
-              justifyContent: 'flex-start',
-              marginTop: scale(10),
-              marginRight: scale(5),
-            }}>
-            <Feather name="settings" color="#FFF" size={scale(24)} />
-          </View> */}
         </View>
 
         <View style={styles.purchased}>
@@ -456,12 +423,6 @@ const ProfileScreen = ({navigation}) => {
             onPress={() => {
               navigation.navigate('SettingAccount');
             }}>
-            {/* <MaterialCommunityIcons
-              name="account-outline"
-              size={scale(24)}
-              style={{marginLeft: scale(10)}}
-              color="#231F20"
-            /> */}
             <Feather
               style={{marginLeft: scale(10)}}
               name="settings"
@@ -545,7 +506,6 @@ const styles = StyleSheet.create({
   container: {
     width: widthofscreen,
     height: scale(heightofscreen / 6),
-    // backgroundColor: '#93F48A',
     backgroundColor: '#316C49',
     borderBottomLeftRadius: scale(30),
     borderBottomRightRadius: scale(30),

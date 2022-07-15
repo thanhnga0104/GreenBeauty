@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {scale} from 'react-native-size-matters';
 
 import {getDataUser, getProductFromCart} from '../../networking/Server';
@@ -162,14 +162,13 @@ export default class ConfirmScreen extends Component {
               onPress={() => {
                 navigation.navigate('AddressScreen');
               }}>
-                <View style={{flexDirection:'row'}}>
+              <View style={{flexDirection: 'row'}}>
                 <Ionicons name="md-location-outline" size={scale(15)} />
 
-              <Text style={styles.titleComponent}>Địa chỉ nhận hàng</Text>
-</View>
+                <Text style={styles.titleComponent}>Địa chỉ nhận hàng</Text>
+              </View>
               <View style={{flexDirection: 'row'}}>
                 <View style={{width: width / 1.1}}>
-                  {/* <Text>Nhà riêng, cơ quan</Text> */}
                   <Text>{this.state.delivery.receiveName}</Text>
                   <Text>{this.state.delivery.phone}</Text>
                   <Text>{this.state.delivery.fullAddress}</Text>
@@ -235,20 +234,18 @@ class ProductItem extends Component {
     super(props);
     this.state = {
       product: [],
-      //imageFromServer: [],
       quantity: 0,
     };
   }
 
   componentDidMount() {
     this.fetchDataProduct();
-    // this.fetchDataQuantity();
   }
 
   fetchDataProduct = () => {
     getProductById(this.props.item).then(product => {
       this.setState({product: product});
-      
+
       getDataUser()
         .then(user => {
           getProductFromCart(user.userID, this.props.item)
@@ -297,7 +294,6 @@ class ProductItem extends Component {
           style={styles.cartItem}
           onPress={() => {
             navigation.navigate('DetailScreen', {
-              //image: this.state.imageFromServer.img,
               product: this.props.item,
             });
           }}>
@@ -316,8 +312,7 @@ class ProductItem extends Component {
                 }}>
                 <Text style={styles.itemPrice}>
                   {this.state.product.price -
-                    (this.state.product.price *
-                      this.state.product.priceSale) /
+                    (this.state.product.price * this.state.product.priceSale) /
                       100}
                   đ
                 </Text>
@@ -332,11 +327,8 @@ class ProductItem extends Component {
                 </View>
               </View>
             ) : (
-              <Text style={styles.itemPrice}>
-                {this.state.product.price}đ
-              </Text>
+              <Text style={styles.itemPrice}>{this.state.product.price}đ</Text>
             )}
-            {/* <Text style={styles.itemPrice}>{this.state.product.price}</Text> */}
             <Text style={styles.itemPrice}>x{this.state.quantity}</Text>
           </View>
         </TouchableOpacity>
