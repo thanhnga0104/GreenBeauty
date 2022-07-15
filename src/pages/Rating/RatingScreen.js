@@ -1,40 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {
-    Dimensions,
-    ImageBackground,
-    Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Item,
-  Label,
-  TextInput,
-  Touchable,
-  TouchableOpacityBase,
-  TouchableOpacity,
-  Button,
-  FlatList,
-  VirtualizedList
-} from 'react-native';
-import {scale} from 'react-native-size-matters'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
+import {SafeAreaView, StyleSheet, Text, View, FlatList} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Rating from '../../components/RatingProduct/Rating';
-const RatingScreen = ({navigation,route}) =>{
-    const ItemSepatator = () => (
-        <View
-          style={{
-            borderBottomWidth: 0.6,
-            borderColor: '#E5E5E5',
-          }}
-        />
-      );
-    return(
-      <SafeAreaView style={{flex:1}}>
+
+const RatingScreen = ({navigation, route}) => {
+  const ItemSepatator = () => (
+    <View
+      style={{
+        borderBottomWidth: 0.6,
+        borderColor: '#E5E5E5',
+      }}
+    />
+  );
+  return (
+    <SafeAreaView style={{flex: 1}}>
       <View style={styles.headerContainer}>
         <View style={styles.backContainer}>
           <AntDesign
@@ -53,21 +32,17 @@ const RatingScreen = ({navigation,route}) =>{
       </View>
       <FlatList
         data={route.params.detail}
-        ItemSeparatorComponent = {ItemSepatator}
-        renderItem={({item})=>{
-        return(
-            !item.isRating?
-                <Rating order = {item.id} id={item.product}/>
-            :
-            null
-        )
+        ItemSeparatorComponent={ItemSepatator}
+        renderItem={({item}) => {
+          return !item.isRating ? (
+            <Rating order={item.id} id={item.product} />
+          ) : null;
         }}
-        keyExtractor={(item) => item.id}
-        />
-      </SafeAreaView>
-        
-    )
-}
+        keyExtractor={item => item.id}
+      />
+    </SafeAreaView>
+  );
+};
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
@@ -89,5 +64,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlignVertical: 'center',
   },
-})
+});
 export default RatingScreen;

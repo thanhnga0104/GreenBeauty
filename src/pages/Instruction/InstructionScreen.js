@@ -1,12 +1,5 @@
-import React, {Component} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  View,
-} from 'react-native';
+import React from 'react';
+import {StatusBar, StyleSheet, SafeAreaView, Text, View} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const InstructionScreen = ({navigation, route}) => {
@@ -33,8 +26,8 @@ const InstructionScreen = ({navigation, route}) => {
           <Text style={styles.titleScreen}>Hướng dẫn dử dụng</Text>
         </View>
       </View>
-      <View style={{padding:10}}>
-        <Text style={{fontSize:16}}>{product.instruction}</Text>
+      <View style={{padding: 10}}>
+        <Text style={{fontSize: 16}}>{product.instruction}</Text>
       </View>
     </SafeAreaView>
   );
@@ -62,6 +55,5 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
 });
-
 
 export default InstructionScreen;

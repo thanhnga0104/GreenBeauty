@@ -244,7 +244,6 @@ const Login = ({navigation}) => {
           color="green"
         />
       </View>
-      {/*Bottom login view */}
       <View style={{alignItems: 'center'}}>
         <View
           style={{flexDirection: 'row', alignItems: 'center', width: '60%'}}>

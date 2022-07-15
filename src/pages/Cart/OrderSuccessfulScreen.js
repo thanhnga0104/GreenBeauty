@@ -1,24 +1,8 @@
 import React, {Component} from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  FlatList,
-  View,
-  Image,
-  Text,
-  Keyboard,
-  Dimensions,
-  TouchableOpacity,
-  TextInput,
-  StatusBar,
-  ScrollView,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {scale} from 'react-native-size-matters';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-const colorIcon = '#827A7A';
-
 export default class OrderSuccessfullScreen extends Component {
   render() {
     const {navigation} = this.props;
@@ -46,8 +30,14 @@ export default class OrderSuccessfullScreen extends Component {
               Đặt hàng thành công
             </Text>
           </View>
-          <View style={{alignItems:'center', marginTop:10, marginHorizontal:30}}>
-            <Text style={{color:"#fff", alignContent:'center',textAlign:'center'}} >
+          <View
+            style={{alignItems: 'center', marginTop: 10, marginHorizontal: 30}}>
+            <Text
+              style={{
+                color: '#fff',
+                alignContent: 'center',
+                textAlign: 'center',
+              }}>
               Chỉ nhận hàng và thanh toán khi đơn mua ở trạng thái "Đang giao
               hàng"
             </Text>
@@ -101,22 +91,6 @@ class SuccessfullComponent extends Component {
               navigation.navigate('CartScreen');
             }}
           />
-          {/* {quantityOfCart > 0 ? (
-            <View style={styles.circle}>
-              <Text
-                style={{
-                  fontSize: scale(7),
-                  fontWeight: 'bold',
-                  color: '#FFF',
-                }}>
-                {quantityOfCart}
-              </Text>
-            </View>
-          ) : (
-            <View>
-              <Text> </Text>
-            </View>
-          )} */}
         </View>
       </View>
     );
