@@ -4,19 +4,11 @@ import {
   ImageBackground,
   Image,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Item,
-  Label,
   TextInput,
-  Touchable,
-  TouchableOpacityBase,
   TouchableOpacity,
-  Button,
   ActivityIndicator,
   Alert,
 } from 'react-native';
@@ -25,24 +17,28 @@ import {AuthContext} from '../../context/context';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modal';
-const LoginScreen = ({navigation}) => {
+
+const Login = ({navigation}) => {
   const [loading, setloading] = useState(false);
   const {signIn} = React.useContext(AuthContext);
+  const [emailModal, setEmailModal] = React.useState('');
+  const [isModalVisible, setModalVisible] = React.useState(false);
+
   const [data, setData] = React.useState({
     email: '',
     password: '',
     check_textinputchange: false,
     securetextentry: true,
   });
-  const [emailModal, setEmailModal] = React.useState('');
-  const [isModalVisible, setModalVisible] = React.useState(false);
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
   const textInputModalChange = val => {
     setEmailModal(val);
-    console.log('email :', emailModal);
   };
+
   const textInputChange = val => {
     if (val.length != 0) {
       setData({
@@ -58,18 +54,21 @@ const LoginScreen = ({navigation}) => {
       });
     }
   };
+
   const hadlepwchange = val => {
     setData({
       ...data,
       password: val,
     });
   };
+
   const updatesercuretext = () => {
     setData({
       ...data,
       securetextentry: !data.securetextentry,
     });
   };
+
   const loginHadle = async (email, password) => {
     //Nhớ add hàm signin signIn(email,password)
     await fetch('http://10.0.2.2:8000/login/', {
@@ -83,7 +82,6 @@ const LoginScreen = ({navigation}) => {
       .then(response => {
         if (response.status == 200) {
           response.json().then(data => {
-            //alert("login successfully!")
             signIn(data.id, data.tokens);
           });
         } else if (response.status == 500) {
@@ -93,7 +91,7 @@ const LoginScreen = ({navigation}) => {
             'Error: Account has not verified yet, please check register mail again',
           );
         }
-        setloading(false)
+        setloading(false);
       })
       .then(res => {
         console.log('reponse :', res);
@@ -103,6 +101,7 @@ const LoginScreen = ({navigation}) => {
         return {name: 'network error', description: ''};
       });
   };
+
   const forgotpasswordhandle = async email => {
     await fetch('http://10.0.2.2:8000/request-reset-email/', {
       method: 'POST',
@@ -115,7 +114,6 @@ const LoginScreen = ({navigation}) => {
       .then(response => {
         if (response.status == 200) {
           response.json().then(data => {
-            //alert("login successfully!")
             Alert.alert(
               'Thông báo',
               'Successfully: Check your email to reset password!',
@@ -137,6 +135,7 @@ const LoginScreen = ({navigation}) => {
         return {name: 'network error', description: ''};
       });
   };
+
   return (
     <SafeAreaView
       style={{
@@ -154,7 +153,6 @@ const LoginScreen = ({navigation}) => {
           />
         </View>
       </ImageBackground>
-      {/* midle login view  change*/}
       <View style={styles.Inputcontainer}>
         <View style={{padding: scale(10)}}>
           <Text style={{color: '#006C25', fontSize: scale(25)}}>Welcome</Text>
@@ -279,7 +277,6 @@ const LoginScreen = ({navigation}) => {
   );
 };
 const heightofscreen = Dimensions.get('window').height;
-const widthofscreen = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   action: {
     flexDirection: 'row',
@@ -395,4 +392,4 @@ const styles = StyleSheet.create({
     marginBottom: scale(10),
   },
 });
-export default LoginScreen;
+export default Login;

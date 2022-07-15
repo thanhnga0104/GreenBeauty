@@ -4,25 +4,18 @@ import {
   ImageBackground,
   Image,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Item,
-  Label,
   TextInput,
-  Touchable,
-  TouchableOpacityBase,
   TouchableOpacity,
-  Button,
   ActivityIndicator,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-const RegisterScreen = ({navigation}) => {
+
+const Register = ({navigation}) => {
   const [loading, setloading] = React.useState(false);
   const [data, setData] = React.useState({
     email: '',
@@ -55,18 +48,21 @@ const RegisterScreen = ({navigation}) => {
       password: val,
     });
   };
+
   const hadlerepwchange = val => {
     setData({
       ...data,
       retypepassword: val,
     });
   };
+
   const updatesercuretext = () => {
     setData({
       ...data,
       securetextentry: !data.securetextentry,
     });
   };
+
   const updatesercuretext2 = () => {
     setData({
       ...data,
@@ -122,7 +118,6 @@ const RegisterScreen = ({navigation}) => {
           />
         </View>
       </ImageBackground>
-      {/* bottom view */}
       <View style={styles.Inputcontainer}>
         <View style={{padding: scale(10)}}>
           <Text style={{color: '#006C25', fontSize: scale(25)}}>Welcome</Text>
@@ -130,7 +125,6 @@ const RegisterScreen = ({navigation}) => {
             Let's join GreenBeauty's House
           </Text>
         </View>
-        {/*change:  */}
         <View style={{marginTop: scale(5)}}>
           <Text style={{color: '#B6C7D1', fontSize: scale(12)}}>Email</Text>
           <View style={styles.action}>
@@ -234,7 +228,6 @@ const RegisterScreen = ({navigation}) => {
   );
 };
 const heightofscreen = Dimensions.get('window').height;
-const widthofscreen = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   action: {
     flexDirection: 'row',
@@ -304,4 +297,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterScreen;
+export default Register;
