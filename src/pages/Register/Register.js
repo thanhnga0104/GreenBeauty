@@ -14,6 +14,7 @@ import {
 import {scale} from 'react-native-size-matters';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import {AppColor} from '../../constants/Colors';
 
 const Register = ({navigation}) => {
   const [loading, setloading] = React.useState(false);
@@ -90,9 +91,7 @@ const Register = ({navigation}) => {
           }
           setloading(false);
         })
-        .then(res => {
-          console.log('reponse :', res);
-        })
+        .then(res => {})
         .catch(error => {
           console.error('eroor', error);
           return {name: 'network error', description: ''};
@@ -102,33 +101,38 @@ const Register = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: '#ECF3F9',
-        justifyContent: 'space-between',
-      }}>
+    <SafeAreaView style={styles.safeArea}>
       <ImageBackground
         source={require('../../assets/image/bg.jpg')}
         style={styles.container}>
-        <View style={styles.container1}>
+        <View style={styles.imageBackground}>
           <Image
             source={require('../../assets/image/logo1.png')}
             style={styles.logo}
           />
         </View>
       </ImageBackground>
+
       <View style={styles.Inputcontainer}>
         <View style={{padding: scale(10)}}>
-          <Text style={{color: '#006C25', fontSize: scale(25)}}>Welcome</Text>
+          <Text style={{color: AppColor.green2, fontSize: scale(25)}}>
+            Welcome
+          </Text>
           <Text style={{fontSize: scale(15)}}>
             Let's join GreenBeauty's House
           </Text>
         </View>
+
         <View style={{marginTop: scale(5)}}>
-          <Text style={{color: '#B6C7D1', fontSize: scale(12)}}>Email</Text>
+          <Text style={{color: AppColor.grey1, fontSize: scale(12)}}>
+            Email
+          </Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={scale(12)} />
+            <FontAwesome
+              name="user-o"
+              color={AppColor.blue1}
+              size={scale(12)}
+            />
             <TextInput
               style={styles.input}
               placeholder="Your email"
@@ -139,9 +143,11 @@ const Register = ({navigation}) => {
             ) : null}
           </View>
 
-          <Text style={{color: '#B6C7D1', fontSize: scale(12)}}>Password</Text>
+          <Text style={{color: AppColor.grey1, fontSize: scale(12)}}>
+            Password
+          </Text>
           <View style={styles.action}>
-            <Feather name="lock" color="#05375a" size={scale(12)} />
+            <Feather name="lock" color={AppColor.blue1} size={scale(12)} />
             <TextInput
               style={styles.input}
               placeholder="************"
@@ -157,11 +163,11 @@ const Register = ({navigation}) => {
             </TouchableOpacity>
           </View>
 
-          <Text style={{color: '#B6C7D1', fontSize: scale(12)}}>
+          <Text style={{color: AppColor.grey1, fontSize: scale(12)}}>
             Retype Password
           </Text>
           <View style={styles.action}>
-            <Feather name="lock" color="#05375a" size={scale(12)} />
+            <Feather name="lock" color={AppColor.blue1} size={scale(12)} />
             <TextInput
               style={styles.input}
               placeholder="************"
@@ -177,43 +183,30 @@ const Register = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
             setloading(true);
             HadleRegister(data.email, data.password, data.retypepassword);
           }}>
-          <Text style={{color: '#FFF'}}>REGISTER</Text>
+          <Text style={{color: AppColor.white0}}>REGISTER</Text>
         </TouchableOpacity>
+
         <ActivityIndicator
-          style={{
-            alignSelf: 'center',
-            bottom: Dimensions.get('window').height / 3.6,
-            position: 'absolute',
-          }}
+          style={styles.indicator}
           size="large"
           animating={loading}
           color="green"
         />
       </View>
-      <View style={{alignItems: 'center'}}>
+
+      <View style={styles.bottomContent}>
         <View
           style={{flexDirection: 'row', alignItems: 'center', width: '60%'}}>
-          <View
-            style={{
-              flex: 1,
-              height: 1,
-              borderWidth: 0.25,
-              borderColor: '#000',
-            }}></View>
+          <View style={styles.halfLine}></View>
           <Text style={{width: scale(40), textAlign: 'center'}}>OR</Text>
-          <View
-            style={{
-              flex: 1,
-              height: 1,
-              borderWidth: 0.25,
-              borderColor: '#000',
-            }}></View>
+          <View style={styles.halfLine}></View>
         </View>
 
         <TouchableOpacity
@@ -221,19 +214,25 @@ const Register = ({navigation}) => {
           onPress={() => {
             navigation.navigate('Login');
           }}>
-          <Text style={{color: '#039B52'}}>Already have account?</Text>
+          <Text style={{color: AppColor.green1}}>Already have account?</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
+
 const heightofscreen = Dimensions.get('window').height;
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: AppColor.white1,
+    justifyContent: 'space-between',
+  },
   action: {
     flexDirection: 'row',
     marginTop: scale(5),
     borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
+    borderBottomColor: AppColor.white2,
   },
   registercontainer: {
     alignItems: 'center',
@@ -242,19 +241,19 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingLeft: scale(15),
-    color: '#B6C7D1',
+    color: AppColor.grey1,
     marginTop: scale(-15),
   },
   container: {
     height: scale(heightofscreen / 4),
     resizeMode: 'cover',
   },
-  container1: {
+  imageBackground: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   bottomView: {
-    backgroundColor: '#ECF3F9',
+    backgroundColor: AppColor.white1,
     bottom: scale(30),
     borderRadius: 30,
     height: heightofscreen / 3,
@@ -262,13 +261,13 @@ const styles = StyleSheet.create({
   Inputcontainer: {
     bottom: scale(40),
     flexDirection: 'column',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: AppColor.white0,
     marginLeft: 30,
     marginRight: 30,
     height: Dimensions.get('window').height / 1.8,
     borderRadius: 20,
     padding: scale(10),
-    shadowColor: '#000',
+    shadowColor: AppColor.black0,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -282,11 +281,11 @@ const styles = StyleSheet.create({
     marginTop: scale(10),
     alignItems: 'center',
     padding: scale(10),
-    backgroundColor: '#14A445',
+    backgroundColor: AppColor.green0,
     marginLeft: 30,
     marginRight: 30,
     borderRadius: 60,
-    shadowColor: '#000',
+    shadowColor: AppColor.black0,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -294,6 +293,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+
+  indicator: {
+    alignSelf: 'center',
+    bottom: Dimensions.get('window').height / 3.6,
+    position: 'absolute',
+  },
+  halfLine: {
+    flex: 1,
+    height: 1,
+    borderWidth: 0.25,
+    borderColor: AppColor.black0,
+  },
+  bottomContent: {
+    alignItems: 'center',
   },
 });
 

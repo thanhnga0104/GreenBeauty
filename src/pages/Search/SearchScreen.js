@@ -40,7 +40,6 @@ export default class SearchScreen extends Component {
         style={{
           flex: 1,
         }}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
         <SearchHeader navigation={navigation} search={this.handleSearch} />
         <SearchComponent
           navigation={navigation}
