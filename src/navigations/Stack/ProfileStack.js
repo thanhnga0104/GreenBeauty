@@ -10,7 +10,7 @@ import Success from '../../pages/OrderStatus/Success';
 import LoveListScreen from '../../pages/LoveList/LoveListScreen';
 import RatingHistory from '../../pages/Profile/RatingHistory/RatingHistory';
 import DetailScreen from '../../pages/Detail/DetailScreen';
-import DetailOrder from '../../pages/DetailOrder/DetailOrder'
+import DetailOrder from '../../pages/DetailOrder/DetailOrder';
 import RatingScreen from '../../pages/Rating/RatingScreen';
 const stack = createStackNavigator();
 const ProfileStack = ({navigation}) => (
@@ -72,24 +72,27 @@ const ProfileStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-    <stack.Screen name="RatingHistory" component={RatingHistory} 
-    options={{
-      headerShown: false,
-    }}/>
-    {/* <stack.Screen
-      name="Detail"
-      component={DetailScreen}
+    <stack.Screen
+      name="RatingHistory"
+      component={RatingHistory}
       options={{
         headerShown: false,
-      }}/> */}
-      <stack.Screen name="DetailOrder" component={DetailOrder} 
+      }}
+    />
+    <stack.Screen
+      name="DetailOrder"
+      component={DetailOrder}
       options={{
         headerShown: false,
-      }}/>
-    <stack.Screen name="Rating" component={RatingScreen} 
-    options={{
+      }}
+    />
+    <stack.Screen
+      name="Rating"
+      component={RatingScreen}
+      options={{
         headerShown: false,
-      }}/>
+      }}
+    />
   </stack.Navigator>
 );
 

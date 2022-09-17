@@ -1,32 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
-  ImageBackground,
   Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Item,
-  Label,
   TextInput,
-  Touchable,
-  TouchableOpacityBase,
   TouchableOpacity,
-  Button,
 } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
 import {scale} from 'react-native-size-matters';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Avatar} from 'react-native-paper';
-import {AuthContext} from '../components/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -117,7 +100,6 @@ const Rating = props => {
         alert('ERROR ' + error);
       })
       .then(responseData => {
-        //alert("Succes "+ responseData)
         setRating(props.order);
         alert('Success');
       })
@@ -335,7 +317,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: -1, height: -3},
     shadowRadius: 2,
     shadowOpacity: 0.4,
-    // elevation: 5,
     paddingTop: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,

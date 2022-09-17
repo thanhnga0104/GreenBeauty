@@ -2,10 +2,7 @@ import React from 'react';
 import {Component} from 'react';
 import {
   View,
-  StyleSheet,
-  TextInput,
   FlatList,
-  Image,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -26,18 +23,9 @@ export default class ProvinceComponent extends Component {
   }
   render() {
     const {navigation} = this.props;
-    const{onTouchOutside} = this.props;
+    const {onTouchOutside} = this.props;
     return (
       <View>
-        {/* {this.renderOutsideTouchable(onTouchOutside)}
-        <TextInput
-          placeholder="Tỉnh/Thành phố *"
-          underlineColorAndroid="black"
-          onChangeText={text => {
-            this.handleSelectProvince(text);
-          }}></TextInput> */}
-
-
         <FlatList
           style={{maxHeight: 200}}
           data={this.props.data}
@@ -61,10 +49,7 @@ class ProvinceFlatListItem extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <TouchableOpacity
-        style={{height: 30}}
-        //onPress={(province_id)=>{province_id(this.props.item.id)}}
-      >
+      <TouchableOpacity style={{height: 30}}>
         <Text>{this.props.item.name}</Text>
       </TouchableOpacity>
     );

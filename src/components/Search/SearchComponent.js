@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {getImageFromServer} from '../../networking/Server';
 
 export default class SearchComponent extends Component {
   ItemSepatator = () => (
@@ -80,7 +79,6 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    
   },
 
   itemImage: {
