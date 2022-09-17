@@ -8,7 +8,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const colorIcon = '#827A7A';
 export default class DetailHeader extends Component {
- 
   render() {
     const {navigation} = this.props;
     const {quantityOfCart} = this.props;
@@ -39,7 +38,6 @@ export default class DetailHeader extends Component {
             name="shoppingcart"
             size={24}
             color={colorIcon}
-            
             onPress={() => {
               navigation.navigate('CartScreen');
             }}
@@ -80,7 +78,6 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4,
     backgroundColor: '#fff',
-    //backgroundColor:'transparent'
   },
   backContainer: {
     paddingHorizontal: 5,
@@ -101,8 +98,8 @@ const styles = StyleSheet.create({
   },
   cartContainer: {
     height: 24,
-    width: 24,  
-   marginLeft: 5,
+    width: 24,
+    marginLeft: 5,
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -121,6 +118,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F28244',
     alignItems: 'center',
     bottom: scale(26),
-    left: scale(8)
+    left: scale(8),
   },
 });

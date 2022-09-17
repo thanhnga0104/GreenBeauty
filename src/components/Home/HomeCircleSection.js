@@ -2,14 +2,14 @@ import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-
-
 const HomeCircleSection = ({navigation}) => {
   return (
-    <View
-      style={styles.container}>
-      <TouchableOpacity style={{alignItems: 'center'}} 
-      onPress={()=> {navigation.navigate("CategoryHome");}}>
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={{alignItems: 'center'}}
+        onPress={() => {
+          navigation.navigate('CategoryHome');
+        }}>
         <View style={styles.categoryContainer}>
           <Ionicons name="grid" size={28} color="#fff" />
         </View>
@@ -27,8 +27,7 @@ const HomeCircleSection = ({navigation}) => {
       </View>
       <View style={{alignItems: 'center'}}>
         <View style={styles.bestSellerContainer}>
-          {/* <Ionicons name="ios-grid" size={28} color="#fff" /> */}
-          <Text style={{color:'#fff'}}>No.1</Text>
+          <Text style={{color: '#fff'}}>No.1</Text>
         </View>
         <View>
           <Text>Bán chạy</Text>
@@ -47,11 +46,9 @@ const HomeCircleSection = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-
   container: {
-    paddingTop:10,
+    paddingTop: 10,
     margin: 20,
-  // padding:20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',

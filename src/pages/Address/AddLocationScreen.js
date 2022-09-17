@@ -110,19 +110,15 @@ export default class AddLocationScreen extends Component {
         fullAddress,
         defaultAddress,
       )
-        .then(item => {
-          console.log('Thêm địa chỉ thành công', item);
-        })
+        .then(item => {})
         .catch(error => {
           console.error(`Error is: ${error}`);
         });
       if (this.state.isFirst == true) {
-        console.log('ko hề goback');
         navigation.navigate('ConfirmScreen', {
           selectData: this.props.route.params.selectData,
         });
       } else {
-        console.log('goback');
         navigation.goBack();
       }
     } else {

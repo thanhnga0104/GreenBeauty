@@ -1,27 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Dimensions,
-  ImageBackground,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Item,
-  Label,
-  TextInput,
-  Touchable,
-  TouchableOpacityBase,
-  TouchableOpacity,
-  Button,
-  FlatList,
-  VirtualizedList,
-} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {scale} from 'react-native-size-matters';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 function DetailIngredients({navigation, route}) {
@@ -45,10 +24,6 @@ function DetailIngredients({navigation, route}) {
         </View>
       </View>
 
-      {/* <TouchableOpacity
-            onPress={()=>{navigation.goBack()}}>
-                <Ionicons name='chevron-back' size={scale(20)}/>
-            </TouchableOpacity> */}
       <View>
         <View style={{flexDirection: 'row', marginTop: scale(15)}}>
           <View style={(styles.box, getStyle(dataItem.levelOfSave))}>

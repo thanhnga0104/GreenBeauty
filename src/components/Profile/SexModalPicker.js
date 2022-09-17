@@ -1,29 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Dimensions,
-  ImageBackground,
-  Image,
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Item,
-  Label,
-  TextInput,
-  Touchable,
-  TouchableOpacityBase,
   TouchableOpacity,
-  Button,
-  FlatList,
-  VirtualizedList,
 } from 'react-native';
 
 const ModalPicker = props => {
-  const renderData = ["Male","Female"];
-  
+  const renderData = ['Male', 'Female'];
+
   const onPressItem = data => {
     props.ChangeModalVisible(false), props.setdata(data);
   };
@@ -41,7 +28,7 @@ const ModalPicker = props => {
     <TouchableOpacity
       onPress={() => props.ChangeModalVisible(false)}
       style={styles.container}>
-      <View style={[styles.modal, {width: Width - 20, }]}>
+      <View style={[styles.modal, {width: Width - 20}]}>
         <ScrollView>{render}</ScrollView>
       </View>
     </TouchableOpacity>
@@ -67,5 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 const Width = Dimensions.get('window').width;
-const heigth = Dimensions.get('window').height;
 export default ModalPicker;

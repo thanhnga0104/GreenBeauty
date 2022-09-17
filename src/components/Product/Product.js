@@ -1,15 +1,7 @@
 import React, {Component} from 'react';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Image,
-  Text,
-  ImageBackground,
-} from 'react-native';
+import {View, StyleSheet, Dimensions, Image, Text} from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 class Product extends Component {
   render() {
@@ -26,19 +18,12 @@ class Product extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    // margin: 10,
-    width: windowWidth/2 -20,
-    
-   
-
-    
+    width: windowWidth / 2 - 20,
   },
 
   imageContainer: {
-    // position:'absolute',
-    width: windowWidth/2 -20,
-    height:windowWidth/2 -20,
-    
+    width: windowWidth / 2 - 20,
+    height: windowWidth / 2 - 20,
   },
 
   nameContainer: {

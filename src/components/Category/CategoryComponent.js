@@ -8,20 +8,11 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {CategoryData} from '../../data/CategoryData';
-import {TypeData} from '../../data/TypeData';
 import {getTypeOfCategory} from '../../networking/Server';
 import {getCategory} from '../../networking/Server';
 
 class CategoryFlatListItem extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     status: true,
-  //   };
-  // }
   render() {
-    const {navigation} = this.props;   
     return (
       <TouchableOpacity
         style={
@@ -29,7 +20,7 @@ class CategoryFlatListItem extends Component {
             ? styles.CategoryItemSelect
             : styles.CategoryItemUnSelect
         }
-        onPress={() => {          
+        onPress={() => {
           this.props.onPressTypeCategory(this.props.item, this.props.index),
             this.props.typeID(this.props.item.id);
         }}>
@@ -40,23 +31,12 @@ class CategoryFlatListItem extends Component {
 }
 
 class CategoryFlatList extends Component {
-  // ItemSepatator = () => (
-  //   <View
-  //     style={{
-  //       borderBottomWidth: 1,
-  //       //borderColor: '#E5E5E5',
-  //     }}
-  //   />
-  // );
   render() {
     const {navigation} = this.props;
     return (
       <View>
         <FlatList
-          //extraData={this.state}
           data={this.props.listType}
-        //  ItemSeparatorComponent={this.ItemSepatator}
-
           renderItem={({item, index}) => {
             return (
               <CategoryFlatListItem
@@ -74,10 +54,14 @@ class CategoryFlatList extends Component {
 class TypeFlatListItem extends Component {
   render() {
     const {navigation} = this.props;
-    //console.log("TypeFlatListItem:",this.props.item)
     return (
-      <TouchableOpacity style={styles.TypeItem}
-      onPress={()=>{navigation.navigate("RecommendProductScreen", {item:this.props.item})}}>
+      <TouchableOpacity
+        style={styles.TypeItem}
+        onPress={() => {
+          navigation.navigate('RecommendProductScreen', {
+            item: this.props.item,
+          });
+        }}>
         <Image
           style={styles.imageTypeItem}
           source={{uri: this.props.item.imagecategory}}></Image>
@@ -92,7 +76,7 @@ class TypeFlastList extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <View >
+      <View>
         <FlatList
           numColumns={3}
           data={this.props.listCategory}
@@ -128,13 +112,13 @@ export default class CategoryComponent extends Component {
     getTypeOfCategory()
       .then(results => {
         const new_listTypeCategory = results.map((e, index) => {
-          if (e.id==1) {
+          if (e.id == 1) {
             return {
               ...e,
               selected: true,
             };
           }
-    
+
           return {
             ...e,
             selected: false,
@@ -142,7 +126,6 @@ export default class CategoryComponent extends Component {
         });
 
         this.setState({listTypeCategory: new_listTypeCategory});
-       // this.setState({listTypeCategory: results});
       })
       .catch(error => {
         this.setState({listTypeCategory: []});
@@ -151,9 +134,8 @@ export default class CategoryComponent extends Component {
 
   fetchCategory = () => {
     getCategory(this.state.typeID)
-      .then(results => { 
-        this.setState({listCategory:results})
-        
+      .then(results => {
+        this.setState({listCategory: results});
       })
       .catch(error => {
         this.setState({listCategory: []});
@@ -190,12 +172,12 @@ export default class CategoryComponent extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <View style={{flexDirection: 'row', backgroundColor:"#FFF"}}>
+      <View style={{flexDirection: 'row', backgroundColor: '#FFF'}}>
         <CategoryFlatList
           navigation={navigation}
           listType={this.state.listTypeCategory}
           typeID={this.setTypeID}
-          onPressTypeCategory={this.onPressTypeCategory}         
+          onPressTypeCategory={this.onPressTypeCategory}
         />
         <TypeFlastList
           navigation={navigation}
@@ -222,7 +204,7 @@ const styles = StyleSheet.create({
     height: 80,
     backgroundColor: '#E5E5E5',
     borderBottomWidth: 0.6,
-   borderRightWidth: 0.6,
+    borderRightWidth: 0.6,
     alignItems: 'center',
     justifyContent: 'center',
   },

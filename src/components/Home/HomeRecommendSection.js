@@ -22,12 +22,12 @@ class RecommendFlatListItem extends Component {
               product: this.props.item,
             });
           }}>
-            <View>
-          <Image
-            source={{uri: this.props.item.imagepresent}}
-            style={styles.imageContainer}
-          />
-          {this.props.item.IsFlashsale == true ? (
+          <View>
+            <Image
+              source={{uri: this.props.item.imagepresent}}
+              style={styles.imageContainer}
+            />
+            {this.props.item.IsFlashsale == true ? (
               <View style={styles.sale}>
                 <Text
                   style={{
@@ -70,7 +70,6 @@ class RecommendFlatListItem extends Component {
           ) : (
             <Text style={styles.priceContainer}>{this.props.item.price}</Text>
           )}
-          {/* <Text style={styles.priceContainer}>{this.props.item.price}</Text> */}
           <Text style={styles.nameContainer}>{this.props.item.name}</Text>
         </TouchableOpacity>
       </View>
@@ -90,7 +89,7 @@ export default class HomeRecommendSection extends Component {
 
   componentDidMount() {
     this.refreshDataFromServer();
-  }  
+  }
 
   refreshDataFromServer = () => {
     this.setState({refreshing: true});
@@ -142,7 +141,6 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   sectionContainer: {
-   // backgroundColor: '#E5E5E5',
     marginHorizontal: 8,
   },
 
@@ -166,13 +164,13 @@ const styles = StyleSheet.create({
   },
 
   nameContainer: {
-    paddingLeft:5,
+    paddingLeft: 5,
     fontSize: 14,
     color: '#484848',
   },
 
   priceContainer: {
-    paddingLeft:5,
+    paddingLeft: 5,
     fontSize: 16,
     fontWeight: '500',
     color: '#FF5F04',
@@ -180,12 +178,12 @@ const styles = StyleSheet.create({
   sale: {
     height: scale(20),
     width: scale(40),
-     borderRadius: scale(3),
+    borderRadius: scale(3),
     justifyContent: 'center',
     alignContent: 'flex-end',
     backgroundColor: '#FF5F04',
     alignItems: 'center',
-     bottom: scale(156),
-     left: scale(116),
+    bottom: scale(156),
+    left: scale(116),
   },
 });
