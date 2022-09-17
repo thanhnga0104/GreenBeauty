@@ -32,13 +32,6 @@ const HomeStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-    {/* <stack.Screen
-      name="Ingriedient"
-      component={IngredientsScreen}
-      options={{
-        headerShown: false,
-      }}
-    /> */}
     <stack.Screen name="HomeDealSection" component={HomeDealSection} />
     <stack.Screen name="DetailHeader" component={DetailHeader} />
     <stack.Screen
@@ -113,15 +106,13 @@ const HomeStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-<stack.Screen
+    <stack.Screen
       name="DescriptionScreen"
       component={DescriptionScreen}
       options={{
         headerShown: false,
       }}
     />
-
-
 
     <stack.Screen
       name="OrderSuccessfullScreen"
@@ -132,11 +123,6 @@ const HomeStack = ({navigation}) => (
     />
     <stack.Screen name="RatingScreen" component={DetailRating} />
     <stack.Screen name="DetailIngredient" component={DetailIngredients} />
-    
-    
-
-    
- 
   </stack.Navigator>
 );
 

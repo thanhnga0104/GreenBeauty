@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {useState} from 'react';
 import {View, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -42,9 +42,7 @@ export default function SearchHeader({navigation, search}) {
               style={styles.inputText}
               placeholder="Tìm sản phẩm, thương hiệu, ...?"
               onChangeText={text => {
-                search(text),
-                //  console.log('query:', text);
-                setQuery(text);
+                search(text), setQuery(text);
               }}></TextInput>
           </View>
         </View>
@@ -80,7 +78,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
     borderRadius: 4,
     borderWidth: 0.3,
-    // borderEndColor: '#7D7D7D',
     justifyContent: 'space-between',
   },
 

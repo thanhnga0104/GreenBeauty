@@ -2,7 +2,7 @@ import React from 'react';
 import {StatusBar, SafeAreaView} from 'react-native';
 import {Component} from 'react';
 import SearchHeader from '../../components/Search/SearchHeader';
-import {getSearchProduct} from '../../networking/Server';
+import {getSearchProduct} from '../../services';
 import SearchComponent from '../../components/Search/SearchComponent';
 
 export default class SearchScreen extends Component {

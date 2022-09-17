@@ -1,10 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {
-  DrawerContentScrollView,
-  DrawerItem,
-  DrawerItemList,
-} from '@react-navigation/drawer';
+import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {Avatar, Title, Caption, Paragraph, Drawer} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,7 +19,6 @@ export function DrawerContent(props) {
       try {
         const value = await AsyncStorage.getItem('userToken');
         const valueid = await AsyncStorage.getItem('id');
-        console.log('value: ', value);
 
         getInfo(valueid, value);
         if (value !== null) {
@@ -33,7 +28,6 @@ export function DrawerContent(props) {
       }
     };
     const getInfo = async (id, token) => {
-      console.log('token: ', 'Bearer ' + token);
       await fetch('http://10.0.2.2:8000/user/' + id + '/', {
         method: 'GET',
         headers: {
@@ -44,7 +38,6 @@ export function DrawerContent(props) {
         .then(response => {
           if (response.status == 200) {
             response.json().then(d => {
-              console.log('name: ', d.name);
               setData({
                 ...data,
                 name: d.name,
@@ -116,7 +109,6 @@ export function DrawerContent(props) {
 
             <DrawerItem
               icon={({color, size}) => (
-                // <Ionicons name="grid-outline" color={color} size={size} />
                 <FontAwesome name="search" size={22} color={color} />
               )}
               label="Tra cứu thành phần"
@@ -176,11 +168,9 @@ const style = StyleSheet.create({
   drawerSection: {
     marginTop: 15,
   },
-  //bottomDrawerSection
   bottomDrawerSection: {
     marginTop: 15,
     borderTopColor: '#f4f4f4',
     borderTopWidth: 1,
   },
-  //preference
 });

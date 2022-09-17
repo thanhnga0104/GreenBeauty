@@ -1,40 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Dimensions,
-  ImageBackground,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Item,
-  Label,
-  TextInput,
-  Touchable,
-  TouchableOpacityBase,
-  TouchableOpacity,
-  Button,
-  FlatList,
-  VirtualizedList,
-} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import {scale} from 'react-native-size-matters';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getProductById } from '../../networking/Server';
+import {getProductById} from '../../networking/Server';
 const ProductComponent = props => {
   const [product, setData] = useState([
-      {
-          name: "loading",
-          price:"loading",
-          imagepresent:"http://127.0.0.1:8000/media/logo-uit.png"
-      }
+    {
+      name: 'loading',
+      price: 'loading',
+      imagepresent: 'http://127.0.0.1:8000/media/logo-uit.png',
+    },
   ]);
   useEffect(() => {
     getProductById(props.id).then(re => {
-        console.log(re);
       setData(re);
     });
   }, []);
@@ -63,10 +40,10 @@ const ProductComponent = props => {
   );
 };
 const styles = StyleSheet.create({
-    Image: {
-      width: scale(70),
-      height: scale(70),
-      margin: 10,
-    },
-  });
+  Image: {
+    width: scale(70),
+    height: scale(70),
+    margin: 10,
+  },
+});
 export default ProductComponent;

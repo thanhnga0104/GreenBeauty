@@ -71,7 +71,6 @@ class HorizontalFlatListItem extends Component {
           ) : (
             <Text style={styles.itemPrice}>{this.props.item.price}</Text>
           )}
-          {/* <Text style={styles.itemPrice}>{this.props.item.priceSale}</Text> */}
           <Text style={styles.itemName} numberOfLines={3}>
             {this.props.item.name}
           </Text>
@@ -140,9 +139,7 @@ export default class HomeDealSection extends Component {
 }
 const styles = StyleSheet.create({
   sectionContainer: {
-   // backgroundColor: '#E5E5E5',
-   // paddingHorizontal: 12,
-   marginHorizontal:12
+    marginHorizontal: 12,
   },
 
   sectionTile: {
@@ -185,13 +182,12 @@ const styles = StyleSheet.create({
   sale: {
     height: scale(20),
     width: scale(40),
-     borderRadius: scale(3),
+    borderRadius: scale(3),
     justifyContent: 'center',
     alignContent: 'flex-end',
     backgroundColor: '#FF5F04',
     alignItems: 'center',
-    //top:scale(10)
-     bottom: scale(152),
-     left: scale(111),
+    bottom: scale(152),
+    left: scale(111),
   },
 });
