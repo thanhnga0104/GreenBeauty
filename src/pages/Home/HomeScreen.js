@@ -11,8 +11,8 @@ import HomeCircleSection from '../../components/Home/HomeCircleSection';
 import HomeHeader from '../../components/Home/HomeHeader';
 import HomeDealSection from '../../components/Home/HomeDealSection';
 import HomeRecommendSection from '../../components/Home/HomeRecommendSection';
-import {getDataUser} from '../../networking/Server';
-import {getProductFromCart} from '../../networking/Server';
+import {getDataUser} from '../../services';
+import {getProductFromCart} from '../../services';
 import BannerComponent from '../../components/Home/BannerComponent';
 
 export default class HomeScreen extends Component {

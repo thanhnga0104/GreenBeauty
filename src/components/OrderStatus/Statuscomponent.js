@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {scale} from 'react-native-size-matters';
-import {getProductById, getDetailById} from '../../networking/Server';
+import {getProductById, getDetailById} from '../../services';
 const StatusComponent = props => {
   const [numberofProduct, setNumberofProduct] = useState(0);
   const [data, setData] = useState([]);

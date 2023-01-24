@@ -8,8 +8,8 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {getTypeOfCategory} from '../../networking/Server';
-import {getCategory} from '../../networking/Server';
+import {getTypeOfCategory} from '../../services';
+import {getCategory} from '../../services';
 
 class CategoryFlatListItem extends Component {
   render() {

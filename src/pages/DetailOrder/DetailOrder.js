@@ -14,7 +14,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ProductOrder from '../../components/DetailOrder/ProductOrder';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getDetailById, getDeliveryInformation} from '../../networking/Server';
+import {getDetailById, getDeliveryInformation} from '../../services';
 import Modal from 'react-native-modal';
 
 const DetailOrder = ({navigation, route}) => {

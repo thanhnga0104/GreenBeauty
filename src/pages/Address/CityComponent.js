@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {FlatList, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getProvince} from '../../networking/Server';
+import {getProvince} from '../../services';
 
 export default class CityComponent extends Component {
   constructor() {

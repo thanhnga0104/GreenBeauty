@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import {FlatList, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getWard} from '../../networking/Server';
+import {getWard} from '../../services';
 
 export default class WardComponent extends Component {
   constructor() {

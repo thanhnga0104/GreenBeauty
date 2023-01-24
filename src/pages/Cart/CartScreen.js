@@ -13,12 +13,12 @@ import {
 import CheckBox from '@react-native-community/checkbox';
 import Swipeout from 'react-native-swipeout';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getProductFromCart} from '../../networking/Server';
-import {getProductById} from '../../networking/Server';
-import {getDataUser} from '../../networking/Server';
-import {getAddress} from '../../networking/Server';
-import {putItemInCart} from '../../networking/Server';
-import {deleteProductFromCart} from '../../networking/Server';
+import {getProductFromCart} from '../../services';
+import {getProductById} from '../../services';
+import {getDataUser} from '../../services';
+import {getAddress} from '../../services';
+import {putItemInCart} from '../../services';
+import {deleteProductFromCart} from '../../services';
 
 const windowWidth = Dimensions.get('window').width;
 class CartFlatListItem extends Component {

@@ -14,10 +14,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import WardComponent from './WardComponent';
 import DistrictComponent from './DistrictComponent';
 import CityComponent from './CityComponent';
-import {getDataUser} from '../../networking/Server';
-import {postAddress} from '../../networking/Server';
-import {putAddress} from '../../networking/Server';
-import {getAddress} from '../../networking/Server';
+import {getDataUser} from '../../services';
+import {postAddress} from '../../services';
+import {putAddress} from '../../services';
+import {getAddress} from '../../services';
 
 export default class AddLocationScreen extends Component {
   constructor() {

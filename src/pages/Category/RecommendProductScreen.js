@@ -11,7 +11,7 @@ import {
   StatusBar,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getProductByCategory} from '../../networking/Server';
+import {getProductByCategory} from '../../services';
 export default class RecommendProductScreen extends Component {
   constructor(props) {
     super(props);

@@ -17,12 +17,12 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {scale} from 'react-native-size-matters';
 
-import {getDataUser, getProductFromCart} from '../../networking/Server';
-import {getAddress} from '../../networking/Server';
-import {getProductById} from '../../networking/Server';
-import {postOrder} from '../../networking/Server';
-import {postOrderDetail} from '../../networking/Server';
-import {deleteProductFromCart} from '../../networking/Server';
+import {getDataUser, getProductFromCart} from '../../services';
+import {getAddress} from '../../services';
+import {getProductById} from '../../services';
+import {postOrder} from '../../services';
+import {postOrderDetail} from '../../services';
+import {deleteProductFromCart} from '../../services';
 
 export default class ConfirmScreen extends Component {
   constructor() {

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {scale} from 'react-native-size-matters';
-import {getProductById} from '../../networking/Server';
+import {getProductById} from '../../services';
 const ProductComponent = props => {
   const [product, setData] = useState([
     {

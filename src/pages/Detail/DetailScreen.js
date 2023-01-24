@@ -15,16 +15,16 @@ import {
 import DetailHeader from '../../components/Detail/DetailHeader';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {getListImage} from '../../networking/Server';
-import {getImageFromServer} from '../../networking/Server';
+import {getListImage} from '../../services';
+import {getImageFromServer} from '../../services';
 import {BottomPopup} from '../../components/Detail/BottomPopup';
-import {getDataUser} from '../../networking/Server';
-import {getProductFromCart} from '../../networking/Server';
-import {postItemToCart} from '../../networking/Server';
-import {putItemInCart} from '../../networking/Server';
-import {postToLoveList} from '../../networking/Server';
-import {getProductFromLoveList} from '../../networking/Server';
-import {deleteProducLoveList} from '../../networking/Server';
+import {getDataUser} from '../../services';
+import {getProductFromCart} from '../../services';
+import {postItemToCart} from '../../services';
+import {putItemInCart} from '../../services';
+import {postToLoveList} from '../../services';
+import {getProductFromLoveList} from '../../services';
+import {deleteProducLoveList} from '../../services';
 
 class DetailScreen extends Component {
   constructor(props) {

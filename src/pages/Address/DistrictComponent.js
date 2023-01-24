@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {FlatList, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getDistrict} from '../../networking/Server';
+import {getDistrict} from '../../services';
 
 export default class DistrictComponent extends Component {
   constructor() {
@@ -30,7 +30,6 @@ export default class DistrictComponent extends Component {
 
   handleSelect(text) {
     if (text) {
-      
       const newData = this.state.districtData.filter(item => {
         const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
@@ -86,7 +85,7 @@ export default class DistrictComponent extends Component {
         />
 
         <FlatList
-          data={this.state.filterDistrict}         
+          data={this.state.filterDistrict}
           renderItem={({item, index}) => {
             return (
               <FlatListItem

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
-import {getProductsFromServer} from '../../networking/Server';
+import {getProductsFromServer} from '../../services';
 
 class RecommendFlatListItem extends Component {
   render() {

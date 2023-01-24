@@ -10,7 +10,7 @@ import {
 import {Component} from 'react';
 import {scale} from 'react-native-size-matters';
 
-import {getProductsFromServer} from '../../networking/Server';
+import {getProductsFromServer} from '../../services';
 
 class HorizontalFlatListItem extends Component {
   render() {

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import RatingComponent from '../../../components/Rating/RatingComponent';
-import {getRatingbyUserid} from '../../../networking/Server';
+import {getRatingbyUserid} from '../../../services';
 import ProductComponent from '../../../components/Profile/ProductComponent';
 
 const RatingHistory = ({navigation, route}) => {

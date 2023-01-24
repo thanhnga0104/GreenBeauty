@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
-import {getProductById} from '../../networking/Server';
+import {getProductById} from '../../services';
 const Rating = props => {
   const [data, setData] = useState({
     comment: '',

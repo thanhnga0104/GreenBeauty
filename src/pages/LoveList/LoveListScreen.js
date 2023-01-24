@@ -10,9 +10,9 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
-import {getProductFromLoveList} from '../../networking/Server';
-import {getDataUser} from '../../networking/Server';
-import {getProductById} from '../../networking/Server';
+import {getProductFromLoveList} from '../../services';
+import {getDataUser} from '../../services';
+import {getProductById} from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 export default class LoveListScreen extends Component {

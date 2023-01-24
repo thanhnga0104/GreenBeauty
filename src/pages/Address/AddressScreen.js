@@ -10,8 +10,8 @@ import {
   StatusBar,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getDataUser} from '../../networking/Server';
-import {getAddress} from '../../networking/Server';
+import {getDataUser} from '../../services';
+import {getAddress} from '../../services';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default class AddressScreen extends Component {
