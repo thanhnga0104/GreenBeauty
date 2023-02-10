@@ -47,12 +47,11 @@ export default function DetailRating({navigation, route}) {
         })
         .then(res => {})
         .catch(error => {
-          console.error('eroor', error);
-          return {name: 'network error', description: ''};
+          console.error('error', error);
         });
     };
     GetData();
-  }, []);
+  }, [route.params]);
 
   const getData = async val => {
     await fetch('http://10.0.2.2:8000/rating/' + product + '/' + val + '/', {
@@ -62,7 +61,7 @@ export default function DetailRating({navigation, route}) {
       },
     })
       .then(response => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           response.json().then(d => {
             setRenderData(d);
           });
@@ -70,8 +69,7 @@ export default function DetailRating({navigation, route}) {
       })
       .then(res => {})
       .catch(error => {
-        console.error('eroor', error);
-        return {name: 'network error', description: ''};
+        console.error('error', error);
       });
   };
   const HandleChangeClick = val => {

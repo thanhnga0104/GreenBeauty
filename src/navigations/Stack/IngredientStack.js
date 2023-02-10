@@ -14,7 +14,7 @@ const IngredientStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-    
+
     <stack.Screen
       name="IngredientComponent"
       component={IngredientComponent}
@@ -29,7 +29,6 @@ const IngredientStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-    
   </stack.Navigator>
 );
 

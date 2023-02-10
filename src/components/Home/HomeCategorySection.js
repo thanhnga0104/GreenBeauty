@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,7 +10,7 @@ import {
 import {Component} from 'react';
 import {scale} from 'react-native-size-matters';
 
-import {getProductsFromServer} from '../../services';
+import {getProductsByCategory, getProductsFromServer} from '../../services';
 import {formatThousandNumber} from '../../utils/formatThousandNumber';
 
 class HorizontalFlatListItem extends Component {
@@ -83,65 +83,75 @@ class HorizontalFlatListItem extends Component {
   }
 }
 
-export default class HomeDealSection extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      productsFromServer: [],
-      imageFromServer: [],
-      refreshing: true,
-    };
-  }
+const HomeCategorySection = props => {
+  const {navigation, title, category} = props;
 
-  componentDidMount() {
-    this.refreshDataFromServer();
-  }
+  const [productsFromServer, setProductsFromServer] = useState([]);
+  const [imageFromServer, setImageFromServer] = useState([]);
+  const [refreshing, setRefreshing] = useState(true);
 
-  refreshDataFromServer = () => {
-    this.setState({refreshing: true});
-    getProductsFromServer()
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     productsFromServer: [],
+  //     imageFromServer: [],
+  //     refreshing: true,
+  //   };
+  // }
+
+  // componentDidMount() {
+  //   this.refreshDataFromServer(category);
+  // }
+
+  const refreshDataFromServer = category_id => {
+    setRefreshing(true);
+    getProductsByCategory(category_id)
       .then(products => {
-        this.setState({productsFromServer: products});
-        this.setState({refreshing: false});
+        setProductsFromServer(products);
+        setRefreshing(false);
       })
       .catch(error => {
-        this.setState({productsFromServer: []});
+        setProductsFromServer([]);
       });
   };
 
-  handleRefresh = () => {
-    this.setState({refreshing: false}, () => {
-      this.refreshDataFromServer();
-    });
-  };
+  // const handleRefresh = () => {
+  //   this.setState({refreshing: false}, () => {
+  //     this.refreshDataFromServer();
+  //   });
+  // };
 
-  render() {
-    const {navigation} = this.props;
-    return (
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTile}>DEALS ĐANG DIỄN RA</Text>
-        <View>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
-            data={this.state.productsFromServer}
-            renderItem={({item, index}) => {
-              return item.IsFlashsale ? (
-                <HorizontalFlatListItem
-                  navigation={navigation}
-                  item={item}
-                  index={index}
-                />
-              ) : null;
-            }}
-            refreshing={this.state.refreshing}
-            onRefresh={this.handleRefresh}
-          />
-        </View>
+  useEffect(() => {
+    refreshDataFromServer(category);
+  }, [category]);
+
+  return (
+    <View style={styles.sectionContainer}>
+      <Text style={styles.sectionTile}>{title}</Text>
+      <View>
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          horizontal={true}
+          data={productsFromServer}
+          renderItem={({item, index}) => {
+            return (
+              <HorizontalFlatListItem
+                navigation={navigation}
+                item={item}
+                index={index}
+              />
+            );
+          }}
+          refreshing={refreshing}
+          // onRefresh={handleRefresh}
+        />
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
+
+export default HomeCategorySection;
+
 const styles = StyleSheet.create({
   sectionContainer: {
     marginHorizontal: 12,

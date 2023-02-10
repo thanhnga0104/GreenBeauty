@@ -29,8 +29,8 @@ export default class DetailHeader extends Component {
           onPress={() => {
             navigation.navigate('SearchScreen');
           }}>
-          <FontAwesome name="search" size={20} color={colorIcon} />
-          <Text> Tìm kiếm </Text>
+          <FontAwesome name="search" size={16} color={colorIcon} />
+          <Text> Tìm kiếm</Text>
         </TouchableOpacity>
 
         <View style={styles.cartContainer}>

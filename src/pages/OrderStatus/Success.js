@@ -20,9 +20,6 @@ const Success = ({navigation, route}) => {
         const valueid = await AsyncStorage.getItem('id');
 
         GetData(valueid);
-
-        if (value !== null) {
-        }
       } catch (e) {
         console.log(e);
       }
@@ -35,7 +32,7 @@ const Success = ({navigation, route}) => {
         },
       })
         .then(response => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             response.json().then(d => {
               setRenderData(d);
             });
@@ -43,15 +40,14 @@ const Success = ({navigation, route}) => {
         })
         .then(res => {})
         .catch(error => {
-          console.error('eroor', error);
-          return {name: 'network error', description: ''};
+          console.error('error', error);
         });
     };
     getData();
   }, []);
 
-  return Object.keys(renderData).length == 0 ? (
-    <Text></Text>
+  return Object.keys(renderData).length === 0 ? (
+    <Text />
   ) : (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar backgroundColor="#316C49" barStyle="light-content" />
@@ -74,6 +70,7 @@ const Success = ({navigation, route}) => {
 
       <FlatList
         data={renderData}
+        ListEmptyComponent={<Text>Chưa có đơn hàng</Text>}
         renderItem={({item}) => {
           return (
             <TouchableOpacity

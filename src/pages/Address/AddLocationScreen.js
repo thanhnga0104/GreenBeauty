@@ -227,7 +227,6 @@ export default class AddLocationScreen extends Component {
                   thumbColor={this.state.isEnable ? '#316C49' : '#f4f3f4'}
                   onValueChange={tempValue => {
                     this.setState({isEnable: tempValue});
-                    console.log('tempValue:', tempValue);
                   }}
                   value={this.state.isEnable}
                 />

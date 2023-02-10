@@ -95,7 +95,6 @@ export default class ConfirmScreen extends Component {
         this.props.route.params.selectData.forEach(product_id => {
           getProductFromCart(this.state.userData.userID, product_id)
             .then(cartItem => {
-              console.log('cart id nè:', cartItem[0].id);
               deleteProductFromCart(cartItem[0].id)
                 .then(() => {
                   console.log(

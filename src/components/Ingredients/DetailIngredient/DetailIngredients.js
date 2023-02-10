@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {scale} from 'react-native-size-matters';
 import AntDesign from 'react-native-vector-icons/AntDesign';

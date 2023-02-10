@@ -7,6 +7,7 @@ import {
   View,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -20,10 +21,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ProfileScreen = ({navigation}) => {
   const {signOut} = React.useContext(AuthContext);
   const [data, setData] = useState({
-    name: 'Loading...',
+    name: '',
     id: '',
     avt: 'http://127.0.0.1:8000/media/logo-uit.png',
-    phonenum: 'loading...',
+    phonenum: '',
     token: '',
   });
   const [Pending, setPending] = useState(0);
@@ -32,9 +33,56 @@ const ProfileScreen = ({navigation}) => {
   const [Success, setSuccess] = useState(0);
   const [refreshing, setRefreshing] = React.useState(false);
   const [id, setId] = useState(0);
-  useEffect(() => {
-    getData();
-  }, []);
+
+  const getInfo = async (id, token) => {
+    await fetch('http://10.0.2.2:8000/user/' + id + '/', {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        if (response.status === 200) {
+          response.json().then(d => {
+            setData({
+              ...data,
+              name: d.name,
+              phonenum: d.phone,
+              avt: d.avt,
+            });
+          });
+        }
+      })
+      .catch(error => {
+        console.error('error', error);
+      });
+  };
+
+  const getStatus = async (id, sta) => {
+    await fetch('http://10.0.2.2:8000/order/?user=' + id + '&status=' + sta, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        if (response.status === 200) {
+          response.json().then(d => {
+            if (sta === 1) setPending(Object.keys(d).length);
+            else if (sta === 2) setWait(Object.keys(d).length);
+            else if (sta === 3) setDelivery(Object.keys(d).length);
+            else {
+              setSuccess(Object.keys(d).length);
+            }
+          });
+        }
+      })
+      .catch(error => {
+        console.error('error', error);
+      });
+  };
+
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem('userToken');
@@ -49,77 +97,29 @@ const ProfileScreen = ({navigation}) => {
       getStatus(valueid, 3);
 
       getStatus(valueid, 4);
-      if (value !== null) {
-      }
     } catch (e) {
-      alert('no data');
+      Alert.alert('No data');
     }
   };
-  const getInfo = async (id, token) => {
-    console.log('token: ', 'Bearer ' + token);
-    await fetch('http://10.0.2.2:8000/user/' + id + '/', {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        if (response.status == 200) {
-          response.json().then(d => {
-            console.log('name: ', Object.keys(d.name).length);
-            setData({
-              ...data,
-              name: d.name,
-              phonenum: d.phone,
-              avt: d.avt,
-            });
-          });
-        }
-      })
-      .then(res => {})
-      .catch(error => {
-        console.error('eroor', error);
-        return {name: 'network error', description: ''};
-      });
-  };
-  const getStatus = async (id, sta) => {
-    await fetch('http://10.0.2.2:8000/order/?user=' + id + '&status=' + sta, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        if (response.status == 200) {
-          response.json().then(d => {
-            if (sta == 1) setPending(Object.keys(d).length);
-            else if (sta == 2) setWait(Object.keys(d).length);
-            else if (sta == 3) setDelivery(Object.keys(d).length);
-            else {
-              setSuccess(Object.keys(d).length);
-            }
-          });
-        }
-      })
-      .then(res => {})
-      .catch(error => {
-        console.error('eroor', error);
-        return {name: 'network error', description: ''};
-      });
-  };
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    getData().then(() => setRefreshing(false));
+  // const onRefresh = React.useCallback(() => {
+  //   setRefreshing(true);
+  //   getData().then(() => setRefreshing(false));
+  // }, []);
+
+  useEffect(() => {
+    console.log('render');
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <View style={{flex: 1}}>
       <ScrollView
         style={{backgroundColor: '#EEEEEE'}}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        // }
+      >
         <View style={styles.headerContainer}>
           <View style={styles.menuContainer}>
             <Feather

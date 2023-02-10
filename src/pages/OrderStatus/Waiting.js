@@ -21,9 +21,6 @@ const Waiting = ({navigation, route}) => {
         const valueid = await AsyncStorage.getItem('id');
 
         GetData(valueid);
-
-        if (value !== null) {
-        }
       } catch (e) {
         console.log(e);
       }
@@ -73,6 +70,7 @@ const Waiting = ({navigation, route}) => {
 
       <FlatList
         data={renderData}
+        ListEmptyComponent={<Text>Chưa có đơn hàng</Text>}
         renderItem={({item}) => {
           return (
             <TouchableOpacity

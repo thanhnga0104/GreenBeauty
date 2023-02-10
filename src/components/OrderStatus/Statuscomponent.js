@@ -2,18 +2,21 @@ import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {scale} from 'react-native-size-matters';
 import {getProductById, getDetailById} from '../../services';
+
 const StatusComponent = props => {
   const [numberofProduct, setNumberofProduct] = useState(0);
   const [data, setData] = useState([]);
   const [product, setProduct] = useState({
     imagepresent: 'http://127.0.0.1:8000/media/media/logo.jpg',
-    price: 'Loading...',
-    name: 'Loading...',
+    price: '',
+    name: '',
   });
+
   useEffect(() => {
     const GetInfor = () => {
       getDetailById(props.id).then(result => {
         setNumberofProduct(Object.keys(result).length);
+        console.log({result});
         setData(result);
         result.forEach(element => {
           getProductById(element.product).then(re => {
@@ -23,7 +26,8 @@ const StatusComponent = props => {
       });
     };
     GetInfor();
-  }, []);
+  }, [props.id]);
+
   async function ConfirmDelivery(id) {
     const apiAddAddress = 'http://10.0.2.2:8000/order/' + id + '/';
     try {
@@ -98,7 +102,6 @@ const StatusComponent = props => {
               ) : (
                 <Text style={styles.itemPrice}>{product.price}đ</Text>
               )}
-              {/* <Text style={{alignItems:"flex-end", color:"red", alignContent:"flex-end"}}>{product.price}</Text> */}
             </View>
           </View>
         </View>
@@ -123,17 +126,17 @@ const StatusComponent = props => {
       </View>
 
       <View style={{width: '100%', alignItems: 'flex-end'}}>
-        {props.status == 1 ? (
+        {props.status === '1' ? (
           <View style={styles.Button}>
             <Text style={{color: '#000'}}>Đang xử lý</Text>
           </View>
         ) : null}
-        {props.status == 2 ? (
+        {props.status === '2' ? (
           <View style={styles.Button}>
             <Text style={{color: '#000'}}>Đã xác nhận</Text>
           </View>
         ) : null}
-        {props.status == 3 ? (
+        {props.status === '3' ? (
           <TouchableOpacity
             style={styles.Button}
             onPress={() => {
@@ -144,7 +147,7 @@ const StatusComponent = props => {
             <Text style={{color: '#000'}}>Đã nhận được hàng</Text>
           </TouchableOpacity>
         ) : null}
-        {props.status == 4 ? (
+        {props.status === '4' && data?.[0]?.isRating === false ? (
           <TouchableOpacity
             style={styles.Button}
             onPress={() => {
@@ -152,7 +155,11 @@ const StatusComponent = props => {
             }}>
             <Text style={{color: '#000'}}>Đánh giá</Text>
           </TouchableOpacity>
-        ) : null}
+        ) : (
+          <TouchableOpacity style={styles.Button}>
+            <Text style={{color: '#000'}}>Đã đánh giá</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -170,7 +177,7 @@ const styles = StyleSheet.create({
   },
   line1: {
     borderBottomWidth: 0.5,
-    borderColor: 'black',
+    borderColor: '#e5e5e5',
     marginTop: 15,
   },
   line: {

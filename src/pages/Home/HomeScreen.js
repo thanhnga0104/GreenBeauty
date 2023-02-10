@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StatusBar,
   StyleSheet,
@@ -14,32 +14,22 @@ import HomeRecommendSection from '../../components/Home/HomeRecommendSection';
 import {getDataUser} from '../../services';
 import {getProductFromCart} from '../../services';
 import BannerComponent from '../../components/Home/BannerComponent';
+import HomeCategorySection from '../../components/Home/HomeCategorySection';
 
-export default class HomeScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      quantityOfCart: 0,
-    };
-  }
+const HomeScreen = props => {
+  const {navigation} = props;
+  const [quantityOfCart, setQuantityOfCart] = useState(0);
 
-  componentDidMount() {
-    this.fetchProductFromCart();
-    this.focusListener = this.props.navigation.addListener('focus', () => {
-      this.fetchProductFromCart();
-    });
-  }
-
-  fetchProductFromCart = () => {
+  const fetchProductFromCart = () => {
     getDataUser()
       .then(user => {
         getProductFromCart(user.userID, '')
           .then(items => {
-            this.setState({quantityOfCart: Object.keys(items).length});
+            setQuantityOfCart(Object.keys(items).length);
           })
           .catch(error => {
             console.log(error);
-            this.setState({quantityOfCart: 0});
+            setQuantityOfCart(0);
           });
       })
       .catch(error => {
@@ -47,41 +37,50 @@ export default class HomeScreen extends Component {
       });
   };
 
-  render() {
-    const {navigation} = this.props;
-    return (
-      <SafeAreaView
-        style={{
-          flex: 1,
-        }}>
-        <StatusBar backgroundColor="#316C49" barStyle="light-content" />
-        <HomeHeader
-          navigation={navigation}
-          quantityOfCart={this.state.quantityOfCart}
+  useEffect(() => {
+    fetchProductFromCart();
+  }, []);
+
+  return (
+    <SafeAreaView style={styles.flex1}>
+      <StatusBar backgroundColor="#316C49" barStyle="light-content" />
+      <HomeHeader navigation={navigation} quantityOfCart={quantityOfCart} />
+      <View style={styles.flex1}>
+        <FlatList
+          LisHeaderComponent={<Text />}
+          ListFooterComponent={
+            <>
+              <BannerComponent />
+
+              <HomeCircleSection navigation={navigation} />
+
+              <HomeDealSection navigation={navigation} />
+
+              <HomeRecommendSection navigation={navigation} />
+
+              <HomeCategorySection
+                navigation={navigation}
+                category={1}
+                title="TẨY TRANG"
+              />
+
+              <HomeCategorySection
+                navigation={navigation}
+                category={4}
+                title="KEM CHỐNG NẮNG"
+              />
+            </>
+          }
         />
-        <View style={{flex: 1}}>
-          <FlatList
-            LisHeaderComponent={<Text></Text>}
-            ListFooterComponent={
-              <>
-                <BannerComponent />
-                <HomeCircleSection navigation={navigation} />
+      </View>
+    </SafeAreaView>
+  );
+};
 
-                <HomeDealSection navigation={navigation} />
-
-                <HomeRecommendSection navigation={navigation} />
-              </>
-            }
-          />
-        </View>
-      </SafeAreaView>
-    );
-  }
-}
+export default HomeScreen;
 
 const styles = StyleSheet.create({
-  bodyContainer: {
-    // flex: 1,
-    backgroundColor: '#E5E5E5',
+  flex1: {
+    flex: 1,
   },
 });

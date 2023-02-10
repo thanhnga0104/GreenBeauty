@@ -8,7 +8,8 @@ import {ActivityIndicator} from 'react-native-paper';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from './src/pages/Login/Login';
 import Register from './src/pages/Register/Register';
-
+import {Provider} from 'react-redux';
+import {store} from './src/redux/store';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -99,20 +100,22 @@ const App = () => {
     );
   }
   return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        {loginState.userToken == null ? (
-          <Stack.Navigator
-            initialRouteName="Login"
-            screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-          </Stack.Navigator>
-        ) : (
-          <HomeDrawer />
-        )}
-      </NavigationContainer>
-    </AuthContext.Provider>
+    <Provider store={store}>
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          {loginState.userToken == null ? (
+            <Stack.Navigator
+              initialRouteName="Login"
+              screenOptions={{headerShown: false}}>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="Register" component={Register} />
+            </Stack.Navigator>
+          ) : (
+            <HomeDrawer />
+          )}
+        </NavigationContainer>
+      </AuthContext.Provider>
+    </Provider>
   );
 };
 

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
- const SERVER_NAME = '10.0.2.2';
+export const SERVER_NAME = '10.0.2.2';
 
 //const SERVER_NAME ='192.168.1.4'
 //Api get type of category
@@ -18,7 +18,8 @@ async function getTypeOfCategory() {
 
 //Api get category
 async function getCategory(type_id) {
-  const apiGetCategory = 'http://' + SERVER_NAME + ':8000/category/?producttype=' +type_id;
+  const apiGetCategory =
+    'http://' + SERVER_NAME + ':8000/category/?producttype=' + type_id;
   try {
     let response = await fetch(apiGetCategory, {
       method: 'GET',
@@ -32,12 +33,31 @@ async function getCategory(type_id) {
 
 //Api get all products
 async function getProductsFromServer() {
-  const apiGetAllProduct = 'http://' + SERVER_NAME + ':8000/product/?IsActive=true';
+  const apiGetAllProduct =
+    'http://' + SERVER_NAME + ':8000/product/?IsActive=true';
   try {
     let response = await fetch(apiGetAllProduct, {
       method: 'GET',
     });
-    let responseJson = await response.json();    
+    let responseJson = await response.json();
+    return responseJson;
+  } catch (error) {
+    console.error(`Error is: ${error}`);
+  }
+}
+
+async function getProductsByCategory(category) {
+  const apiGetAllProduct =
+    'http://' +
+    SERVER_NAME +
+    ':8000/product/?category=' +
+    category +
+    '&?IsActive=true';
+  try {
+    let response = await fetch(apiGetAllProduct, {
+      method: 'GET',
+    });
+    let responseJson = await response.json();
     return responseJson;
   } catch (error) {
     console.error(`Error is: ${error}`);
@@ -61,14 +81,13 @@ async function getProductById(id) {
 
 //Api get product by id
 async function getProductByCategory(category) {
-  const apiGetProductByCategory=
-    'http://' + SERVER_NAME + ':8000/product/?category=' + category ;
+  const apiGetProductByCategory =
+    'http://' + SERVER_NAME + ':8000/product/?category=' + category;
   try {
     let response = await fetch(apiGetProductByCategory, {
       method: 'GET',
     });
     let responseJson = await response.json();
-    console.log("category:", responseJson)
     return responseJson;
   } catch (error) {
     console.error(`Error is: ${error}`);
@@ -78,7 +97,8 @@ async function getProductByCategory(category) {
 //Api get tất cả ảnh của 1 sản phẩm
 async function getListImage(product_id) {
   // const apiGetImage = 'http://' + SERVER_NAME + ':8000/img/' + id + '/';
-  const apiGetListImage = 'http://' + SERVER_NAME + ':8000/img/?product=' + product_id ;
+  const apiGetListImage =
+    'http://' + SERVER_NAME + ':8000/img/?product=' + product_id;
   try {
     let response = await fetch(apiGetListImage, {method: 'GET'});
     let responseJson = await response.json();
@@ -170,14 +190,12 @@ async function postItemToCart(user, product) {
     let responseJson = await response.json();
     return responseJson;
   } catch (error) {
-   
     console.error(`Error is: ${error}`);
   }
 }
 
 //Api cập nhật số lượng khi thêm sản phẩm
 async function putItemInCart(event, user, product) {
-  console.log("product:", product)
   const apiUpdateQuanlity =
     'http://' + SERVER_NAME + ':8000/cart/' + product.id + '/';
   let quantity = product.quantities;
@@ -263,7 +281,6 @@ async function getDataUser() {
     return user;
   } catch (error) {
     console.error(`Error is: ${error}`);
-    console.log('Ở hàm getDataUser');
   }
 }
 
@@ -347,11 +364,9 @@ async function postAddress(
   }
 }
 
-
 async function putAddress(user, address_id) {
- // console.log("product:", product)
   const apiPutAddress =
-    'http://' + SERVER_NAME + ':8000/delivery/' + address_id + '/'; 
+    'http://' + SERVER_NAME + ':8000/delivery/' + address_id + '/';
   try {
     let response = await fetch(apiPutAddress, {
       method: 'PUT',
@@ -372,7 +387,6 @@ async function putAddress(user, address_id) {
     console.error(`Error is: ${error}`);
   }
 }
-
 
 async function postOrder(user, totalValue, delivery_id) {
   const apiPostOrder = 'http://' + SERVER_NAME + ':8000/order/';
@@ -425,22 +439,19 @@ async function postOrderDetail(order_id, product_id, quantity) {
   }
 }
 async function getDetailById(id) {
-  const apiGetDetailById =
-    'http://10.0.2.2:8000/detailorder/?order=' + id ;
+  const apiGetDetailById = 'http://10.0.2.2:8000/detailorder/?order=' + id;
   try {
     let response = await fetch(apiGetDetailById, {
       method: 'GET',
     });
     let responseJson = await response.json();
-    console.log("responseJson detail", responseJson)
     return responseJson;
   } catch (error) {
     console.error(`Error is: ${error}`);
   }
 }
 async function getDeliveryInformation(id) {
-  const apigetDeliveryInformation =
-    'http://10.0.2.2:8000/delivery/' + id + '/';
+  const apigetDeliveryInformation = 'http://10.0.2.2:8000/delivery/' + id + '/';
   try {
     let response = await fetch(apigetDeliveryInformation, {
       method: 'GET',
@@ -452,8 +463,7 @@ async function getDeliveryInformation(id) {
   }
 }
 async function getRatingbyUserid(id) {
-  const apigetRatingbyUserid =
-    'http://10.0.2.2:8000/rating/' + id + '/';
+  const apigetRatingbyUserid = 'http://10.0.2.2:8000/rating/' + id + '/';
   try {
     let response = await fetch(apigetRatingbyUserid, {
       method: 'GET',
@@ -472,6 +482,7 @@ export {
   getTypeOfCategory,
   getCategory,
   getProductsFromServer,
+  getProductsByCategory,
   getListImage,
   getImageFromServer,
   getSearchProduct,
@@ -485,7 +496,14 @@ export {
   getAddress,
 };
 
-export {postItemToCart, putItemInCart, postAddress, postOrder, putAddress, postOrderDetail};
+export {
+  postItemToCart,
+  putItemInCart,
+  postAddress,
+  postOrder,
+  putAddress,
+  postOrderDetail,
+};
 
 //Xóa item khỏi giỏ hàng
 async function deleteProductFromCart(cart_id) {
@@ -502,7 +520,6 @@ async function deleteProductFromCart(cart_id) {
 
 export {deleteProductFromCart};
 
-
 ///LoveList
 async function postToLoveList(user, product_id) {
   const apiAddToLoveList = 'http://' + SERVER_NAME + ':8000/lovelist/';
@@ -515,28 +532,23 @@ async function postToLoveList(user, product_id) {
         Authorization: 'Bearer ' + user.userToken,
       },
 
-      body: JSON.stringify({        
+      body: JSON.stringify({
         product_id: product_id,
         customer_id: user.userID,
       }),
     });
 
     let responseJson = await response.json();
-    //console.log("responseJson:", responseJson)
     return responseJson;
   } catch (error) {
-   
     console.error(`Error is: ${error}`);
   }
 }
 
 async function getProductFromLoveList(user_id) {
   const apiGetProductFromLoveList =
-    'http://' +
-    SERVER_NAME +
-    ':8000/lovelist/?customer_id=' +
-    user_id ;
-    
+    'http://' + SERVER_NAME + ':8000/lovelist/?customer_id=' + user_id;
+
   try {
     let response = await fetch(apiGetProductFromLoveList, {method: 'GET'});
     let responseJson = await response.json();
@@ -553,13 +565,9 @@ async function deleteProducLoveList(id) {
     let response = await fetch(apiDeleteProductLoveList, {
       method: 'DELETE',
     });
-  //  console.log("respon:", response)
   } catch (error) {
     console.error(`Error is: ${error}`);
   }
 }
 
-
 export {postToLoveList, getProductFromLoveList, deleteProducLoveList};
-
-

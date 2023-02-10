@@ -159,24 +159,24 @@ const Login = ({navigation}) => {
           <Text style={{fontSize: scale(15)}}>To GreenBeauty's House</Text>
         </View>
         <View>
-          <Text style={{color: '#B6C7D1', fontSize: scale(12)}}>Email</Text>
+          <Text style={{color: 'gray', fontSize: scale(12)}}>Email</Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={scale(12)} />
             <TextInput
               style={styles.input}
-              placeholder="Your email"
+              placeholder="Enter email"
               keyboardType="email-address"
               onChangeText={val => textInputChange(val)}></TextInput>
             {data.check_textinputchange ? (
               <Feather name="check-circle" color="green" size={scale(12)} />
             ) : null}
           </View>
-          <Text style={{color: '#B6C7D1', fontSize: scale(12)}}>Password</Text>
+          <Text style={{color: 'gray', fontSize: scale(12)}}>Password</Text>
           <View style={styles.action}>
             <Feather name="lock" color="#05375a" size={scale(12)} />
             <TextInput
               style={styles.input}
-              placeholder="************"
+              placeholder="Enter password"
               keyboardType={'default'}
               secureTextEntry={data.securetextentry ? true : false}
               onChangeText={val => hadlepwchange(val)}></TextInput>
@@ -192,7 +192,7 @@ const Login = ({navigation}) => {
           <TouchableOpacity
             style={styles.forgotPW}
             onPress={() => toggleModal()}>
-            <Text style={{marginRight: scale(20), color: '#B6C7D1'}}>
+            <Text style={{marginRight: scale(20), color: 'gray'}}>
               Forgot Password?
             </Text>
           </TouchableOpacity>
@@ -290,7 +290,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingLeft: scale(15),
-    color: '#B6C7D1',
+    // color: '#B6C7D1',
+    color: '#000',
     marginTop: scale(-15),
   },
   container: {

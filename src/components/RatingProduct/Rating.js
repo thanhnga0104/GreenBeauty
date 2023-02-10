@@ -15,6 +15,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
 import {getProductById} from '../../services';
+
 const Rating = props => {
   const [data, setData] = useState({
     comment: '',
@@ -44,8 +45,6 @@ const Rating = props => {
           ...data,
           token: value,
         });
-        if (value !== null) {
-        }
       } catch (e) {
         alert('no data');
       }
@@ -57,7 +56,7 @@ const Rating = props => {
     };
     getData();
     getInformation();
-  }, []);
+  }, [data, props.id]);
 
   async function setRating(id) {
     const apiSetRatingById =
@@ -66,6 +65,8 @@ const Rating = props => {
       let response = await fetch(apiSetRatingById, {
         method: 'POST',
       });
+
+      console.log('aluuu:', response.json);
       return true;
     } catch (error) {
       console.error(`Error is: ${error}`);
@@ -77,6 +78,7 @@ const Rating = props => {
       comment: val,
     });
   };
+
   const UploadRating = async () => {
     var img = {
       uri: Img,
@@ -87,6 +89,7 @@ const Rating = props => {
     form.append('img', img);
     form.append('comment', data.comment);
     form.append('point', defaultRating);
+
     fetch('http://10.0.2.2:8000/product/' + props.id + '/add-rating/', {
       body: form,
       method: 'POST',
@@ -100,11 +103,13 @@ const Rating = props => {
         alert('ERROR ' + error);
       })
       .then(responseData => {
+        console.log({responseData});
         setRating(props.order);
         alert('Success');
       })
       .done();
   };
+
   const takePhotoFromCamera = async () => {
     ImagePicker.openCamera({
       compressImageMaxWidth: 300,
@@ -228,14 +233,17 @@ const Rating = props => {
             </View>
           </View>
         </View>
+
         <CustomRatingBar />
+
         <TextInput
           style={styles.InputText}
           multiline={true}
           size={scale(20)}
           placeholder="Hãy mô tả cảm nhận về sản phẩm <3"
-          placeholderTextColor="#000000"
-          onChangeText={val => handleCommentChange(val)}></TextInput>
+          placeholderTextColor="gray"
+          onChangeText={val => handleCommentChange(val)}
+        />
 
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity
@@ -254,6 +262,7 @@ const Rating = props => {
           </View>
         </View>
       </View>
+
       <TouchableOpacity style={styles.button} onPress={() => UploadRating()}>
         <Text style={{color: '#FFF'}}>ĐÁNH GIÁ</Text>
       </TouchableOpacity>

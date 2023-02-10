@@ -19,8 +19,6 @@ const RatingComponent = props => {
         const value = await AsyncStorage.getItem('userToken');
 
         getInfo(props.id, value);
-        if (value !== null) {
-        }
       } catch (e) {
         alert('no data');
       }
@@ -34,7 +32,7 @@ const RatingComponent = props => {
         },
       })
         .then(response => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             response.json().then(d => {
               setData({
                 ...data,
@@ -44,15 +42,13 @@ const RatingComponent = props => {
             });
           }
         })
-        .then(res => {})
         .catch(error => {
           console.error('error:', error);
-          return {name: 'network error', description: ''};
         });
     };
 
     getData();
-  }, []);
+  }, [data, props.id]);
 
   const CustomRatingBar = () => {
     const [maxRating, setmaxRating] = useState([1, 2, 3, 4, 5]);
@@ -86,7 +82,7 @@ const RatingComponent = props => {
         />
         <View style={{flexDirection: 'column'}}>
           <Text style={{marginTop: scale(15)}}>
-            {'******' + data.phonenum.slice(6)}
+            {'******' + data?.phonenum?.slice(6)}
           </Text>
           <CustomRatingBar />
         </View>

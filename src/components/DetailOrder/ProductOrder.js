@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {scale} from 'react-native-size-matters';
 import {getProductById} from '../../services';
 const ProductOrder = props => {
@@ -16,7 +16,7 @@ const ProductOrder = props => {
       });
     };
     getData();
-  }, []);
+  }, [props.id]);
   return (
     <View>
       <View style={{flexDirection: 'row'}}>

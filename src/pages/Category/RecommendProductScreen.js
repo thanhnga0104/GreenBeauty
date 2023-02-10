@@ -28,7 +28,6 @@ export default class RecommendProductScreen extends Component {
   refreshDataFromServer = () => {
     getProductByCategory(this.props.route.params.item.id)
       .then(products => {
-        console.log('hyyyy:', products);
         this.setState({productsFromServer: products});
       })
       .catch(error => {

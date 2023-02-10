@@ -121,7 +121,7 @@ const HomeStack = ({navigation}) => (
         headerShown: false,
       }}
     />
-    <stack.Screen name="RatingScreen" component={DetailRating} />
+    <stack.Screen name="DetailRating" component={DetailRating} />
     <stack.Screen name="DetailIngredient" component={DetailIngredients} />
   </stack.Navigator>
 );

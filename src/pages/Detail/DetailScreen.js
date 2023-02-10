@@ -1,5 +1,4 @@
-import React from 'react';
-import {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -11,90 +10,91 @@ import {
   Alert,
   SafeAreaView,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import DetailHeader from '../../components/Detail/DetailHeader';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {getListImage} from '../../services';
-import {getImageFromServer} from '../../services';
+import {getListImage, getImageFromServer} from '../../services';
 import {BottomPopup} from '../../components/Detail/BottomPopup';
-import {getDataUser} from '../../services';
-import {getProductFromCart} from '../../services';
-import {postItemToCart} from '../../services';
-import {putItemInCart} from '../../services';
-import {postToLoveList} from '../../services';
-import {getProductFromLoveList} from '../../services';
-import {deleteProducLoveList} from '../../services';
+import {getDataUser, getProductFromCart} from '../../services';
+import {postItemToCart, putItemInCart, postToLoveList} from '../../services';
+import {getProductFromLoveList, deleteProducLoveList} from '../../services';
+import Recommendingre from '../../components/Detail/Recommendingre';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSelector, useDispatch} from 'react-redux';
+import {retrieve} from '../../redux/slides/product/productSlice';
+import {formatThousandNumber} from '../../utils/formatThousandNumber';
 
-class DetailScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      imageData: [],
-      listData: [],
-      userData: null,
-      tontai: false, //chưa tồn tại sp
-      product_Exist: '',
-      isLoveExist: false,
-      isLove: false,
-      isLoveID: '',
-      quantityOfCart: 0,
-    };
-  }
+const DetailScreen = props => {
+  const {navigation, route} = props;
+  const dispatch = useDispatch();
+  const {product} = route.params;
+  const [imageData, setImageData] = useState([]);
+  const [listData, setListData] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const [tontai, setTontai] = useState(false); //chưa tồn tại sp
+  const [product_Exist, setProduct_Exist] = useState();
+  const [isLoveExist, setIsLoveExist] = useState(false);
+  const [isLove, setIsLove] = useState(false);
+  const [isLoveID, setIsLoveID] = useState();
+  const [quantityOfCart, setQuantityOfCart] = useState(0);
 
-  componentDidMount() {
-    this.fetchProductFromCart();
-    this.fetchListImage();
+  let img = [];
+  img = imageData;
 
-    this.focusListener = this.props.navigation.addListener('focus', () => {
-      this.fetchProductFromCart();
-      this.fetchListImage();
-    });
-  }
-
-  fetchListImage = () => {
+  const setIdLastViewingProduct = async () => {
+    try {
+      await AsyncStorage.setItem('lastViewingProduct', product?.id.toString());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const fetchListImage = () => {
     let listImage = [];
-    listImage.push(this.props.route.params.product.imagepresent);
-    getListImage(this.props.route.params.product.id)
+    listImage.push(product.imagepresent);
+    setImageData(listImage);
+
+    getListImage(product.id)
       .then(images => {
-        images.forEach(img => {
-          getImageFromServer(img.id)
+        images.forEach(image => {
+          getImageFromServer(image.id)
             .then(result => {
               listImage.push(result.img);
-              this.setState({imageData: listImage});
+              setImageData(listImage);
             })
             .catch(error => {
-              this.setState({imageData: []});
+              setImageData([]);
             });
         });
       })
       .catch(error => {
-        this.setState({imageData: []});
+        setImageData([]);
       });
   };
 
   //fetch dữ liệu giỏ hàng
-  fetchProductFromCart = () => {
+  const fetchProductFromCart = () => {
     getDataUser()
       .then(user => {
         getProductFromCart(user.userID, '')
           .then(items => {
             items.forEach(item => {
-              if (item.product === this.props.route.params.product.id) {
-                this.setState({tontai: true, product_Exist: item}); //sản phẩm đã tồn tại
+              if (item.product === product.id) {
+                setTontai(true);
+                setProduct_Exist(item);
+                //sản phẩm đã tồn tại
               }
             });
-            this.setState({
-              listData: items,
-              userData: user,
-              quantityOfCart: Object.keys(items).length,
-            });
+            setListData(items);
+            setUserData(user);
+            setQuantityOfCart(Object.keys(items).length);
           })
           .catch(error => {
-            this.setState({listData: []});
+            setListData([]);
           });
 
-        this.checkLoveList(user.userID);
+        checkLoveList(user.userID);
       })
       .catch(error => {
         console.error(`Error is: ${error}`);
@@ -102,46 +102,40 @@ class DetailScreen extends Component {
   };
 
   //refresh khi thêm sản phẩm mới
-  refreshProductFromCart = () => {
-    getProductFromCart(this.state.userData.userID, '')
+  const refreshProductFromCart = () => {
+    getProductFromCart(userData.userID, '')
       .then(items => {
         items.forEach(item => {
-          if (item.product === this.props.route.params.product.id) {
-            this.setState({tontai: true});
+          if (item.product === product.id) {
+            setTontai(true);
           }
         });
-        this.setState({listData: items});
+        setListData(items);
       })
       .catch(error => {
-        this.setState({listData: []});
+        setListData([]);
       });
   };
 
-  checkSoLuong = () => {
-    this.state.listData.forEach(index => {
-      if (index.product === this.props.route.params.product.id) {
-        console.log(
-          'index:',
-          index.product + ' id:',
-          this.props.route.params.product.id,
-        );
-        this.setState({tontai: true}); // đã có trong giỏ hàng, put
+  const checkSoLuong = () => {
+    listData.forEach(index => {
+      if (index.product === product.id) {
+        setTontai(true);
+        // đã có trong giỏ hàng, put
       }
     });
   };
 
-  checkLoveList = user_id => {
+  const checkLoveList = user_id => {
     getProductFromLoveList(user_id)
       .then(list => {
-        if (Object.keys(list).length == 0) {
-          this.setState({isLoveExist: false});
+        if (Object.keys(list).length === 0) {
+          setIsLoveExist(false);
         } else {
           list.forEach(item => {
-            if (item.product_id == this.props.route.params.product.id) {
-              console.log('item.id', item.id);
-              console.log('item.productid', item.product_id);
-              console.log('productid', this.props.route.params.product.id);
-              this.setState({isLoveE: true, isLoveID: item.id});
+            if (item.product_id === product.id) {
+              setIsLoveExist(true);
+              setIsLoveID(item.id);
             }
           });
         }
@@ -151,293 +145,305 @@ class DetailScreen extends Component {
       });
   };
 
-  render() {
-    const {navigation, route} = this.props;
-    const {product} = route.params;
-    let img = [];
-    img = this.state.imageData;
+  const handleChange = nativeEvent => {
+    if (nativeEvent) {
+      const slide = Math.ceil(
+        nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
+      );
+    }
+  };
 
-    const handleChange = nativeEvent => {
-      if (nativeEvent) {
-        const slide = Math.ceil(
-          nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
-        );
-      }
-    };
+  //phần này là code của bottom pupup: như show dialog á
+  //Phần này là code khi bấm thêm vào giỏ hàng
 
-    //phần này là code của bottom pupup: như show dialog á
-    //Phần này là code khi bấm thêm vào giỏ hàng
+  let popupRef = React.createRef();
+  const addCartToServer = () => {
+    if (tontai === false) {
+      fetchProductFromCart();
+      postItemToCart(userData, product)
+        .then(item => {
+          refreshProductFromCart();
+        })
+        .catch(error => {
+          console.error(`Error is: ${error}`);
+        });
+    } else if (tontai === true) {
+      fetchProductFromCart();
+      putItemInCart('+', userData, product_Exist)
+        .then(item => {
+          //Chỗ này phải so sánh số lượng đang ở trong giỏ hàng của 1 user, nhiều user với tổng số lượng sp
+          refreshProductFromCart();
+        })
+        .catch(error => {
+          console.error(`Error is: ${error}`);
+        });
+    }
 
-    let popupRef = React.createRef();
-    const addCartToServer = () => {
-      {
-        if (this.state.tontai == false) {
-          this.fetchProductFromCart();
-          postItemToCart(this.state.userData, product)
-            .then(item => {
-              console.log('Thêm vào giỏ hàng thành công');
+    setTontai(true);
+    popupRef.show();
+  };
 
-              this.refreshProductFromCart();
-            })
-            .catch(error => {
-              console.error(`Error is: ${error}`);
-            });
-        } else if (this.state.tontai == true) {
-          this.fetchProductFromCart();
-          putItemInCart('+', this.state.userData, this.state.product_Exist)
-            .then(item => {
-              console.log('Đã update số lượng sản phẩm');
-              //Chỗ này phải so sánh số lượng đang ở trong giỏ hàng của 1 user, nhiều user với tổng số lượng sp
-              this.refreshProductFromCart();
-            })
-            .catch(error => {
-              console.error(`Error is: ${error}`);
-            });
-        }
-      }
-      this.setState({tontai: true});
-      popupRef.show();
-    };
+  const handleLoveList = () => {
+    if (isLoveExist === false) {
+      postToLoveList(userData, product.id)
+        .then(result => {
+          setIsLove(true);
+          setIsLoveExist(true);
+          setIsLoveID(result.id);
+          Alert.alert('', 'Đã thêm sản phẩm vào mục yêu thích');
+        })
+        .catch(error => {
+          console.error(`Error is: ${error}`);
+        });
 
-    const handleLoveList = () => {
-      if (this.state.isLoveExist == false) {
-        postToLoveList(this.state.userData, product.id)
-          .then(result => {
-            this.setState({
-              isLove: true,
-              isLoveExist: true,
-              isLoveID: result.id,
-            });
-            Alert.alert('', 'Đã thêm sản phẩm vào mục yêu thích');
-            console.log('Thêm vào love list thành công 1');
-          })
-          .catch(error => {
-            console.error(`Error is: ${error}`);
-          });
+      checkLoveList(userData.userID);
+    } else {
+      deleteProducLoveList(isLoveID)
+        .then(() => {
+          setIsLove(false);
+          setIsLoveExist(false);
 
-        this.checkLoveList(this.state.userData.userID);
-      } else {
-        console.log('this.state.isLoveID:', this.state.isLoveID);
-        deleteProducLoveList(this.state.isLoveID)
-          .then(() => {
-            this.setState({isLove: false, isLoveExist: false});
-            Alert.alert('', 'Đã xóa sản phẩm khỏi mục yêu thích');
-            console.log('Xóa sản phẩm trong love list thành công');
-            return;
-          })
-          .catch(error => {
-            console.error(`Error is: ${error}`);
-          });
-        this.checkLoveList(this.state.userData.userID);
-      }
-    };
+          Alert.alert('', 'Đã xóa sản phẩm khỏi mục yêu thích');
+          return;
+        })
+        .catch(error => {
+          console.error(`Error is: ${error}`);
+        });
+      checkLoveList(userData.userID);
+    }
+  };
 
-    return (
-      <SafeAreaView
-        style={{
-          flex: 1,
-        }}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-        <DetailHeader
-          navigation={navigation}
-          quantityOfCart={this.state.quantityOfCart}
-        />
+  useEffect(() => {
+    dispatch(retrieve(product?.id));
 
-        <ScrollView style={{backgroundColor: '#fff'}}>
-          <View style={styles.wrap}>
-            <ScrollView
-              onScroll={({nativeEvent}) => handleChange(nativeEvent)}
-              showsHorizontalScrollIndicator={false}
-              pagingEnabled
-              horizontal
-              style={styles.wrap}>
-              {img.map((e, index) => (
-                <Image
-                  key={e}
-                  resizeMode="stretch"
-                  style={styles.wrap}
-                  source={{uri: e}}
-                />
-              ))}
-            </ScrollView>
-          </View>
+    setIdLastViewingProduct();
+    fetchProductFromCart();
+    fetchListImage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quantityOfCart, product?.id]);
 
-          <View style={{padding: 10}}>
-            <Text style={styles.productNameText}>{product.name}</Text>
-            {product.IsFlashsale == true ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <Text style={styles.productPrice}>
-                  {product.price - (product.price * product.priceSale) / 100}đ
-                </Text>
-                <View style={{flexDirection: 'row'}}>
-                  <Text
+  return (
+    <SafeAreaView style={styles.flex1}>
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <DetailHeader navigation={navigation} quantityOfCart={quantityOfCart} />
+      <View style={styles.flex1}>
+        <FlatList
+          LisHeaderComponent={<Text />}
+          ListFooterComponent={
+            <>
+              <View style={styles.wrap}>
+                <ScrollView
+                  onScroll={({nativeEvent}) => handleChange(nativeEvent)}
+                  showsHorizontalScrollIndicator={false}
+                  pagingEnabled
+                  horizontal
+                  style={styles.wrap}>
+                  {img.map((e, index) => (
+                    <Image
+                      key={e}
+                      resizeMode="stretch"
+                      style={styles.wrap}
+                      source={{uri: e}}
+                    />
+                  ))}
+                </ScrollView>
+              </View>
+
+              <View style={{padding: 10}}>
+                <Text style={styles.productNameText}>{product.name}</Text>
+                {product.IsFlashsale === true ? (
+                  <View
                     style={{
-                      color: '#827A7A',
-                      textDecorationLine: 'line-through',
-                      marginTop: 8,
-                      fontSize: 16,
-                      marginRight: 2,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
                     }}>
-                    {product.price}đ
-                  </Text>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: '#FF5F04',
-                      borderRadius: 3,
-                      justifyContent: 'center',
-                      marginTop: 6,
-                    }}>
-                    <Text style={{padding: 2, color: '#fff', fontSize: 16}}>
-                      {' '}
-                      -{product.priceSale}%
+                    <Text style={styles.productPrice}>
+                      {formatThousandNumber(
+                        product.price -
+                          (product.price * product.priceSale) / 100,
+                      )}
+                      đ
                     </Text>
-                  </TouchableOpacity>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text
+                        style={{
+                          color: '#827A7A',
+                          textDecorationLine: 'line-through',
+                          marginTop: 8,
+                          fontSize: 16,
+                          marginRight: 2,
+                          alignItems: 'center',
+                        }}>
+                        {formatThousandNumber(product.price)}đ
+                      </Text>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: '#FF5F04',
+                          borderRadius: 3,
+                          justifyContent: 'center',
+                          marginTop: 6,
+                        }}>
+                        <Text style={{padding: 2, color: '#fff', fontSize: 16}}>
+                          {' '}
+                          -{product.priceSale}%
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ) : (
+                  <Text style={styles.productPrice}>
+                    {formatThousandNumber(product.price)}đ
+                  </Text>
+                )}
+              </View>
+
+              <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('DetailRating', {
+                      id: product.id,
+                    });
+                  }}>
+                  <Text style={{fontSize: 16}}>Đánh giá</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{paddingHorizontal: 5}}>
+                  <Text style={{fontSize: 16, color: '#827A7A'}}>|</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text style={{fontSize: 16}}>Đã bán</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.shareContainer}
+                  onPress={handleLoveList}>
+                  {isLove === false ? (
+                    <Ionicons name="heart-outline" size={28} color="black" />
+                  ) : (
+                    <Ionicons name="heart-sharp" size={28} color="red" />
+                  )}
+                </TouchableOpacity>
+              </View>
+              <View style={styles.spaceContainer}></View>
+
+              <TouchableOpacity
+                style={{flexDirection: 'row', alignItems: 'center'}}
+                activeOpacity={1}
+                onPress={() => {
+                  navigation.navigate('DescriptionScreen', {
+                    product: product,
+                  });
+                }}>
+                <View style={styles.descriptionSection}>
+                  <Text style={styles.titleText}>Mô tả sản phẩm</Text>
+                  <Text numberOfLines={5}>{product.description}</Text>
+                </View>
+                <View style={styles.rightContainer}>
+                  <EvilIcons name="chevron-right" size={30} color="black" />
+                </View>
+              </TouchableOpacity>
+
+              <View style={styles.spaceContainer}></View>
+              <View style={styles.descriptionSection}>
+                <Text style={styles.titleText}>Thông tin chi tiết</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{paddingRight: 30}}>
+                    <Text style={styles.infoText}>Thương hiệu: </Text>
+                    <Text style={styles.infoText}>Xuất xứ: </Text>
+                    <Text style={styles.infoText}>Loại da: </Text>
+                  </View>
+                  <View>
+                    <Text style={styles.infoText}>{product.brand}</Text>
+                    <Text style={styles.infoText}>{product.origin}</Text>
+                    <Text style={styles.infoText}></Text>
+                  </View>
                 </View>
               </View>
-            ) : (
-              <Text style={styles.productPrice}>{product.price}đ</Text>
-            )}
-          </View>
 
-          <View style={{flexDirection: 'row', padding: 10, width: '100%'}}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('RatingScreen', {
-                  id: product.id,
-                });
-              }}>
-              <Text style={{fontSize: 16}}>Đánh giá</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{paddingHorizontal: 5}}>
-              <Text style={{fontSize: 16, color: '#827A7A'}}>|</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={{fontSize: 16}}>Đã bán </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.shareContainer}
-              onPress={handleLoveList}>
-              {this.state.isLove == false ? (
-                <Ionicons name="heart-outline" size={28} color="black" />
-              ) : (
-                <Ionicons name="heart-sharp" size={28} color="red" />
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.spaceContainer}></View>
+              <View style={styles.spaceContainer}></View>
 
-          <TouchableOpacity
-            style={{flexDirection: 'row', alignItems: 'center'}}
-            activeOpacity={1}
-            onPress={() => {
-              navigation.navigate('DescriptionScreen', {
-                product: product,
-              });
-            }}>
-            <View style={styles.descriptionSection}>
-              <Text style={styles.titleText}>Mô tả sản phẩm</Text>
-              <Text numberOfLines={5}>{product.description}</Text>
-            </View>
-            <View style={styles.rightContainer}>
-              <EvilIcons name="chevron-right" size={30} color="black" />
-            </View>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={{padding: 10, flexDirection: 'row'}}
+                activeOpacity={1}
+                onPress={() => {
+                  navigation.navigate('InstructionScreen', {
+                    product: product,
+                  });
+                }}>
+                <Text style={styles.titleText}>Hướng dẫn sử dụng</Text>
+                <View style={styles.rightContainer}>
+                  <EvilIcons name="chevron-right" size={30} color="black" />
+                </View>
+              </TouchableOpacity>
 
-          <View style={styles.spaceContainer}></View>
-          <View style={styles.descriptionSection}>
-            <Text style={styles.titleText}>Thông tin chi tiết</Text>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{paddingRight: 30}}>
-                <Text style={styles.infoText}>Thương hiệu: </Text>
-                <Text style={styles.infoText}>Xuất xứ: </Text>
-                <Text style={styles.infoText}>Loại da: </Text>
-              </View>
-              <View>
-                <Text style={styles.infoText}>{product.brand}</Text>
-                <Text style={styles.infoText}>{product.origin}</Text>
-                <Text style={styles.infoText}></Text>
-              </View>
-            </View>
-          </View>
+              <View style={styles.spaceContainer}></View>
+              <TouchableOpacity
+                style={{padding: 10, flexDirection: 'row'}}
+                activeOpacity={1}
+                onPress={() => {
+                  navigation.navigate('ThanhPhan', {
+                    product: product,
+                  });
+                }}>
+                <Text style={styles.titleText}>Thành phần sản phẩm</Text>
 
-          <View style={styles.spaceContainer}></View>
+                <View style={styles.rightContainer}>
+                  <EvilIcons name="chevron-right" size={30} color="black" />
+                </View>
+              </TouchableOpacity>
+              <View style={styles.spaceContainer}></View>
 
-          <TouchableOpacity
-            style={{padding: 10, flexDirection: 'row'}}
-            activeOpacity={1}
-            onPress={() => {
-              navigation.navigate('InstructionScreen', {
-                product: product,
-              });
-            }}>
-            <Text style={styles.titleText}>Hướng dẫn sử dụng</Text>
-            <View style={styles.rightContainer}>
-              <EvilIcons name="chevron-right" size={30} color="black" />
-            </View>
-          </TouchableOpacity>
+              <View style={styles.spaceContainer}></View>
+              <TouchableOpacity
+                style={{padding: 10, flexDirection: 'row'}}
+                activeOpacity={1}
+                onPress={() => {
+                  navigation.navigate('DetailRating', {
+                    id: product.id,
+                  });
+                }}>
+                <Text style={styles.titleText}>Đánh giá</Text>
 
-          <View style={styles.spaceContainer}></View>
-          <TouchableOpacity
-            style={{padding: 10, flexDirection: 'row'}}
-            activeOpacity={1}
-            onPress={() => {
-              navigation.navigate('ThanhPhan', {
-                product: product,
-              });
-            }}>
-            <Text style={styles.titleText}>Thành phần sản phẩm</Text>
+                <View style={styles.rightContainer}>
+                  <EvilIcons name="chevron-right" size={30} color="black" />
+                </View>
+              </TouchableOpacity>
 
-            <View style={styles.rightContainer}>
-              <EvilIcons name="chevron-right" size={30} color="black" />
-            </View>
-          </TouchableOpacity>
-          <View style={styles.spaceContainer}></View>
+              <Recommendingre navigation={navigation} id={product.id} />
 
-          <View style={styles.spaceContainer}></View>
-          <TouchableOpacity
-            style={{padding: 10, flexDirection: 'row'}}
-            activeOpacity={1}
-            onPress={() => {
-              navigation.navigate('RatingScreen', {
-                id: product.id,
-              });
-            }}>
-            <Text style={styles.titleText}>Đánh giá</Text>
-
-            <View style={styles.rightContainer}>
-              <EvilIcons name="chevron-right" size={30} color="black" />
-            </View>
-          </TouchableOpacity>
-          <View style={styles.spaceContainer}></View>
-        </ScrollView>
-
-        <View style={styles.addCartContainer}>
-          <TouchableOpacity
-            style={styles.addCartButton}
-            onPress={addCartToServer}>
-            <Text style={styles.addCartText}>Thêm vào giỏ hàng</Text>
-          </TouchableOpacity>
-        </View>
-
-        <BottomPopup
-          ref={target => (popupRef = target)}
-          product={product}
-          image={this.props.route.params.product.imagepresent}
-          navigation={navigation}
+              <View style={styles.spaceContainer} />
+            </>
+          }
         />
-      </SafeAreaView>
-    );
-  }
-}
+      </View>
+
+      {/* <ScrollView style={{backgroundColor: '#fff'}}>
+     
+      </ScrollView> */}
+
+      <View style={styles.addCartContainer}>
+        <TouchableOpacity
+          style={styles.addCartButton}
+          onPress={addCartToServer}>
+          <Text style={styles.addCartText}>Thêm vào giỏ hàng</Text>
+        </TouchableOpacity>
+      </View>
+
+      <BottomPopup
+        ref={target => (popupRef = target)}
+        product={product}
+        image={product.imagepresent}
+        navigation={navigation}
+      />
+    </SafeAreaView>
+  );
+};
 
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+
   wrap: {
     height: 350,
     width: Dimensions.get('window').width,

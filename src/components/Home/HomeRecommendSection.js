@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,7 +9,81 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
-import {getProductsFromServer} from '../../services';
+import {getRecommend} from '../../services/recommendServices';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import RecommendingreItem from '../Detail/RecommendingreItem';
+import {useSelector} from 'react-redux';
+import {selectProduct} from '../../redux/slides/product/productSlice';
+
+const HomeRecommendSection = props => {
+  const {navigation} = props;
+
+  const idRCM = useSelector(selectProduct);
+  const [products, setProducts] = useState([]);
+  const [refresh, setRefresh] = useState(true);
+  const [IdLastViewingProduct, setIDLastViewingProduct] = useState('42');
+
+  const getIdLastViewingProduct = async () => {
+    try {
+      const value = await AsyncStorage.getItem('lastViewingProduct');
+      setIDLastViewingProduct(value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getData = () => {
+    setRefresh(true);
+    getRecommend(idRCM)
+      .then(res => {
+        console.log({res});
+        setProducts(res);
+        setRefresh(false);
+      })
+      .catch(error => {
+        setProducts([]);
+      });
+  };
+
+  const handleRefresh = () => {
+    setRefresh(false);
+    getData();
+  };
+
+  useEffect(() => {
+    console.log({idRCM});
+    getIdLastViewingProduct();
+    getData(idRCM);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idRCM]);
+
+  return (
+    <View style={styles.sectionContainer}>
+      <Text style={styles.sectionTile}>SẢN PHẨM GỢI Ý</Text>
+      <View>
+        <FlatList
+          scrollEnabled={false}
+          nestedScrollEnabled={true}
+          numColumns={2}
+          data={products}
+          renderItem={({item, index}) => {
+            return (
+              <RecommendingreItem
+                navigation={navigation}
+                id={item?.product_id}
+                index={index}
+              />
+            );
+          }}
+          refreshing={refresh}
+          onRefresh={handleRefresh}
+        />
+      </View>
+    </View>
+  );
+};
+
+export default HomeRecommendSection;
 
 class RecommendFlatListItem extends Component {
   render() {
@@ -27,42 +101,25 @@ class RecommendFlatListItem extends Component {
               source={{uri: this.props.item.imagepresent}}
               style={styles.imageContainer}
             />
-            {this.props.item.IsFlashsale == true ? (
+            {this.props.item.IsFlashsale === true ? (
               <View style={styles.sale}>
-                <Text
-                  style={{
-                    fontSize: scale(14),
-                    fontWeight: 'bold',
-                    color: '#FFF',
-                  }}>
+                <Text style={styles.percentPriceSale}>
                   -{this.props.item.priceSale}%
                 </Text>
               </View>
             ) : (
-              <Text></Text>
+              <Text />
             )}
           </View>
-          {this.props.item.IsFlashsale == true ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text style={styles.priceContainer}>
+          {this.props.item.IsFlashsale === true ? (
+            <View style={styles.priceContainer}>
+              <Text style={styles.priceSale}>
                 {this.props.item.price -
                   (this.props.item.price * this.props.item.priceSale) / 100}
                 đ
               </Text>
-              <View style={{flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    color: '#827A7A',
-                    textDecorationLine: 'line-through',
-                    fontSize: 16,
-                    marginRight: 4,
-                    alignItems: 'center',
-                  }}>
+              <View style={styles.priceRemainingContainer}>
+                <Text style={styles.priceRemaining}>
                   {this.props.item.price}đ
                 </Text>
               </View>
@@ -72,65 +129,6 @@ class RecommendFlatListItem extends Component {
           )}
           <Text style={styles.nameContainer}>{this.props.item.name}</Text>
         </TouchableOpacity>
-      </View>
-    );
-  }
-}
-
-export default class HomeRecommendSection extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      productsFromServer: [],
-      imageFromServer: [],
-      refreshing: true,
-    };
-  }
-
-  componentDidMount() {
-    this.refreshDataFromServer();
-  }
-
-  refreshDataFromServer = () => {
-    this.setState({refreshing: true});
-    getProductsFromServer()
-      .then(products => {
-        this.setState({productsFromServer: products});
-        this.setState({refreshing: false});
-      })
-      .catch(error => {
-        this.setState({productsFromServer: []});
-      });
-  };
-
-  handleRefresh = () => {
-    this.setState({refreshing: false}, () => {
-      this.refreshDataFromServer();
-    });
-  };
-
-  render() {
-    const {navigation} = this.props;
-    return (
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTile}>GỢI Ý HÔM NAY</Text>
-        <View>
-          <FlatList
-            scrollEnabled={false}
-            nestedScrollEnabled={true}
-            numColumns={2}
-            data={this.state.productsFromServer}
-            renderItem={({item, index}) => {
-              return (
-                <RecommendFlatListItem
-                  navigation={navigation}
-                  item={item}
-                  index={index}></RecommendFlatListItem>
-              );
-            }}
-            refreshing={this.state.refreshing}
-            onRefresh={this.handleRefresh}></FlatList>
-        </View>
       </View>
     );
   }
@@ -169,12 +167,19 @@ const styles = StyleSheet.create({
     color: '#484848',
   },
 
-  priceContainer: {
+  priceSale: {
     paddingLeft: 5,
     fontSize: 16,
     fontWeight: '500',
     color: '#FF5F04',
   },
+
+  priceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
   sale: {
     height: scale(20),
     width: scale(40),
@@ -185,5 +190,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     bottom: scale(156),
     left: scale(116),
+  },
+
+  percentPriceSale: {
+    fontSize: scale(14),
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  priceRemainingContainer: {flexDirection: 'row'},
+  priceRemaining: {
+    color: '#827A7A',
+    textDecorationLine: 'line-through',
+    fontSize: 16,
+    marginRight: 4,
+    alignItems: 'center',
   },
 });

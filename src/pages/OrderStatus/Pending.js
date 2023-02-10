@@ -20,9 +20,6 @@ const Pending = ({navigation, route}) => {
         const valueid = await AsyncStorage.getItem('id');
 
         GetData(valueid);
-
-        if (value !== null) {
-        }
       } catch (e) {
         console.log(e);
       }
@@ -35,7 +32,7 @@ const Pending = ({navigation, route}) => {
         },
       })
         .then(response => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             response.json().then(d => {
               setRenderData(d);
             });
@@ -72,6 +69,7 @@ const Pending = ({navigation, route}) => {
 
       <FlatList
         data={renderData}
+        ListEmptyComponent={<Text>Chưa có đơn hàng</Text>}
         renderItem={({item}) => {
           return (
             <TouchableOpacity
